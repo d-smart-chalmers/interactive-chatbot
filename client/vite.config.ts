@@ -1,20 +1,22 @@
-import { fileURLToPath, URL } from 'node:url'
+import { reactRouter } from '@react-router/dev/vite';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
+import babelPlugin from 'vite-plugin-babel';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
-import tailwindcss from '@tailwindcss/vite'
+const ReactCompilerConfig = {};
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
-    vueDevTools(),
     tailwindcss(),
+    reactRouter(),
+    tsconfigPaths(),
+    babelPlugin({
+      filter: /^(?!.*node_modules).*\.[jt]sx?$/,
+      babelConfig: {
+        presets: ['@babel/preset-typescript'], // if you use TypeScript
+        plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
+      },
+    }),
   ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
-  },
-})
+});

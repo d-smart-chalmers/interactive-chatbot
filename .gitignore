@@ -22,7 +22,6 @@ Thumbs.db
 /client/.env
 /client/build
 /client/dist
-/client/dist-ssr
 /client/coverage
 /client/*.local
 /client/logs
@@ -34,7 +33,4 @@ Thumbs.db
 /client/lerna-debug.log*
 /client/*.tsbuildinfo
 /client/.eslintcache
-/client/cypress/videos/
-/client/cypress/screenshots/
-/client/__screenshots__/
 /client/*.timestamp-*-*.mjs

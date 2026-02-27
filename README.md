@@ -2,7 +2,7 @@
 
 [**Project Description**]
 
-This project is an interactive chatbot application with a Vue.js frontend and a Node.js (Express) backend.
+This project is an interactive chatbot application with a React frontend and a Node.js (Express) backend.
 
 ---
 
@@ -10,7 +10,7 @@ This project is an interactive chatbot application with a Vue.js frontend and a 
 
 The project is organized as a monorepo with two main parts:
 
--   `/client`: The frontend application built with Vue.js.
+-   `/client`: The frontend application built with React.
 -   `/server`: The backend API server built with Express.js.
 
 ---
@@ -18,10 +18,9 @@ The project is organized as a monorepo with two main parts:
 ## Technologies Used
 
 -   **Client (Frontend):**
-    -   Vue.js 3
+    -   React 19
     -   Vite
-    -   Vue Router for routing
-    -   Pinia for state management
+    -   React Router 7
     -   Tailwind CSS for styling
     -   TypeScript
 
@@ -38,7 +37,7 @@ Follow these instructions to get the project up and running on your local machin
 
 ### Prerequisites
 
--   Node.js (v20.19.0 or higher, as per `client/package.json`)
+-   Node.js (v22.x or higher, as per `client/package.json`)
 -   npm (or your preferred package manager)
 
 ### Installation
@@ -86,10 +85,11 @@ Both the client and server have `dev` scripts to run them in development mode wi
 ### Server (`/server`)
 
 -   `npm run dev`: Starts the server in development mode with `tsx`.
+-   `npm test`: (Not yet implemented)
 
 ### Client (`/client`)
 
--   `npm run dev`: Starts the Vite development server.
--   `npm run build`: Builds the application for production.
--   `npm run preview`: Previews the production build locally.
--   `npm run type-check`: Performs a TypeScript type check.
+-   `npm run dev`: Starts the development server using `react-router dev`.
+-   `npm run build`: Builds the application for production using `react-router build`.
+-   `npm run start`: Serves the production build.
+-   `npm run typecheck`: Runs the TypeScript type checker.
