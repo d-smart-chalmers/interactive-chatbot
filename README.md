@@ -18,7 +18,7 @@ The project is organized as a monorepo with two main parts:
 ## Technologies Used
 
 -   **Client (Frontend):**
-    -   React 19
+    -   React 19 (with React Compiler)
     -   Vite
     -   React Router 7
     -   Tailwind CSS for styling
@@ -93,3 +93,4 @@ Both the client and server have `dev` scripts to run them in development mode wi
 -   `npm run build`: Builds the application for production using `react-router build`.
 -   `npm run start`: Serves the production build.
 -   `npm run typecheck`: Runs the TypeScript type checker.
+-   `npm run format`: Formats code with Prettier.
