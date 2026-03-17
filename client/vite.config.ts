@@ -3,12 +3,14 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import babelPlugin from 'vite-plugin-babel';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import svgr from 'vite-plugin-svgr';
 
 const ReactCompilerConfig = {};
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
+    svgr(),
     reactRouter(),
     tsconfigPaths(),
     babelPlugin({

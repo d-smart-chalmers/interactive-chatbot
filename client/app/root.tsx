@@ -9,6 +9,7 @@ import {
 
 import type { Route } from './+types/root';
 import './app.css';
+import { Toaster } from 'sonner';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -33,9 +34,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        
         {children}
         <ScrollRestoration />
         <Scripts />
+        <Toaster />
       </body>
     </html>
   );
@@ -62,8 +65,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
+    <main className="container mx-auto h-dvh p-4 pt-16 flex flex-col items-center justify-center gap-4">
+      <h1 className='text-3xl font-bold'>{message}</h1>
       <p>{details}</p>
       {stack && (
         <pre className="w-full overflow-x-auto p-4">
