@@ -1,44 +1,53 @@
-# interactive-chatbot
+# Maritime Communications Trainer
 
-[**Project Description**]
-
-This project is an interactive chatbot application with a React frontend and a Node.js (Express) backend.
+This project is an interactive chatbot application designed to train users in standard maritime radio protocols. It features a React frontend and a Node.js (Express) backend.
 
 ---
 
 ## Project Structure
 
-The project is organized as a monorepo with two main parts:
+The project is a monorepo with the following structure:
 
--   `/client`: The frontend application built with React.
--   `/server`: The backend API server built with Express.js.
+-   `/client`: A React-based frontend application.
+-   `/server`: A Node.js and Express backend server.
+-   `/shared`: Shared code between the client and server, such as API definitions and models.
 
 ---
 
 ## Technologies Used
 
--   **Client (Frontend):**
-    -   React 19 (with React Compiler)
-    -   Vite
-    -   React Router 7
-    -   Tailwind CSS for styling
-    -   TypeScript
+### Client (Frontend)
 
--   **Server (Backend):**
-    -   Node.js
-    -   Express.js
-    -   TypeScript (run with `tsx`)
+-   **Framework**: [React 19](https://react.dev/)
+-   **Build Tool**: [Vite](https://vitejs.dev/)
+-   **Routing**: [React Router 7](https://reactrouter.com/)
+-   **Styling**: [Tailwind CSS](https://tailwindcss.com/) with `shadcn/ui` components.
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+-   **Key Libraries**:
+    -   `axios` for HTTP requests.
+    -   `lucide-react` for icons.
+    -   `sonner` for notifications.
+
+### Server (Backend)
+
+-   **Framework**: [Express.js](https://expressjs.com/)
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+-   **Runtime**: [Node.js](https://nodejs.org/)
+-   **TypeScript Runner**: `tsx` for running TypeScript directly.
+-   **Key Libraries**:
+    -   `cors` for enabling Cross-Origin Resource Sharing.
+    -   `dotenv` for managing environment variables.
+    -   `express-async-handler` for handling async errors in Express.
+    -   `express-session` for session management.
 
 ---
 
 ## Getting Started
 
-Follow these instructions to get the project up and running on your local machine.
-
 ### Prerequisites
 
--   Node.js (v22.x or higher, as per `client/package.json`)
--   npm (or your preferred package manager)
+-   [Node.js](https://nodejs.org/) (v22.x or higher is recommended)
+-   [npm](https://www.npmjs.com/) (or another package manager like `yarn` or `pnpm`)
 
 ### Installation
 
@@ -48,13 +57,13 @@ Follow these instructions to get the project up and running on your local machin
     cd interactive-chatbot
     ```
 
-2.  **Set up the server:**
+2.  **Install server dependencies:**
     ```bash
     cd server
     npm install
     ```
 
-3.  **Set up the client:**
+3.  **Install client dependencies:**
     ```bash
     cd ../client
     npm install
@@ -62,21 +71,19 @@ Follow these instructions to get the project up and running on your local machin
 
 ### Running the Application
 
-Both the client and server have `dev` scripts to run them in development mode with hot-reloading.
-
-1.  **Run the backend server:**
-    Open a terminal, navigate to the `/server` directory, and run:
+1.  **Start the backend server:**
+    In a terminal, navigate to the `/server` directory and run:
     ```bash
     npm run dev
     ```
-    The server will start, typically on a port like `3000`. Check the server's console output for the exact URL.
+    The server will start on port `3000`.
 
-2.  **Run the frontend client:**
-    Open a second terminal, navigate to the `/client` directory, and run:
+2.  **Start the frontend client:**
+    In a separate terminal, navigate to the `/client` directory and run:
     ```bash
     npm run dev
     ```
-    The client development server will start, typically on port `5173`. You can access the application at `http://localhost:5173`.
+    The client will start on port `5173` and can be accessed at `http://localhost:5173`.
 
 ---
 
@@ -84,13 +91,13 @@ Both the client and server have `dev` scripts to run them in development mode wi
 
 ### Server (`/server`)
 
--   `npm run dev`: Starts the server in development mode with `tsx`.
--   `npm test`: (Not yet implemented)
+-   `npm run dev`: Starts the development server with hot-reloading using `tsx`.
+-   `npm test`: (Not yet implemented).
 
 ### Client (`/client`)
 
 -   `npm run dev`: Starts the development server using `react-router dev`.
--   `npm run build`: Builds the application for production using `react-router build`.
+-   `npm run build`: Builds the application for production.
 -   `npm run start`: Serves the production build.
 -   `npm run typecheck`: Runs the TypeScript type checker.
 -   `npm run format`: Formats code with Prettier.
