@@ -8,7 +8,7 @@ import { api } from '~/service/api';
 import type { DescriptionsResponse } from '../../../shared/scenarios/api';
 import type { ScenarioDescription } from '../../../shared/scenarios/model';
 import { Spinner } from '~/components/ui/spinner';
-import { redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 export default function Dashboard() {
   const [isVessel, setIsVessel] = useState(true);
