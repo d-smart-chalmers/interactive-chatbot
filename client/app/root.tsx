@@ -34,7 +34,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -65,8 +64,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto h-dvh p-4 pt-16 flex flex-col items-center justify-center gap-4">
-      <h1 className='text-3xl font-bold'>{message}</h1>
+    <main className="container mx-auto flex h-dvh flex-col items-center justify-center gap-4 p-4 pt-16">
+      <h1 className="text-3xl font-bold">{message}</h1>
       <p>{details}</p>
       {stack && (
         <pre className="w-full overflow-x-auto p-4">

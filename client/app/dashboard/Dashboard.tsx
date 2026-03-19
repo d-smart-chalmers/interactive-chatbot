@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Switch } from '../components/ui/switch';
 import VesselIcon from './vessel.svg?react';
@@ -18,9 +17,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    const response = (await api.get(
-      '/scenarios/descriptions',
-    ));
+    const response = await api.get('/scenarios/descriptions');
     const data = response.data as DescriptionsResponse;
     setAScenarios(data.descriptions[0]);
     setBScenarios(data.descriptions[1]);
@@ -34,7 +31,7 @@ export default function Dashboard() {
     console.log(id);
     const route = '/scenario/' + id;
     navigate(route);
-  }
+  };
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-6 p-10">
@@ -77,23 +74,25 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {loading && <Spinner/>} 
-      
-      {!loading && <div className="m-5 flex flex-wrap justify-center gap-5">
-        <ScenarioList
-          scenarios={aScenarios}
-          headerText="Part A - Operational Aspects"
-          headerColor="cyan"
-          onClick={onClickScenario}
-        />
+      {loading && <Spinner />}
 
-        <ScenarioList
-          scenarios={bScenarios}
-          headerText="Part B - Safety Aspects"
-          headerColor="red"
-          onClick={onClickScenario}
-        />
-      </div>}
+      {!loading && (
+        <div className="m-5 flex flex-wrap justify-center gap-5">
+          <ScenarioList
+            scenarios={aScenarios}
+            headerText="Part A - Operational Aspects"
+            headerColor="cyan"
+            onClick={onClickScenario}
+          />
+
+          <ScenarioList
+            scenarios={bScenarios}
+            headerText="Part B - Safety Aspects"
+            headerColor="red"
+            onClick={onClickScenario}
+          />
+        </div>
+      )}
     </div>
   );
 }

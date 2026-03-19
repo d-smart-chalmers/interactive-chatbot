@@ -1,5 +1,4 @@
-import type { ScenarioDescription } from "../../../shared/scenarios/model";
-
+import type { ScenarioDescription } from '../../../shared/scenarios/model';
 
 interface ScenarioListProps {
   scenarios: ScenarioDescription[];
@@ -36,9 +35,11 @@ export default function ScenarioList({
   const hoverClass = hoverMap[headerColor];
   const gradientClass = gradientMap[headerColor];
 
-    function handleScenario(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-        onClick(event.currentTarget.id);
-    }
+  function handleScenario(
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ): void {
+    onClick(event.currentTarget.id);
+  }
 
   return (
     <div
