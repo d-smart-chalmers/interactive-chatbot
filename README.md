@@ -27,6 +27,7 @@ The project is a monorepo with the following structure:
     -   `axios` for HTTP requests.
     -   `lucide-react` for icons.
     -   `sonner` for notifications.
+    -   `zustand` for state management.
 
 ### Server (Backend)
 
@@ -93,6 +94,7 @@ The project is a monorepo with the following structure:
 
 -   `npm run dev`: Starts the development server with hot-reloading using `tsx`.
 -   `npm test`: (Not yet implemented).
+-   `npm run format`: Formats code with Prettier.
 
 ### Client (`/client`)
 
