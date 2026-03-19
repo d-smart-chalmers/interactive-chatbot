@@ -6,6 +6,7 @@ import createMemoryStore from "memorystore";
 import { aScenarios, bScenarios } from "./lib/scenarios";
 import { ScenariosService } from "./service/scenarios";
 import { config as configDotEnv } from "dotenv";
+import { Scenario, Starter } from "./model/scenarios.interface";
 
 
 configDotEnv();
@@ -21,10 +22,11 @@ if (!process.env.CLIENT_URL) {
 app.use(express.json());
 
 //TODO: This has to be changed when we fetch the scenarios from the database
-const aScen = aScenarios.map((s) => {
+const aScen: Scenario[] = aScenarios.map((s) => {
   return {
     id: s.id,
     description: s.name,
+    starter: s.starter as Starter,
     scenarioTurns: s.turns.map((t) => {
       return {
         vesselInstruction: t.vessel_instruction,
@@ -35,10 +37,11 @@ const aScen = aScenarios.map((s) => {
     }),
   };
 });
-const bScen = bScenarios.map((s) => {
+const bScen: Scenario[] = bScenarios.map((s) => {
   return {
     id: s.id,
     description: s.name,
+    starter: s.starter as Starter,
     scenarioTurns: s.turns.map((t) => {
       return {
         vesselInstruction: t.vessel_instruction,

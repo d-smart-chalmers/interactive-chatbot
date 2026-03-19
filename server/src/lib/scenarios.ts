@@ -2,6 +2,7 @@ export const aScenarios = [
   {
     id: "1",
     name: "Providing information on a passage through a strait",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -42,6 +43,7 @@ export const aScenarios = [
   {
     id: "2",
     name: "Providing and reading back anchoring position coordinates",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -78,6 +80,7 @@ export const aScenarios = [
   {
     id: "3",
     name: "Vessel enters VTS area and must drop anchor to wait for pilot",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -116,6 +119,7 @@ export const aScenarios = [
   {
     id: "4",
     name: "Vessel ready to departure calls to ask clearance",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -144,6 +148,7 @@ export const aScenarios = [
   {
     id: "5",
     name: "Entering the reporting zone",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -180,6 +185,7 @@ export const aScenarios = [
   {
     id: "6",
     name: "Vessel in transit to pilot station",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -219,6 +225,7 @@ export const aScenarios = [
   {
     id: "7",
     name: "Traffic information on permission to drift",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -249,6 +256,7 @@ export const aScenarios = [
   {
     id: "8",
     name: "Tugboat outbound to escort incoming vessel to berth",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are tug Sunrise. Call Europe VTS.",
@@ -279,6 +287,7 @@ export const aScenarios = [
   {
     id: "9",
     name: "Vessel entering VTS area, in transit",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -309,6 +318,7 @@ export const aScenarios = [
   {
     id: "10",
     name: "Leaving the TSS",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -329,11 +339,12 @@ export const aScenarios = [
   {
     id: "11",
     name: "Vessel underway with pilot onboard",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
         vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. Anchor is up from X1, underway to Pilot Station one. Over.",
+          "Europe VTS, Europe VTS. This is MV Sunrise. Anchor is up from X1, underway to Pilot Station one. Over.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
         vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
@@ -367,6 +378,7 @@ export const aScenarios = [
   {
     id: "12",
     name: "Vessel entering VTS area bound for berth place",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -395,6 +407,7 @@ export const aScenarios = [
   {
     id: "13",
     name: "Mandatory ship reporting",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -423,6 +436,7 @@ export const aScenarios = [
   {
     id: "14",
     name: "Tug operations with barge in tow",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are tug Sunrise. Call Europe VTS.",
@@ -452,6 +466,7 @@ export const aScenarios = [
   {
     id: "15",
     name: "VTS grants the ship permission to enter the bay",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -479,6 +494,7 @@ export const aScenarios = [
   {
     id: "16",
     name: "Traffic and anchoring information",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -507,6 +523,7 @@ export const aScenarios = [
   {
     id: "17",
     name: "Is the vessel AIS operational?",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -534,6 +551,7 @@ export const aScenarios = [
   {
     id: "18",
     name: "VTS requires ETA, cargo quantity and crew count",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -562,6 +580,7 @@ export const aScenarios = [
   {
     id: "19",
     name: "Asking for ship particulars and ETA",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -589,6 +608,7 @@ export const aScenarios = [
   {
     id: "20",
     name: "Informing VTS about dangerous cargo",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -616,6 +636,7 @@ export const aScenarios = [
   {
     id: "21",
     name: "Approaching port",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call VTS.",
@@ -689,6 +710,7 @@ export const aScenarios = [
   {
     id: "22",
     name: "Vessel at anchor, preparing to get underway",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -716,6 +738,7 @@ export const aScenarios = [
   {
     id: "23",
     name: "Entering VTS area, proceeding to anchor for bunkering",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -743,6 +766,7 @@ export const aScenarios = [
   {
     id: "24",
     name: "Sending the passage plan",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -769,6 +793,7 @@ export const aScenarios = [
   {
     id: "25",
     name: "Permission to start bunkering operations",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -796,6 +821,7 @@ export const aScenarios = [
   {
     id: "26",
     name: "Carriage of dangerous goods",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -824,6 +850,7 @@ export const aScenarios = [
   {
     id: "27",
     name: "Arrival of pilot and preparations for berthing",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -852,6 +879,7 @@ export const aScenarios = [
   {
     id: "28",
     name: "Pilot transfer arrangements",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -879,6 +907,7 @@ export const aScenarios = [
   {
     id: "29",
     name: "VTS conveys pilot boarding information",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -906,6 +935,7 @@ export const aScenarios = [
   {
     id: "30",
     name: "Tugboat report",
+    starter: "vessel",
     turns: [
       {
         vessel_instruction: "You are tug Sunrise. Call Europe VTS.",
@@ -930,10 +960,12 @@ export const aScenarios = [
     ],
   },
 ];
+
 export const bScenarios = [
   {
     id: "31",
     name: "Checking a reported spillage",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
@@ -969,6 +1001,7 @@ export const bScenarios = [
   {
     id: "32",
     name: "Vessel must reduce excessive speed",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
@@ -996,6 +1029,7 @@ export const bScenarios = [
   {
     id: "33",
     name: "Vessel navigating in a narrow waterway",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
@@ -1022,6 +1056,7 @@ export const bScenarios = [
   {
     id: "34",
     name: "Vessel adrift due to unstable weather forecast",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
@@ -1057,6 +1092,7 @@ export const bScenarios = [
   {
     id: "35",
     name: "Strange object in the fairway",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
@@ -1093,6 +1129,7 @@ export const bScenarios = [
   {
     id: "36",
     name: "Getting underway without having received clearance",
+    starter: "vts",
     turns: [
       {
         vessel_instruction:
@@ -1132,6 +1169,7 @@ export const bScenarios = [
   {
     id: "37",
     name: "Entering the TSS in a wrong way",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
@@ -1168,6 +1206,7 @@ export const bScenarios = [
   {
     id: "38",
     name: "Approaching harbour with reduced visibility",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
@@ -1203,6 +1242,7 @@ export const bScenarios = [
   {
     id: "39",
     name: "Vessel not under command",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -1240,6 +1280,7 @@ export const bScenarios = [
   {
     id: "40",
     name: "Drifting into territorial waters",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -1276,6 +1317,7 @@ export const bScenarios = [
   {
     id: "41",
     name: "Navigation in icy Arctic Navarea",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -1314,6 +1356,7 @@ export const bScenarios = [
   {
     id: "42",
     name: "Operating with an icebreaker while in transit",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
@@ -1342,6 +1385,7 @@ export const bScenarios = [
   {
     id: "43",
     name: "Improper securing of deck timber cargo",
+    starter: "vts",
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Answer VTS.",
