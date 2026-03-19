@@ -5,12 +5,13 @@ import VtsIcon from './vts.svg?react';
 import ScenarioList from '~/dashboard/scenarios';
 import { api } from '~/service/api';
 import type { DescriptionsResponse } from '../../../shared/scenarios/api';
-import type { ScenarioDescription } from '../../../shared/scenarios/model';
+import { UserRole, type ScenarioDescription } from '../../../shared/scenarios/model';
 import { Spinner } from '~/components/ui/spinner';
 import { useNavigate } from 'react-router';
+import { useUserRoleStore } from '~/store/state';
 
 export default function Dashboard() {
-  const [isVessel, setIsVessel] = useState(true);
+  const useUserRole = useUserRoleStore();
   const [aScenarios, setAScenarios] = useState<ScenarioDescription[]>([]);
   const [bScenarios, setBScenarios] = useState<ScenarioDescription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,22 +52,20 @@ export default function Dashboard() {
         </span>
         <div className="flex w-full flex-row items-center justify-center gap-x-4">
           <span
-            className={`flex w-[16vw] flex-1 items-center justify-end gap-x-2 ${isVessel === false ? 'text-blue-500' : 'text-zinc-500'}`}
+            className={`flex w-[16vw] flex-1 items-center justify-end gap-x-2 ${useUserRole.userRole === UserRole.Vessel ? 'text-blue-500' : 'text-zinc-500'}`}
           >
             <VesselIcon />
             Vessel
           </span>
 
           <Switch
-            checked={isVessel}
-            onClick={() => {
-              setIsVessel(!isVessel);
-            }}
+            checked={useUserRole.userRole === UserRole.VTS}
+            onClick={() => useUserRole.switchUseRole()}
             className="mt-1"
           />
 
           <span
-            className={`flex flex-1 items-center justify-start gap-x-2 ${isVessel === true ? 'text-green-500' : 'text-zinc-500'}`}
+            className={`flex flex-1 items-center justify-start gap-x-2 ${useUserRole.userRole === UserRole.VTS? 'text-green-500' : 'text-zinc-500'}`}
           >
             <VtsIcon />
             VTS operator
