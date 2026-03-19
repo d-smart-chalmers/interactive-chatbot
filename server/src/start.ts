@@ -8,7 +8,6 @@ import { ScenariosService } from "./service/scenarios";
 import { config as configDotEnv } from "dotenv";
 import { Scenario, Starter } from "./model/scenarios.interface";
 
-
 configDotEnv();
 
 export const app = express();

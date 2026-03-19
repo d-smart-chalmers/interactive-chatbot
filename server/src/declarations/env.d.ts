@@ -1,6 +1,6 @@
 declare namespace NodeJS {
-    interface ProcessEnv {
-        SESSION_SECRET: string;
-        CLIENT_URL: string;
-    }
+  interface ProcessEnv {
+    SESSION_SECRET: string;
+    CLIENT_URL: string;
+  }
 }

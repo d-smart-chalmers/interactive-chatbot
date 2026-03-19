@@ -5,7 +5,10 @@ import VtsIcon from './vts.svg?react';
 import ScenarioList from '~/dashboard/scenarios';
 import { api } from '~/service/api';
 import type { DescriptionsResponse } from '../../../shared/scenarios/api';
-import { UserRole, type ScenarioDescription } from '../../../shared/scenarios/model';
+import {
+  UserRole,
+  type ScenarioDescription,
+} from '../../../shared/scenarios/model';
 import { Spinner } from '~/components/ui/spinner';
 import { useNavigate } from 'react-router';
 import { useUserRoleStore } from '~/store/state';
@@ -65,7 +68,7 @@ export default function Dashboard() {
           />
 
           <span
-            className={`flex flex-1 items-center justify-start gap-x-2 ${useUserRole.userRole === UserRole.VTS? 'text-green-500' : 'text-zinc-500'}`}
+            className={`flex flex-1 items-center justify-start gap-x-2 ${useUserRole.userRole === UserRole.VTS ? 'text-green-500' : 'text-zinc-500'}`}
           >
             <VtsIcon />
             VTS operator
