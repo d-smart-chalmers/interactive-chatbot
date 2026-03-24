@@ -17,8 +17,9 @@ export interface ScenarioChatHistory{
     intruction: string,
 }
 export interface BaseTurn{
+    id: number,
     message: string,
-    timestamp: Date,
+    timestamp: number,
     type: TurnType,
 
 }

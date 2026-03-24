@@ -54,4 +54,16 @@ export class ScenariosService {
 
     return { description, history };
   }
+
+  submitTurn(userId: string, scenarioId: string, turn: string, timestamp: number) {
+    const sManager = this.activeScenarios.get(userId);
+    if (!sManager) {
+      throw new HttpError("No active scenario found", 404);
+    }
+    if (sManager.getId() !== scenarioId) {
+      throw new HttpError("Scenario not found", 404);
+    }
+    const {userTurn, chatbotTurn, instruction} = sManager.submitTurn(turn, timestamp);
+    return {userTurn, chatbotTurn, instruction};
+  }
 }

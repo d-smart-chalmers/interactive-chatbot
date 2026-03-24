@@ -14,6 +14,7 @@ api.interceptors.response.use(
     toast.error(message, {
       position: 'top-right',
     });
-    return Promise.reject(error);
+
+    return error; //Promise.reject(error);
   },
 );

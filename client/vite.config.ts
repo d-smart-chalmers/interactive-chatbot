@@ -16,7 +16,7 @@ export default defineConfig({
     babelPlugin({
       filter: /^(?!.*node_modules).*\.[jt]sx?$/,
       babelConfig: {
-        presets: ['@babel/preset-typescript'], // if you use TypeScript
+        presets: ['@babel/preset-typescript'],
         plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
       },
     }),

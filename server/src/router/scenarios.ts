@@ -5,6 +5,8 @@ import {
   DescriptionsResponse,
   StartScenarioRequest,
   StartScenarioResponse,
+  SubmitAnswerRequest,
+  SubmitAnswerResponse,
 } from "@shared/scenarios/api";
 import { requireUser } from "@src/middleware/requireUser";
 
@@ -40,7 +42,26 @@ scenariosRouter.post(
         scenarioId,
         userRole,
       );
+      console.log("fetching scenario ");
       res.status(200).send({ description, history });
+    },
+  ),
+);
+
+scenariosRouter.post(
+  "/submit-answer/:id",
+  requireUser,
+  asyncHandler(
+    (
+      req: Request<{ id: string }, never, SubmitAnswerRequest>,
+      res: Response<SubmitAnswerResponse>,
+    ) => {
+      const scenarioId = req.params.id;
+      const userId = req.session.userId!;
+      const { answer, timestamp } = req.body;
+      const { userTurn, chatbotTurn, instruction } =
+        scenariosService.submitTurn(userId, scenarioId, answer, timestamp);
+      res.status(200).send({ userTurn, chatbotTurn, instruction });
     },
   ),
 );
