@@ -7,74 +7,60 @@ export const aScenarios = [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
         vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
         vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+        vts_message: "MV Sunrise, this is Europe VTS. Over.",
       },
       {
-        vessel_instruction:
-          "Due to strong winds in Sandybay Strait, ask to increase speed from 10 knots.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. QUESTION. Do we have permission to increase speed from one zero knots due to strong winds in Sandybay Strait? Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is the current wind speed and direction? Over.",
-        vts_instruction:
-          "Ask about current wind speed and direction. Use a message marker.",
+        vessel_instruction: "Due to strong winds in Sandybay Strait, ask to increase speed from 10 knots.",
+        vessel_message: "Europe VTS, this is MV Sunrise. QUESTION. Do we have permission to increase speed from one zero knots due to strong winds in Sandybay Strait? Over.",
+        vts_instruction: "Ask about current wind speed and direction.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is the current wind speed and direction? Over.",
       },
       {
         vessel_instruction: "Wind speed: 35 knots. Direction: North East.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Wind speed is three five knots and north east direction. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. Are there any fishing vessels in your vicinity? Over.",
-        vts_instruction:
-          "Ask if there are any fishing vessels nearby. Use a message marker.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Wind speed is three five knots and north east direction. Over.",
+        vts_instruction: "Ask if there are any fishing vessels nearby.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Are there any fishing vessels in your vicinity? Over.",
       },
       {
         vessel_instruction: "There are no fishing vessels nearby.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. No fishing vessels in the vicinity. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to increase speed. Out.",
-        vts_instruction:
-          "Grant permission to increase speed and close the call using 'Out'.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. No fishing vessels in the vicinity. Over.",
+        vts_instruction: "Grant permission to increase speed.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to increase speed. Out.",
       },
+      {
+        vessel_instruction: "Acknowledge the permission and close the communication.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Permission to increase speed. Out.",
+      }
     ],
   },
   {
     id: "2",
     name: "Providing and reading back anchoring position coordinates",
-    starter: "vessel",
+    starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
-      },
-      {
-        vessel_instruction: "Acknowledge the call.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. ADVICE. Anchor at Bravo three. Over.",
-        vts_instruction:
-          "Advise Sunrise to anchor in position B3. Use a message marker.",
       },
       {
-        vessel_instruction: "Ask for the coordinates of position Bravo 3.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. QUESTION. What is the position of Bravo three? Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. The position is four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Read back. Over.",
-        vts_instruction:
-          "Answer with coordinates (45 34.30 N, 013 41.75 E). Use decimal and separate digits. Ask for read back.",
+        vts_instruction: "Advise MV Sunrise to anchor at position Bravo three.",
+        vts_message: "MV Sunrise, this is Europe VTS. ADVICE. Anchor at Bravo three. Over.",
+        vessel_instruction: "Ask for the specific coordinates of Bravo three.",
+        vessel_message: "Europe VTS, this is MV Sunrise. QUESTION. What is the position of Bravo three? Over.",
       },
       {
-        vessel_instruction: "Read back the coordinates provided.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. Bravo three is position four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Over.",
+        vts_instruction: "Provide the coordinates (45° 34.30' N, 013° 41.75' E) and ask for a readback.",
+        vts_message: "MV Sunrise, this is Europe VTS. ANSWER. The position of Bravo three is four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Read back. Over.",
+        vessel_instruction: "Read back the coordinates provided by VTS.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Bravo three is in position four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Over.",
+      },
+      {
+        vts_instruction: "Confirm the readback is correct and close the call.",
         vts_message: "MV Sunrise, this is Europe VTS. Correct. Out.",
-        vts_instruction: "Confirm the read back is correct and close the call.",
-      },
+      }
     ],
   },
   {
@@ -83,37 +69,27 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. We are entering the area. Request pilot. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge and wait for questions.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is your call sign, flag, draft and destination berth? Over.",
-        vts_instruction:
-          "Ask for ship particulars: call sign, flag, draft, and destination berth.",
+        vessel_instruction: "State you are entering the area bound for Atlantis and request a pilot.",
+        vessel_message: "Europe VTS, this is MV Sunrise. We are entering the VTS area bound for Atlantis. Request pilot. Over.",
+        vts_instruction: "Ask for the vessel's call sign, flag, draft, and destination berth.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is your call sign, flag, draft and destination berth? Over.",
       },
       {
-        vessel_instruction:
-          "Provide particulars: V7RU3, Greek, 8.5m, Atlantis pier 3.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. Call sign Victor seven Romeo Uniform three. Greek flag. Draft eight decimal five metres. Destination Atlantis pier three. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. ADVICE. Proceed to anchorage area Alpha and wait for pilot. Over.",
-        vts_instruction:
-          "Advise Sunrise to proceed to anchorage area Alpha and wait for pilot there.",
+        vessel_instruction: "Provide particulars: Call sign V7RU3, Greek flag, draft 8.5m, Atlantis Pier 3.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. My call sign is Victor seven Romeo Uniform three. Greek flag. Draft eight decimal five metres. Destination berth is Atlantis pier three. Over.",
+        vts_instruction: "Advise the vessel to proceed to anchorage area Alpha and wait for the pilot.",
+        vts_message: "MV Sunrise, this is Europe VTS. ADVICE. Proceed to anchorage area Alpha and wait for pilot. Over.",
       },
       {
-        vessel_instruction: "Acknowledge the advice.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. We will proceed to anchorage Alpha and wait for pilot. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge the instruction and close the call.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. We will proceed to anchorage area Alpha and wait for pilot. Out.",
+      }
     ],
   },
   {
@@ -122,27 +98,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. We are ready to depart. Request clearance. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge and wait for instructions.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. You have permission to depart. Stand by on VHF channels one six and one four. Over.",
-        vts_instruction:
-          "Grant permission to depart. Advise to maintain VHF watch on channels 16 and 14.",
+        vessel_instruction: "State you are ready to depart and request clearance.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. We are ready to depart. Request clearance for departure. Over.",
+        vts_instruction: "Grant permission to depart and tell them to watch VHF channels 16 and 14.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to depart. Stand by on VHF channels one six and one four. Over.",
       },
       {
-        vessel_instruction: "Confirm permission and watch channels.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Permission to depart. Standing by on channels one six and one four. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge the clearance and frequencies, then close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Permission to depart. Standing by on channels one six and one four. Out.",
+      }
     ],
   },
   {
@@ -151,35 +121,27 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. We are entering your reporting zone. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Provide position: 45 30 N, 013 35 E.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. My position is four five degrees three zero minutes North, zero one three degrees three five minutes East. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is your position? Over.",
-        vts_instruction: "Acknowledge and ask for their position.",
+        vessel_instruction: "Report that you are entering the reporting zone.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. We are entering your reporting zone. Over.",
+        vts_instruction: "Acknowledge and ask for position.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is your position? Over.",
       },
       {
-        vessel_instruction: "Provide course 270 and speed 12 knots.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. Course is two seven zero degrees, speed one two knots. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is your course and speed? Over.",
-        vts_instruction: "Ask for their course and speed.",
+        vessel_instruction: "Provide position: 45° 30' N, 013° 35' E.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. My position is four five degrees three zero minutes North, zero one three degrees three five minutes East. Over.",
+        vts_instruction: "Ask for course and speed.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is your course and speed? Over.",
       },
       {
-        vessel_instruction: "Acknowledge the final contact.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Course two seven zero, speed one two knots. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Out.",
-        vts_instruction: "Acknowledge and close the call.",
-      },
+        vessel_instruction: "Provide course (270°) and speed (12 knots), then close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Course two seven zero, speed one two knots. Out.",
+      }
     ],
   },
   {
@@ -188,38 +150,27 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. We are entering from the west in transit to pilot station. Boarding time one three zero zero. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge update.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. You are entering VTS area, in transit, to pilot station. No traffic information for you. Over.",
-        vts_instruction:
-          "Read back the received information. Tell Sunrise there is no traffic information.",
+        vessel_instruction: "Report entering from the west, in transit to the pilot station for 13:00.",
+        vessel_message: "Europe VTS, this is MV Sunrise. We are entering your VTS area from the west. In transit, proceeding to pilot station. Pilot boarding time one three zero zero. Over.",
+        vts_instruction: "Acknowledge and inform them there is no traffic.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. INFORMATION. No traffic information for you. Over.",
       },
       {
-        vessel_instruction: "Ask if pilot will board from shoreside.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. QUESTION. Will pilot board from shoreside? Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. Pilot will board from shoreside. Call pilot station on channel one three, one hour prior to ETA. Over.",
-        vts_instruction:
-          "Confirm pilot boards from shoreside. Tell them to call pilot station on Ch 13 one hour prior to ETA.",
+        vessel_instruction: "Ask if the pilot will board from the shoreside.",
+        vessel_message: "Europe VTS, this is MV Sunrise. QUESTION. Will pilot board from shoreside? Over.",
+        vts_instruction: "Confirm shoreside boarding and instruct to call Ch 13 one hour before ETA.",
+        vts_message: "MV Sunrise, this is Europe VTS. ANSWER. Pilot will board from shoreside. INSTRUCTION. Call pilot station on channel one three, one hour prior to ETA. Over.",
       },
       {
-        vessel_instruction: "Acknowledge arrangements.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. We will call pilot station one hour prior to ETA. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. Stand by on VHF channels one four and one six. Out.",
-        vts_instruction:
-          "Inform Sunrise which channels to stand by on: 14, 16. Close the call.",
-      },
+        vessel_instruction: "Acknowledge instruction, confirm watch on Ch 14/16, and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. We will call pilot station one hour prior. Stand by on one four and one six. Out.",
+      }
     ],
   },
   {
@@ -228,29 +179,27 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Request permission to drift in position. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "State reason: engine trouble.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. We have engine trouble. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is the reason for drifting? Over.",
-        vts_instruction: "Ask for the reason for drifting.",
+        vessel_instruction: "Request permission to drift.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Request permission to drift in position. Over.",
+        vts_instruction: "Ask for the reason.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is the reason for drifting? Over.",
       },
       {
-        vessel_instruction: "Acknowledge the update requirement.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. We will call back in one hour. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. Permission granted to drift. REQUEST. Call back in one hour. Out.",
-        vts_instruction:
-          "Grant permission to drift. Request update in one hour.",
+        vessel_instruction: "State you have engine trouble.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. We have engine trouble. Over.",
+        vts_instruction: "Grant permission and request update in one hour.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Permission granted to drift. REQUEST. Call back in one hour. Over.",
       },
+      {
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. We will call back in one hour. Out.",
+      }
     ],
   },
   {
@@ -259,29 +208,27 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are tug Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is tug Sunrise. INFORMATION. We are outbound to escort MV Atlantic to berth five. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer the tug.",
+        vessel_instruction: "You are Tug Sunrise. Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is tug Sunrise. Over.",
+        vts_instruction: "Answer Tug Sunrise.",
+        vts_message: "Tug Sunrise, this is Europe VTS. Over.",
       },
       {
-        vessel_instruction: "Provide ETA to meeting point: 14.30 local.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ETA to meeting point is one four three zero local time. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is your ETA to the meeting point? Over.",
-        vts_instruction: "Acknowledge and ask for ETA to meeting point.",
+        vessel_instruction: "Report outbound to escort MV Atlantic to berth 5.",
+        vessel_message: "Europe VTS, this is tug Sunrise. INFORMATION. We are outbound to escort MV Atlantic to berth five. Over.",
+        vts_instruction: "Ask for ETA to meeting point.",
+        vts_message: "Tug Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is your ETA to the meeting point? Over.",
       },
       {
-        vessel_instruction: "Acknowledge traffic information.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. We will look out for MV Pacific. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Traffic information. MV Pacific is outbound. Out.",
-        vts_instruction:
-          "Acknowledge and provide traffic information: MV Pacific is outbound.",
+        vessel_instruction: "Provide ETA: 14:30 local time.",
+        vessel_message: "Europe VTS, this is tug Sunrise. ANSWER. ETA to meeting point is one four three zero local time. Over.",
+        vts_instruction: "Inform about outbound vessel MV Pacific.",
+        vts_message: "Tug Sunrise, this is Europe VTS. INFORMATION. MV Pacific is outbound. Over.",
       },
+      {
+        vessel_instruction: "Acknowledge traffic and close.",
+        vessel_message: "Europe VTS, this is tug Sunrise. RECEIVED. Looking out for MV Pacific. Out.",
+      }
     ],
   },
   {
@@ -290,29 +237,23 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. We are entering VTS area in transit to Hamburg. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Provide ETA: 18.00 local.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ETA to exit point is one eight zero zero local time. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is your ETA to exit point? Over.",
-        vts_instruction: "Acknowledge. Ask for ETA to exit point.",
+        vessel_instruction: "Report entering in transit to Hamburg.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. We are entering VTS area in transit to Hamburg. Over.",
+        vts_instruction: "Ask for ETA to exit point.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is your ETA to exit point? Over.",
       },
       {
-        vessel_instruction: "Acknowledge and close call.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Stand by on channel one six. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Stand by on channel one six. Out.",
-        vts_instruction:
-          "Inform vessel to maintain watch on channel 16. Close the call.",
-      },
+        vessel_instruction: "Provide ETA: 18:00 local time.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. ETA to exit point is one eight zero zero local time. Over.",
+        vts_instruction: "Instruct to watch Ch 16 and close.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Stand by on channel one six. Out.",
+      }
     ],
   },
   {
@@ -321,19 +262,17 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. We are leaving the traffic separation scheme. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge and end communication.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Have a safe voyage. Out.",
-        vts_instruction: "Acknowledge and wish them a safe voyage.",
-      },
+        vessel_instruction: "Report you are leaving the Traffic Separation Scheme.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. We are leaving the traffic separation scheme. Over.",
+        vts_instruction: "Acknowledge and wish them safe voyage.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Have a safe voyage. Out.",
+      }
     ],
   },
   {
@@ -342,66 +281,50 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Anchor is up from X1, underway to Pilot Station one. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge the order to wait. Ask for wait time.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. We are underway but keeping position. QUESTION. How long will we wait? Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. Your anchor is aweigh. INFORMATION. Wait in position, do not get underway. I repeat. Wait in position for instructions. Over.",
-        vts_instruction:
-          "Confirm info. Tell Sunrise not to get underway. Order to wait in position. Repeat message.",
+        vessel_instruction: "Report anchor up and proceeding to Pilot Station 1.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. My anchor is up from X-ray one, and we are underway, proceeding to Pilot Station one. Over.",
+        vts_instruction: "Instruct to wait in position and not to get underway.",
+        vts_message: "MV Sunrise, this is Europe VTS. INSTRUCTION. Wait in position, do not get underway. I repeat. Wait in position until further instructions. Over.",
       },
       {
-        vessel_instruction: "Acknowledge pilot boarding time.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Pilot boarding time one one zero zero. Is that correct? Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. The pilot boarding time is one one zero zero local time. You will soon receive more information. Over.",
-        vts_instruction:
-          "Answer that pilot boarding is at 11.00 local. Mention more info coming. Separate digits.",
+        vessel_instruction: "Acknowledge wait and ask for delay duration.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. QUESTION. How long will we wait? Over.",
+        vts_instruction: "Inform that pilot boarding is at 11:00.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. The pilot boarding time is one one zero zero local time. Over.",
       },
       {
-        vessel_instruction: "Confirm and close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. Yes, that is correct. Out.",
-        vts_instruction: "Answer in the affirmative and end call.",
-      },
+        vessel_instruction: "Confirm boarding time and wait in position, then close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Pilot boarding time one one zero zero. We wait in position. Out.",
+      }
     ],
   },
   {
     id: "12",
-    name: "Vessel entering VTS area bound for berth place",
+    name: "Vessel entering VTS area bound for berth place and asking for information",
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Bound for Atlantis berth three. Request info on berthing. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge pilot and tug info.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Pilot boarding at one zero zero zero. Tug assistance available. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Pilot will board at pilot station at one zero zero zero. Tug assistance is available. Over.",
-        vts_instruction:
-          "Provide info: pilot boards at 10.00. Tug assistance available.",
+        vessel_instruction: "State you are bound for Atlantis berth 3 and request berthing info.",
+        vessel_message: "Europe VTS, this is MV Sunrise. We are entering VTS area bound for Atlantis berth three. Request information on berthing. Over.",
+        vts_instruction: "Inform pilot boards at 10:00 and tug is available.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Pilot will board at one zero zero zero. Tug assistance is available. Over.",
       },
       {
-        vessel_instruction: "Close communication.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Correct. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Pilot at one zero zero zero. Tug available. Out.",
+      }
     ],
   },
   {
@@ -410,27 +333,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Mandatory report. Position 45 30 N, 013 40 E. Course 180, speed 14. Dest Rotterdam. ETA 06.00. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Confirm accuracy.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. That is correct. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Mandatory report received. Position four five degrees three zero minutes North, zero one three degrees four zero minutes East. Course one eight zero, speed one four knots. Destination Rotterdam. ETA zero six zero zero tomorrow. Over.",
-        vts_instruction:
-          "Acknowledge the report and confirm the information by reading it back.",
+        vessel_instruction: "Provide mandatory report: Pos 45N 013E, Course 180, Speed 14, Dest Rotterdam, ETA 06:00.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Making mandatory report. Position four five degrees three zero minutes North, zero one three degrees four zero minutes East. Course one eight zero, speed one four knots. Destination Rotterdam. ETA zero six zero zero tomorrow. Over.",
+        vts_instruction: "Read back the report.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Position four five degrees three zero minutes North, zero one three degrees four zero minutes East. Course one eight zero, speed one four knots. Destination Rotterdam. ETA zero six zero zero. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Confirm and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Correct. Out.",
+      }
     ],
   },
   {
@@ -439,28 +356,23 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are tug Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is tug Sunrise with barge in tow. Entering VTS area. Length of tow two hundred metres. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer the tug.",
+        vessel_instruction: "You are Tug Sunrise. Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is tug Sunrise. Over.",
+        vts_instruction: "Answer Tug Sunrise.",
+        vts_message: "Tug Sunrise, this is Europe VTS. Over.",
       },
       {
-        vessel_instruction: "Provide destination: Atlantis port, berth 7.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. Destination is Atlantis port, berth seven. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Length of tow two hundred metres. QUESTION. What is your destination? Over.",
-        vts_instruction: "Acknowledge and ask for destination.",
+        vessel_instruction: "Report entering with 200m tow.",
+        vessel_message: "Europe VTS, this is tug Sunrise with barge in tow. INFORMATION. We are entering VTS area. Length of tow two hundred metres. Over.",
+        vts_instruction: "Ask for destination.",
+        vts_message: "Tug Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is your destination? Over.",
       },
       {
-        vessel_instruction: "Acknowledge no traffic.",
-        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. No traffic information for you. Out.",
-        vts_instruction:
-          "Provide traffic information (none) and close the call.",
-      },
+        vessel_instruction: "State destination is Atlantis berth 7.",
+        vessel_message: "Europe VTS, this is tug Sunrise. ANSWER. Destination is Atlantis port, berth seven. Over.",
+        vts_instruction: "Inform no traffic and close.",
+        vts_message: "Tug Sunrise, this is Europe VTS. RECEIVED. INFORMATION. No traffic information for you. Out.",
+      }
     ],
   },
   {
@@ -469,26 +381,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Request permission to enter the bay. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge permission.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Permission to enter the bay. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. You have permission to enter the bay. Over.",
-        vts_instruction: "Grant permission to enter the bay.",
+        vessel_instruction: "Request permission to enter the bay.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Request permission to enter the bay. Over.",
+        vts_instruction: "Grant permission.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to enter the bay. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Permission to enter. Out.",
+      }
     ],
   },
   {
@@ -497,27 +404,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Request anchoring info and traffic update. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge Alpha 1 and outbound traffic.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Alpha one and one vessel outbound. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Anchoring area is Alpha one. Traffic information. One vessel outbound. Over.",
-        vts_instruction:
-          "Provide anchoring area Alpha 1 and traffic: one vessel outbound.",
+        vessel_instruction: "Request anchoring info and traffic update.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Request anchoring information and traffic update. Over.",
+        vts_instruction: "Assign Alpha 1 and report one vessel outbound.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Anchoring area is Alpha one. One vessel outbound. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Alpha one and one vessel outbound. Out.",
+      }
     ],
   },
   {
@@ -526,55 +427,44 @@ export const aScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction:
-          "You are Europe VTS. Call Sunrise to verify AIS status.",
       },
       {
+        vts_instruction: "Ask if AIS is operational.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Is your AIS operational? Over.",
         vessel_instruction: "Confirm AIS is operational.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Yes, AIS is operational. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. Is your AIS operational? Over.",
-        vts_instruction: "Ask if their AIS is operational.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Yes, AIS is operational. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
+        vts_instruction: "Acknowledge and close.",
         vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Out.",
-        vts_instruction: "Close the call.",
-      },
+      }
     ],
   },
   {
     id: "18",
-    name: "VTS requires ETA, cargo quantity and crew count",
+    name: "VTS requires ETA, cargo quantity information and number of crew",
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction:
-          "You are Europe VTS. Call Sunrise to request information.",
       },
       {
-        vessel_instruction: "Provide: ETA 14.00, 5000t cargo, 20 crew.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. ETA one four zero zero. Cargo five thousand tons. Crew two zero persons. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is your ETA, cargo quantity, and number of crew? Over.",
-        vts_instruction: "Ask for ETA, cargo quantity, and number of crew.",
+        vts_instruction: "Ask for ETA, cargo, and crew count.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is your ETA, cargo quantity, and number of crew? Over.",
+        vessel_instruction: "Report: ETA 14:00, 5000t cargo, 20 crew.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. ETA one four zero zero, cargo five thousand tons, crew two zero persons. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. ETA one four zero zero. Cargo five thousand tons. Crew two zero persons. Out.",
-        vts_instruction: "Acknowledge and close the call.",
-      },
+        vts_instruction: "Acknowledge and close.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Out.",
+      }
     ],
   },
   {
@@ -583,54 +473,44 @@ export const aScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call MV Sunrise.",
       },
       {
-        vessel_instruction: "Provide name, V7RU3, Malta, 16.00.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. Ship name Sunrise, call sign Victor seven Romeo Uniform three, Malta flag, ETA one six zero zero. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is your name, call sign, flag, and ETA? Over.",
-        vts_instruction:
-          "Ask for ship particulars: name, call sign, flag, and ETA.",
+        vts_instruction: "Ask for name, call sign, flag, and ETA.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is your name, call sign, flag, and ETA? Over.",
+        vessel_instruction: "Provide name (Sunrise), call sign (V7RU3), flag (Malta), and ETA (16:00).",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Ship name Sunrise, call sign Victor seven Romeo Uniform three, Malta flag, ETA one six zero zero. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
+        vts_instruction: "Acknowledge and close.",
         vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Out.",
-        vts_instruction: "Acknowledge and close the call.",
-      },
+      }
     ],
   },
   {
     id: "20",
-    name: "Informing VTS about dangerous cargo",
+    name: "Informing VTS about dangerous cargo type and quantity",
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. Carrying dangerous cargo, Class three, quantity five hundred tons. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Confirm info.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. That is correct. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Dangerous cargo Class three, quantity five hundred tons. Over.",
-        vts_instruction: "Acknowledge the dangerous cargo information.",
+        vessel_instruction: "Report 500 tons of Class 3 dangerous cargo.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. We are carrying dangerous cargo, Class three, quantity five hundred tons. Over.",
+        vts_instruction: "Acknowledge report.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. INFORMATION. Dangerous cargo Class three, five hundred tons. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Confirm and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Correct. Out.",
+      }
     ],
   },
   {
@@ -639,72 +519,41 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. I am about to pass reporting point. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer Sunrise entering sector.",
       },
       {
-        vessel_instruction: "State cargo: MTBE.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. My cargo on board is MTBE. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is your cargo on board? Over.",
-        vts_instruction:
-          "Ask Sunrise about the type of cargo on board. Use marker.",
+        vessel_instruction: "Report passing reporting point and state cargo is MTBE.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. Passing reporting point. Cargo is MTBE. Over.",
+        vts_instruction: "Ask for cargo quantity.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is the quantity of cargo on board? Over.",
       },
       {
         vessel_instruction: "State quantity: 4990.052t, Class 3.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Quantity is four nine nine zero decimal zero five two metric tons. Class three cargo. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Your cargo is MTBE. QUESTION. What is the quantity of cargo on board? Over.",
-        vts_instruction:
-          "Acknowledge cargo type. Ask for quantity. Use marker.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Quantity four nine nine zero decimal zero five two metric tons. Class three. Over.",
+        vts_instruction: "Read back quantity and ask for arrival draft.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Four nine nine zero decimal zero five two tons. QUESTION. What is your draft on arrival? Over.",
       },
       {
-        vessel_instruction: "State arrival draft: 7.05m.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Draft on arrival is seven decimal zero five metres. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Four nine nine zero decimal zero five two tons. QUESTION. What is your draft on arrival? Over.",
-        vts_instruction:
-          "Acknowledge quantity (separate digits). Ask for arrival draft.",
+        vessel_instruction: "State draft: 7.05m.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Draft seven decimal zero five metres. Over.",
+        vts_instruction: "Ask for bunkers (fuel, diesel, lube oil) on board.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is the quantity of bunkers? Fuel oil, diesel oil, lube oil? Over.",
       },
       {
-        vessel_instruction: "State bunkers: DO 90.81, LO 8005, FO 135.16.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Diesel oil quantity nine zero decimal eight one, lube oil quantity eight zero zero five litres, and fuel oil quantity one three five decimal one six tons. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is the quantity of bunkers on arrival? Fuel oil, diesel oil, lube oil on board? Over.",
-        vts_instruction: "Ask for bunker quantities on arrival.",
+        vessel_instruction: "State: Diesel 90.81, Lube 8005L, Fuel 135.16t.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Diesel nine zero decimal eight one, lube eight zero zero five litres, fuel one three five decimal one six tons. Over.",
+        vts_instruction: "Ask for number of persons on board.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is the number of persons on board? Over.",
       },
       {
-        vessel_instruction: "State POB: 14.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Total number of persons on board is one four, including Master. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. What is the number of persons on board? Over.",
-        vts_instruction: "Acknowledge and ask for total POB.",
-      },
-      {
-        vessel_instruction: "State ETA Sandybay: 05.00.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. ETA to Sandybay Pilot is zero five zero zero hours. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is your ETA to Sandybay? Over.",
-        vts_instruction: "Ask for ETA to Sandybay. Use marker.",
-      },
-      {
-        vessel_instruction: "Acknowledge Sandybay Traffic contact info.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Contact Sandybay Traffic zero nine, stand by one four and one six. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. ADVICE. Contact Sandybay Traffic one and a half hours before arrival for berthing, on channel zero nine. Stand by one four, one six. Out.",
-        vts_instruction:
-          "Advise contact 1.5hrs prior arrival on Ch 09. Stand by 14/16. Separate digits. Out.",
-      },
+        vessel_instruction: "State 14 persons and ETA 05:00.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. One four persons on board. ETA zero five zero zero hours. Over.",
+        vts_instruction: "Advise contact on Ch 09 1.5h before arrival and close.",
+        vts_message: "MV Sunrise, this is Europe VTS. ADVICE. Contact Sandybay Traffic one and a half hours before arrival on channel zero nine. Out.",
+      }
     ],
   },
   {
@@ -713,54 +562,44 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. At anchor, preparing to get underway. Request permission. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge permission.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Permission to get underway. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. You have permission to get underway. Over.",
-        vts_instruction: "Grant permission to get underway.",
+        vessel_instruction: "Report at anchor and request permission to get underway.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. At anchor, preparing to get underway. Request permission. Over.",
+        vts_instruction: "Grant permission.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to get underway. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Permission to get underway. Out.",
+      }
     ],
   },
   {
     id: "23",
-    name: "Entering VTS area, proceeding to anchor for bunkering",
+    name: "Entering the VTS area, underway to anchor for bunkering",
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Entering area, proceeding to anchorage for bunkering. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge Bravo 2 assignment.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Proceeding to anchorage Bravo two. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Proceed to anchorage area Bravo two for bunkering. Over.",
-        vts_instruction: "Acknowledge and assign anchorage area Bravo 2.",
+        vessel_instruction: "Report entering area to anchor for bunkering.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Entering VTS area, proceeding to anchorage for bunkering. Over.",
+        vts_instruction: "Assign anchorage Bravo 2.",
+        vts_message: "MV Sunrise, this is Europe VTS. INSTRUCTION. Proceed to anchorage area Bravo two for bunkering. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Bravo two. Out.",
+      }
     ],
   },
   {
@@ -769,25 +608,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. I have sent the passage plan via email. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge receipt.",
-        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Your passage plan has been received. Over.",
-        vts_instruction: "Acknowledge receipt of the passage plan.",
+        vessel_instruction: "Inform that passage plan was emailed.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. I have sent the passage plan via email. Over.",
+        vts_instruction: "Confirm receipt.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Your passage plan has been RECEIVED. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Out.",
+      }
     ],
   },
   {
@@ -796,26 +631,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. Request permission to start bunkering operations. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge permission.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Permission to start bunkering. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. You have permission to start bunkering operations. Over.",
-        vts_instruction: "Grant permission to start bunkering.",
+        vessel_instruction: "Request permission to start bunkering.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Request permission to start bunkering operations. Over.",
+        vts_instruction: "Grant permission.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to start bunkering. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Out.",
+      }
     ],
   },
   {
@@ -824,27 +654,21 @@ export const aScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction:
-          "You are Europe VTS. Call Sunrise to inquire about dangerous goods.",
       },
       {
-        vessel_instruction: "State: Class 2, 100 tons.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Yes, we are carrying Class two dangerous goods, quantity one hundred tons. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. Are you carrying any dangerous goods? Over.",
-        vts_instruction: "Ask if they are carrying any dangerous goods.",
+        vts_instruction: "Ask if carrying dangerous goods.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Are you carrying any dangerous goods? Over.",
+        vessel_instruction: "Confirm Class 2, 100 tons.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Yes, Class two dangerous goods, one hundred tons. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Class two dangerous goods, one hundred tons. Out.",
-        vts_instruction: "Acknowledge and close the call.",
-      },
+        vts_instruction: "Acknowledge and close.",
+        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Out.",
+      }
     ],
   },
   {
@@ -853,27 +677,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. INFORMATION. Pilot on board. Preparations complete. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge permission.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Proceeding to berth. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. You have permission to proceed to berth. Over.",
-        vts_instruction:
-          "Acknowledge and grant permission to proceed to berth.",
+        vessel_instruction: "Report pilot on board and berthing preps complete.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. Pilot on board. Preparations for berthing complete. Over.",
+        vts_instruction: "Grant permission to proceed to berth.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to proceed to berth. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Out.",
+      }
     ],
   },
   {
@@ -882,26 +700,21 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is MV Sunrise. QUESTION. What are the pilot transfer arrangements? Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge arrangements.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Pilot ladder starboard, two metres above water. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Pilot ladder on starboard side, two metres above water. Over.",
-        vts_instruction: "Provide info: ladder on starboard, 2m above water.",
+        vessel_instruction: "Ask for pilot transfer arrangements.",
+        vessel_message: "Europe VTS, this is MV Sunrise. QUESTION. What are the pilot transfer arrangements? Over.",
+        vts_instruction: "State ladder on starboard, 2m above water.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Pilot ladder on starboard side, two metres above water. Over.",
       },
       {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Correct. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Starboard side, two metres. Out.",
+      }
     ],
   },
   {
@@ -910,26 +723,17 @@ export const aScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction:
-          "You are Europe VTS. Call Sunrise to provide boarding info.",
       },
       {
-        vessel_instruction: "Acknowledge: 09.30, Alpha.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Pilot boarding at zero nine three zero at station Alpha. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Pilot boarding time zero nine three zero at pilot station Alpha. Over.",
-        vts_instruction: "Provide boarding info: 09.30 at pilot station Alpha.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Correct. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "State pilot boards at 09:30 at station Alpha.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Pilot boarding time zero nine three zero at station Alpha. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Station Alpha at zero nine three zero. Out.",
+      }
     ],
   },
   {
@@ -938,27 +742,19 @@ export const aScenarios = [
     starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are tug Sunrise. Call Europe VTS.",
-        vessel_message:
-          "Europe VTS, Europe VTS. This is tug Sunrise. REPORT. Towing operation completed successfully. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Answer the tug.",
+        vessel_instruction: "You are Tug Sunrise. Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is tug Sunrise. Over.",
+        vts_instruction: "Answer Tug Sunrise.",
+        vts_message: "Tug Sunrise, this is Europe VTS. Over.",
       },
       {
-        vessel_instruction: "Acknowledge end of call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Received your report. Towing operation completed. Over.",
-        vts_instruction: "Acknowledge the report.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vessel_instruction: "Report towing is complete.",
+        vessel_message: "Europe VTS, this is tug Sunrise. REPORT. Towing operation completed successfully. Over.",
+        vts_instruction: "Acknowledge and close.",
+        vts_message: "Tug Sunrise, this is Europe VTS. RECEIVED report. Out.",
+      }
     ],
-  },
+  }
 ];
 
 export const bScenarios = [
@@ -968,34 +764,23 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call MV Sunrise.",
       },
       {
-        vessel_instruction: "Ask if spillage is at the bow section.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. QUESTION. Is the reported spillage at the bow section? Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. REQUEST. Check reported spillage alongside your vessel. Over.",
-        vts_instruction:
-          "Ask Sunrise to check a reported spillage alongside their vessel. Use marker.",
+        vts_instruction: "Request MV Sunrise check for a spill alongside vessel.",
+        vts_message: "MV Sunrise, this is Europe VTS. REQUEST. Check reported spillage alongside your vessel. Over.",
+        vessel_instruction: "Ask if spill is at bow.",
+        vessel_message: "Europe VTS, this is MV Sunrise. QUESTION. Is the reported spillage at the bow section? Over.",
       },
       {
-        vessel_instruction: "Confirm you will check and report.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. I will check the spillage and report. Stand by. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. ANSWER. Yes, the reported spillage is at the bow section. Over.",
-        vts_instruction: "Answer the question in the affirmative.",
-      },
-      {
-        vessel_instruction: "Close communication.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. I will stand by. Out.",
-        vts_instruction: "Confirm standing by and end call.",
-      },
+        vts_instruction: "Confirm spill is at bow.",
+        vts_message: "MV Sunrise, this is Europe VTS. ANSWER. Yes, the reported spillage is at the bow section. Over.",
+        vessel_instruction: "Confirm check and standby.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INTENTION. I will check and report. Stand by. Out.",
+      }
     ],
   },
   {
@@ -1004,26 +789,17 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge speed reduction to 10 knots.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Reducing speed to one zero knots. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Your speed is excessive. REQUEST. Reduce speed to one zero knots. Over.",
-        vts_instruction:
-          "Inform Sunrise speed is excessive. Request reduction to 10 knots.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. RECEIVED. Out.",
-        vts_instruction: "Acknowledge and close the call.",
-      },
+        vts_instruction: "Warn speed is high and instruct to slow to 10 knots.",
+        vts_message: "MV Sunrise, this is Europe VTS. WARNING. Your speed is excessive. INSTRUCTION. Reduce speed to one zero knots. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Reducing to one zero knots. Out.",
+      }
     ],
   },
   {
@@ -1032,25 +808,17 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call Sunrise in narrow waterway.",
       },
       {
-        vessel_instruction: "Acknowledge keeping to starboard.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Keeping to starboard. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. WARNING. Keep to starboard side of the channel. Over.",
-        vts_instruction: "Warn them to keep to starboard side of the channel.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "Warn to stay starboard of channel.",
+        vts_message: "MV Sunrise, this is Europe VTS. WARNING. Keep to starboard side of the channel. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Staying starboard. Out.",
+      }
     ],
   },
   {
@@ -1059,34 +827,23 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call MV Sunrise which is adrift.",
       },
       {
-        vessel_instruction: "State reason: waiting for weather.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Waiting for weather to improve. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. What is the reason for drifting? Over.",
-        vts_instruction: "Ask about the reason for drifting.",
+        vts_instruction: "Ask for reason for drifting.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. What is the reason for drifting? Over.",
+        vessel_instruction: "State waiting for weather to improve.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Waiting for weather to improve. Over.",
       },
       {
-        vessel_instruction: "Acknowledge and plan to proceed in 2 hours.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. We will proceed in two hours. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Weather improving. You may proceed in two hours. Over.",
-        vts_instruction:
-          "Provide weather update and advise they can proceed in 2 hours.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "Inform weather is improving and can proceed in 2h.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Weather improving. You may proceed in two hours. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Proceed in two hours. Out.",
+      }
     ],
   },
   {
@@ -1095,75 +852,48 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "Establish contact with MV Sunrise.",
       },
       {
-        vessel_instruction: "State cannot see due to lights.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. We cannot see with lights. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Unknown object reported in the fairway at distance two decimal three miles. QUESTION. What type of object is this? Over.",
-        vts_instruction:
-          "Inform about object at 2.3 miles. Ask for type. Use two markers. Separate digits.",
+        vts_instruction: "Inform of unknown object at 2.3 miles and ask type.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Unknown object in fairway at distance two decimal three miles. QUESTION. What type of object? Over.",
+        vessel_instruction: "State cannot see with lights.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. We cannot see even with lights. Over.",
       },
       {
-        vessel_instruction: "State object appears floating.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. The object appears to be floating. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. Is the object floating or submerged? Over.",
-        vts_instruction: "Ask if object is floating or submerged.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. Object floating. Out.",
-        vts_instruction: "Acknowledge and close the call.",
-      },
+        vts_instruction: "Ask if floating or submerged.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Is object floating or submerged? Over.",
+        vessel_instruction: "State appears floating and close call.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Appears floating. Out.",
+      }
     ],
   },
   {
     id: "36",
-    name: "Getting underway without having received clearance",
+    name: "Getting underway without having RECEIVED clearance",
     starter: "vts",
     turns: [
       {
-        vessel_instruction:
-          "You are aircraft carrier Sunrise. Answer Europe VTS.",
-        vessel_message:
-          "Europe VTS, this is aircraft carrier Sunrise listening on channel one eight. Over.",
-        vts_message: "Aircraft carrier Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call aircraft carrier Sunrise.",
+        vts_instruction: "Call Aircraft Carrier Sunrise.",
+        vts_message: "Aircraft carrier Sunrise, Aircraft carrier Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer on Ch 18.",
+        vessel_message: "Europe VTS, this is aircraft carrier Sunrise listening on channel one eight. Over.",
       },
       {
-        vessel_instruction:
-          "Apologize and state intention to go to pilot station.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. We apologize for the oversight. We are proceeding to pilot station. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. According to my equipment, you have left berth without asking for permission. QUESTION. What is your intention? Over.",
-        vts_instruction:
-          "Tell Sunrise they left berth without permission. Ask for intentions. Use marker.",
+        vts_instruction: "Warn they left berth without permission and ask intentions.",
+        vts_message: "Aircraft carrier Sunrise, this is Europe VTS. WARNING. You left berth without permission. QUESTION. What is your intention? Over.",
+        vessel_instruction: "Apologize and state proceeding to pilot station.",
+        vessel_message: "Europe VTS, this is aircraft carrier Sunrise. INTENTION. Proceeding to pilot station. Over.",
       },
       {
-        vessel_instruction: "Acknowledge wait for clearance.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Waiting for clearance. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. REQUEST. Wait for further clearance before proceeding. Over.",
-        vts_instruction:
-          "Acknowledge and request they wait for further clearance.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "Instruct to wait for clearance.",
+        vts_message: "Aircraft carrier Sunrise, this is Europe VTS. INSTRUCTION. Wait for further clearance. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is aircraft carrier Sunrise. RECEIVED. Out.",
+      }
     ],
   },
   {
@@ -1172,35 +902,23 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call MV Sunrise.",
       },
       {
-        vessel_instruction: "Request navigational assistance.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. REQUEST. Provide navigational assistance. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. You are entering the traffic separation scheme in the wrong way. Over.",
-        vts_instruction:
-          "Inform Sunrise (use marker) they are entering TSS in the wrong way.",
+        vts_instruction: "Warn of wrong direction in TSS.",
+        vts_message: "MV Sunrise, this is Europe VTS. WARNING. You are entering the traffic separation scheme in the wrong way. Over.",
+        vessel_instruction: "Request assistance.",
+        vessel_message: "Europe VTS, this is MV Sunrise. REQUEST. Provide navigational assistance. Over.",
       },
       {
-        vessel_instruction: "Acknowledge course alteration to NW.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Altering course to northwest. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. ADVICE. Alter course to northwest and proceed into the traffic separation scheme. Over.",
-        vts_instruction:
-          "Advise course change to NW directly into TSS. Use marker.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "Advise alter course to NW.",
+        vts_message: "MV Sunrise, this is Europe VTS. ADVICE. Alter course to northwest. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Out.",
+      }
     ],
   },
   {
@@ -1209,34 +927,23 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "Establish contact with MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge traffic info.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED traffic information. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. Traffic information. Moonshine currently inbound to Atlantis harbour. Summer Breeze is scheduled for departure at two three one five local time. Over.",
-        vts_instruction:
-          "Give traffic: Moonshine inbound, Summer Breeze departing 23.15. Separate digits.",
+        vts_instruction: "Inform of traffic: Moonshine inbound; Summer Breeze departs 23:15.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Moonshine inbound. Summer Breeze departs at two three one five local time. Over.",
+        vessel_instruction: "Acknowledge traffic information.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Traffic information received. Over.",
       },
       {
-        vessel_instruction: "Acknowledge caution.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Proceeding with caution. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. WARNING. Reduced visibility in harbour approach. ADVISE caution. Over.",
-        vts_instruction: "Warn about reduced visibility. Advise caution.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "Warn of low visibility and advise caution.",
+        vts_message: "MV Sunrise, this is Europe VTS. WARNING. Reduced visibility. ADVICE. Proceed with caution. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Proceeding with caution. Out.",
+      }
     ],
   },
   {
@@ -1245,36 +952,23 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction: "You are Europe VTS. Call MV Sunrise.",
       },
       {
-        vessel_instruction: "Explain: stopped for maintenance.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. We stopped the engine to do some maintenance. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Your navigational status is set on NUC. QUESTION. Do you have any problem on board? Over.",
-        vts_instruction:
-          "Inform ship status is NUC on AIS. Ask about board problems. Use two markers.",
+        vts_instruction: "State AIS shows NUC and ask if there's a problem.",
+        vts_message: "MV Sunrise, this is Europe VTS. WARNING. Your status is set on NUC. QUESTION. Do you have a problem on board? Over.",
+        vessel_instruction: "Explain engine maintenance.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Maintenance on engine. Over.",
       },
       {
-        vessel_instruction: "Confirm completion in 1 hour.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Yes, maintenance will be completed in one hour. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. Will you solve the problem in one hour? Over.",
-        vts_instruction:
-          "Ask if they will solve the problem in one hour. Use marker.",
-      },
-      {
-        vessel_instruction: "Acknowledge update request.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. REQUEST. Call back in one hour. Out.",
-        vts_instruction: "Request update in one hour and close call.",
-      },
+        vts_instruction: "Ask if finished in 1h.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Will you solve problem in one hour? Over.",
+        vessel_instruction: "Confirm and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Yes, complete in one hour. Out.",
+      }
     ],
   },
   {
@@ -1283,153 +977,96 @@ export const bScenarios = [
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
-        vessel_message:
-          "Europe VTS. Sunrise, Victor seven Romeo Uniform three replying. Over.",
-        vts_message: "MV Sunrise. Europe VTS. Do you read me? Over.",
-        vts_instruction: "Establish contact with MV Sunrise.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer call.",
+        vessel_message: "Europe VTS, this is MV Sunrise. Over.",
       },
       {
-        vessel_instruction: "State: no info on voyage plan yet.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. For this information I will have to confirm with the Master. I have no information on plans to resume passage. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. When will you proceed with your voyage? Over.",
-        vts_instruction: "Ask the ship when they will proceed. Use marker.",
+        vts_instruction: "Ask when they plan to resume voyage.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. When will you proceed with your voyage? Over.",
+        vessel_instruction: "State must check with Master.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. I must confirm with Master. Over.",
       },
       {
-        vessel_instruction: "Acknowledge drift and heading south.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Proceeding south. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. You have drifted into territorial waters. Proceed south to stay clear. Over.",
-        vts_instruction:
-          "Inform ship they drifted into territorial waters. Order them south to stay clear.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "Warn of territorial waters and instruct sail south.",
+        vts_message: "MV Sunrise, this is Europe VTS. WARNING. You drifted into territorial waters. INSTRUCTION. Proceed south. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Proceeding south. Out.",
+      }
     ],
   },
   {
     id: "41",
-    name: "Navigation in icy Arctic Navarea",
+    name: "Navigation in icy Arctic Navarea with icebreaker assistance",
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer Europe VTS.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction:
-          "You are Europe VTS. Establish contact with MV Sunrise.",
       },
       {
-        vessel_instruction: "State: Category C ship.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. Sunrise is a Category C ship. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. You are entering Arctic NAVAREA XIX with sea-ice conditions. QUESTION. What is your ice class? Over.",
-        vts_instruction:
-          "Inform Sunrise entering Arctic NAVAREA XIX with ice. Ask for ice class. Use markers.",
+        vts_instruction: "Inform of sea-ice area and ask for ice class.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Entering Arctic NAVAREA nineteen. QUESTION. What is your ice class? Over.",
+        vessel_instruction: "State Category C.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Category Charlie ship. Over.",
       },
       {
-        vessel_instruction: "Confirm receipt of ice forecast.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Yes, we have received ice forecast. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. Have you received the ice forecast? Over.",
-        vts_instruction: "Ask if Sunrise received ice forecast.",
-      },
-      {
-        vessel_instruction: "Acknowledge assistance availability.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Icebreaker assistance is available. Out.",
-        vts_instruction:
-          "Inform that icebreaker assistance is available. Close the call.",
-      },
+        vts_instruction: "Ask if have ice forecast and close after info.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Have you RECEIVED ice forecast? INFORMATION. Icebreaker available. Over.",
+        vessel_instruction: "Confirm receipt and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Yes. RECEIVED. Out.",
+      }
     ],
   },
   {
     id: "42",
-    name: "Operating with an icebreaker while in transit",
+    name: "Operating with an icebreaker while in transit through the ice",
     starter: "vts",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
+        vts_instruction: "Call MV Sunrise.",
+        vts_message: "MV Sunrise, MV Sunrise. This is Europe VTS. Over.",
+        vessel_instruction: "Answer call.",
         vessel_message: "Europe VTS, this is MV Sunrise. Over.",
-        vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction:
-          "You are Europe VTS. Establish contact with MV Sunrise.",
       },
       {
-        vessel_instruction: "Acknowledge icebreaker instructions.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Following icebreaker, moderate speed, standing by channel one six. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. Icebreaker assistance starts now. Follow the icebreaker. Proceed at moderate speed. Stand by on VHF Channel one six. Over.",
-        vts_instruction:
-          "Notify start of icebreaker ops. Order them to follow, go moderate speed, stand by Ch 16.",
-      },
-      {
-        vessel_instruction: "Close call.",
-        vessel_message: "Europe VTS, this is MV Sunrise. Out.",
-        vts_message: "MV Sunrise, this is Europe VTS. Out.",
-        vts_instruction: "Close the call.",
-      },
+        vts_instruction: "Announce ops start and instruct follow-up at moderate speed.",
+        vts_message: "MV Sunrise, this is Europe VTS. INFORMATION. Icebreaker ops start now. INSTRUCTION. Follow icebreaker. Proceed at moderate speed. Over.",
+        vessel_instruction: "Acknowledge and close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. RECEIVED. Out.",
+      }
     ],
   },
   {
     id: "43",
-    name: "Improper securing of deck timber cargo",
-    starter: "vts",
+    name: "Improper securing of deck timber deck cargo",
+    starter: "vessel",
     turns: [
       {
-        vessel_instruction: "You are MV Sunrise. Answer VTS.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. I have lost timber deck cargo in position six zero degrees four three minutes North, two six degrees nine five minutes East. Over.",
+        vessel_instruction: "Call Europe VTS.",
+        vessel_message: "Europe VTS, Europe VTS. This is MV Sunrise. Over.",
+        vts_instruction: "Answer MV Sunrise.",
         vts_message: "MV Sunrise, this is Europe VTS. Over.",
-        vts_instruction:
-          "You are Europe VTS. Establish contact with MV Sunrise.",
       },
       {
-        vessel_instruction: "State: logs are in loose form.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. The logs are in a loose form. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. QUESTION. Are the logs in a loose or packaged form? Over.",
-        vts_instruction:
-          "Ask Sunrise if logs are loose or packaged. Use marker.",
+        vessel_instruction: "Report lost timber cargo at 60N 26E.",
+        vessel_message: "Europe VTS, this is MV Sunrise. INFORMATION. Lost timber cargo in position six zero North, two six East. Over.",
+        vts_instruction: "Ask if logs are loose or packaged.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Are logs loose or packaged? Over.",
       },
       {
-        vessel_instruction: "Confirm stability can be maintained.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. Yes, I am able to maintain stability. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. The logs are in a loose form. QUESTION. Are you able to maintain stability? Over.",
-        vts_instruction:
-          "Read back info. Ask if stability is maintained. Use marker.",
+        vessel_instruction: "State logs are loose.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Logs are in loose form. Over.",
+        vts_instruction: "Ask if ship is stable.",
+        vts_message: "MV Sunrise, this is Europe VTS. QUESTION. Are you able to maintain stability? Over.",
       },
       {
-        vessel_instruction: "State: steel ropes not required.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. ANSWER. No, I do not require steel ropes. Over.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. QUESTION. Do you require steel ropes to secure the cargo? Over.",
-        vts_instruction:
-          "Ask if Sunrise requires steel ropes to secure cargo. Use marker.",
-      },
-      {
-        vessel_instruction: "Acknowledge call back request.",
-        vessel_message:
-          "Europe VTS, this is MV Sunrise. RECEIVED. Call back in one hour. Out.",
-        vts_message:
-          "MV Sunrise, this is Europe VTS. RECEIVED. You do not require steel ropes. REQUEST. Call back in one hour. Out.",
-        vts_instruction: "Request update in 1 hour. Use marker. Close call.",
-      },
+        vessel_instruction: "Confirm stability and state no ropes needed, then close.",
+        vessel_message: "Europe VTS, this is MV Sunrise. ANSWER. Yes, stability maintained. No steel ropes required. Out.",
+      }
     ],
-  },
+  }
 ];
