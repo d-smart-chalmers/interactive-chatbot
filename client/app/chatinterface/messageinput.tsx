@@ -10,7 +10,9 @@ import { useState } from 'react';
 interface MessageInputComponentProps {
   onSubmit: (message: string, timestamp: number) => void;
 }
-export default function MessageInputComponent({onSubmit}: MessageInputComponentProps) {
+export default function MessageInputComponent({
+  onSubmit,
+}: MessageInputComponentProps) {
   const [message, setMessage] = useState('');
 
   const handleSendMessage = () => {
@@ -40,7 +42,11 @@ export default function MessageInputComponent({onSubmit}: MessageInputComponentP
         />
         <InputGroupAddon align="inline-end">
           <div className="ml-auto flex flex-col items-center gap-2">
-            <InputGroupButton variant="default" size="sm" onClick={handleSendMessage}>
+            <InputGroupButton
+              variant="default"
+              size="sm"
+              onClick={handleSendMessage}
+            >
               <Send className="h-4 w-4" />
             </InputGroupButton>
             <InputGroupButton variant="ghost" size="sm">

@@ -11,11 +11,16 @@ interface ChatHeaderProps {
   disableRetry: boolean;
 }
 
-export default function ChatHeader({ description, onRetry, onFeedback, disableRetry}: ChatHeaderProps) {
+export default function ChatHeader({
+  description,
+  onRetry,
+  onFeedback,
+  disableRetry,
+}: ChatHeaderProps) {
   const navigate = useNavigate();
   return (
     <div className="flex items-center border-t-2 border-b-2 pr-2">
-      <Button variant={'ghost'} className='m-4' onClick={() => navigate('/')}>
+      <Button variant={'ghost'} className="m-4" onClick={() => navigate('/')}>
         <ArrowLeft />
       </Button>
       <span className="grow justify-center">{description}</span>
@@ -24,8 +29,8 @@ export default function ChatHeader({ description, onRetry, onFeedback, disableRe
           <RotateCcw />
           Retry
         </Button>
-        <Button variant={'outline'} className='md:hidden' onClick={onFeedback} >
-          <MessageSquare/>
+        <Button variant={'outline'} className="md:hidden" onClick={onFeedback}>
+          <MessageSquare />
           Feedback
         </Button>
       </div>

@@ -16,7 +16,12 @@ import MessageInputComponent from './messageinput';
 import { useNavigate } from 'react-router';
 import { withDeviceType } from '~/service/withDeviceType';
 import FeedbackWindow from './feedbackwindow';
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '~/components/ui/drawer';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from '~/components/ui/drawer';
 import type { UserTurn } from '@shared/scenarios/model';
 import LoadingSpinner from './loadingspinner';
 
@@ -33,8 +38,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
   const navigate = useNavigate();
   const [openFeedback, setOpenFeedback] = useState(false);
 
-  const [mounted, setMounted] = useState(false)
-  
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -50,16 +54,14 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       }
     }
     fetchData();
-    setMounted(true)
-
-    
+    setMounted(true);
   }, [id, setMounted, mounted]);
 
   async function onRetry() {
     setDisableRetry(true);
     const response = await api.post(`/scenarios/retry-scenario`);
     if (response.status === 200) {
-      const data = response.data as RetryScenarioResponse
+      const data = response.data as RetryScenarioResponse;
       chatHistoryStore.setHistory(data.history);
     }
   }
@@ -105,7 +107,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
     }
   }
   if (!mounted) {
-    return <div className='flex h-screen items-center justify-center'></div> //empty screen before mount to avoid hydration error
+    return <div className="flex h-screen items-center justify-center"></div>; //empty screen before mount to avoid hydration error
   }
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -140,7 +142,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
           >
             <DrawerTitle aria-describedby="Real-time feedback" />
             <DrawerContent>
-              <DrawerDescription className='sr-only'>
+              <DrawerDescription className="sr-only">
                 Track your performance and protocol adherence
               </DrawerDescription>
               <FeedbackWindow />

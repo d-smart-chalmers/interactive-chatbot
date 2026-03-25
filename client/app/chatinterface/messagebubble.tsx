@@ -19,13 +19,12 @@ export default function MessageBubble({
     user: 'bg-blue-500 text-white self-end rounded-br-none',
     bot: 'bg-slate-200 dark:bg-slate-700 dark:text-white text-slate-900 self-start rounded-bl-none',
   };
-  const bubbleStyle =
-    isUser ? stylingMap.user : stylingMap.bot;
-  const time = new Date(timestamp).toLocaleTimeString('en-GB',{
+  const bubbleStyle = isUser ? stylingMap.user : stylingMap.bot;
+  const time = new Date(timestamp).toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-  })
+  });
   return (
     <div
       className={`mb-4 flex flex-col gap-1 ${isUser ? 'items-end' : 'items-start'}`}
@@ -43,7 +42,9 @@ export default function MessageBubble({
       </div>
 
       {/* Timestamp */}
-      <span className="text-muted-foreground text-[10px] opacity-70">{(time)}</span>
+      <span className="text-muted-foreground text-[10px] opacity-70">
+        {time}
+      </span>
     </div>
   );
 }

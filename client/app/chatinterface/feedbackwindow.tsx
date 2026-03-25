@@ -2,7 +2,6 @@ import { TurnType, type UserTurn } from '@shared/scenarios/model';
 import { useChatHistoryStore } from '~/store/state';
 import FeedbackBubble from './feedbackbubbel';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
 
 export default function FeedbackWindow() {
   const historyStore = useChatHistoryStore();

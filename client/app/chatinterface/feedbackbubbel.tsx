@@ -42,7 +42,9 @@ export default function FeedbackBubble({
       </span>
 
       {/* Bubble */}
-      <div className={`w-full rounded-2xl px-4 py-2 shadow-sm border ${bubbleStyle}`}>
+      <div
+        className={`w-full rounded-2xl border px-4 py-2 shadow-sm ${bubbleStyle}`}
+      >
         <p className="text-sm leading-relaxed italic">"{userMessage}"</p>
         <p className="text-sm leading-relaxed">{feedbackContent}</p>
       </div>

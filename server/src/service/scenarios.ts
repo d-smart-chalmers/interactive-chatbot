@@ -55,7 +55,12 @@ export class ScenariosService {
     return { description, history };
   }
 
-  submitAnswer(userId: string, scenarioId: string, answer: string, timestamp: number) {
+  submitAnswer(
+    userId: string,
+    scenarioId: string,
+    answer: string,
+    timestamp: number,
+  ) {
     const sManager = this.getScenarioManagerOrThrow(userId);
     if (sManager.getId() !== scenarioId) {
       throw new HttpError("Scenario not found", 404);
@@ -83,7 +88,7 @@ export class ScenariosService {
 
   private getScenarioManagerOrThrow(userId: string) {
     const sManager = this.activeScenarios.get(userId);
-    if(!sManager){
+    if (!sManager) {
       throw new HttpError("No active scenario found", 404);
     }
     return sManager;

@@ -35,7 +35,10 @@ export const useChatHistoryStore = create<ScenarioChatHistoryState>((set) => ({
   turns: [],
   intruction: '',
   addTurn: (turn) => set((state) => ({ turns: [...state.turns, turn] })),
-  updateTurn: (turn) => set((state) => ({ turns: state.turns.map(t => t.id === turn.id ? turn : t) })),
+  updateTurn: (turn) =>
+    set((state) => ({
+      turns: state.turns.map((t) => (t.id === turn.id ? turn : t)),
+    })),
   setTurns: (turns) => set({ turns }),
   setInstruction: (instruction) => set({ intruction: instruction }),
   setHistory: (history) =>
