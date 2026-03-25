@@ -3,6 +3,9 @@ import asyncHandler from "express-async-handler";
 import { ScenariosService } from "../service/scenarios";
 import {
   DescriptionsResponse,
+  GetFeedbackResponse,
+  GetNextTurnResponse,
+  RetryScenarioResponse,
   StartScenarioRequest,
   StartScenarioResponse,
   SubmitAnswerRequest,
@@ -42,7 +45,6 @@ scenariosRouter.post(
         scenarioId,
         userRole,
       );
-      console.log("fetching scenario ");
       res.status(200).send({ description, history });
     },
   ),
@@ -59,9 +61,49 @@ scenariosRouter.post(
       const scenarioId = req.params.id;
       const userId = req.session.userId!;
       const { answer, timestamp } = req.body;
-      const { userTurn, chatbotTurn, instruction } =
-        scenariosService.submitTurn(userId, scenarioId, answer, timestamp);
-      res.status(200).send({ userTurn, chatbotTurn, instruction });
+      const { userTurn } = scenariosService.submitAnswer(
+        userId,
+        scenarioId,
+        answer,
+        timestamp,
+      );
+      res.status(200).send({ userTurn });
     },
   ),
+);
+
+scenariosRouter.get(
+  "/get-feedback/:userTurnId",
+  requireUser,
+  asyncHandler(
+    (
+      req: Request<{ userTurnId: string }>,
+      res: Response<GetFeedbackResponse>,
+    ) => {
+      const userTurnId = parseInt(req.params.userTurnId);
+      const userId = req.session.userId!;
+      const turnWithFeedback = scenariosService.getFeedback(userId, userTurnId);
+      res.status(200).send({ turnWithFeedback });
+    },
+  ),
+);
+
+scenariosRouter.get(
+  "/get-next-turn",
+  requireUser,
+  asyncHandler((_req: Request, res: Response<GetNextTurnResponse>) => {
+    const userId = _req.session.userId!;
+    const { chatbotTurn, instruction } = scenariosService.getNextTurn(userId);
+    res.status(200).send({ chatbotTurn, instruction });
+  }),
+);
+
+scenariosRouter.post(
+  "/retry-scenario",
+  requireUser,
+  asyncHandler((req: Request, res: Response<RetryScenarioResponse>) => {
+    const userId = req.session.userId!;
+    const history = scenariosService.retryScenario(userId);
+    res.status(200).send({ history });
+  }),
 );

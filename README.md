@@ -28,6 +28,7 @@ The project is a monorepo with the following structure:
     -   `lucide-react` for icons.
     -   `sonner` for notifications.
     -   `zustand` for state management.
+    -   `framer-motion` for animations.
 
 ### Server (Backend)
 

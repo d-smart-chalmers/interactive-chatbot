@@ -12,17 +12,19 @@ export class ScenarioManager {
   private role: UserRole;
   private chatbotIsStarter: boolean;
   private history: ScenarioChatHistory;
-  private currentTurn: number;
+  private scenarioIndex: number;
   constructor(scenario: Scenario, role: UserRole) {
     this.scenario = scenario;
     this.role = role;
-    this.chatbotIsStarter = (this.scenario.starter === Starter.VTS && this.role === UserRole.Vessel) 
-      || (this.scenario.starter === Starter.VESSEL && this.role === UserRole.VTS)
+    this.chatbotIsStarter =
+      (this.scenario.starter === Starter.VTS &&
+        this.role === UserRole.Vessel) ||
+      (this.scenario.starter === Starter.VESSEL && this.role === UserRole.VTS);
     this.history = {
       turns: [],
       intruction: "",
     };
-    this.currentTurn = 0;
+    this.scenarioIndex = 0;
   }
 
   startScenario(): ScenarioChatHistory {
@@ -57,68 +59,80 @@ export class ScenarioManager {
     return this.history;
   }
 
-  nextTurn(_userTurn: string, _timestamp: number) {
-    //TODO: Implement logic and algoritms for check if answer is correct
+  submitAnswer(userAnswer: string, timestamp: number): { userTurn: UserTurn } {
+    const userTurnObject = this.createUserTurn(userAnswer, timestamp);
+    return { userTurn: userTurnObject };
   }
 
-  submitTurn(userTurn: string, timestamp: number): {userTurn: UserTurn, chatbotTurn: ChatbotTurn, instruction: string}{
-    //TODO: Implement logic and algoritms for check if answer is correct
-    const userTurnObject = this.submitUserTurn(userTurn, timestamp);
-    const chatbotTurnObject = this.submitChatbotTurn();
+  getFeedback(userTurnId: number) {
+    //TODO: Update with algoritms and stuff
+    const userTurn = this.history.turns.find((t) => t.id === userTurnId);
+    const updatedTurn: UserTurn = {
+      ...(userTurn as UserTurn),
+      feedback: "Static feedback",
+      correct: userTurn?.message !== "incorrect",
+    };
+    this.history.turns[userTurnId - 1] = updatedTurn;
+    if (updatedTurn.correct && this.chatbotIsStarter) {
+      this.scenarioIndex++;
+    }
+    return updatedTurn;
+  }
+
+  getNextTurn(): { chatbotTurn: ChatbotTurn; instruction: string } {
+    const chatbotTurnObject = this.createChatbotTurn();
     const instruction = this.history.intruction;
-    return {userTurn: userTurnObject, chatbotTurn:chatbotTurnObject, instruction}
+    return { chatbotTurn: chatbotTurnObject, instruction };
   }
 
-  private submitUserTurn(userTurn: string, timestamp: number) {
-      const userTurnObject: UserTurn = {
+  private createUserTurn(userTurn: string, timestamp: number) {
+    const userTurnObject: UserTurn = {
       id: this.history.turns.length + 1,
       message: userTurn,
-      timestamp: timestamp,
+      timestamp,
       type: TurnType.User,
-      feedback: "Static feedback",
-      correct: true,
-    }
-    if(this.chatbotIsStarter){
-      this.currentTurn++;
-    }
-    if(this.role === UserRole.Vessel){
-      this.history = {
-        turns: [... this.history.turns, userTurnObject],
-        intruction: this.scenario.scenarioTurns[this.currentTurn]!.vesselInstruction
-      }
-    } else {
-      this.history = {
-        turns: [... this.history.turns, userTurnObject],
-        intruction: this.scenario.scenarioTurns[this.currentTurn]!.vtsInstruction
-      }
-    }
+    };
+    this.history = {
+      turns: [...this.history.turns, userTurnObject],
+      intruction: this.history.intruction,
+    };
+
     return userTurnObject;
   }
 
-  private submitChatbotTurn() {
+  private createChatbotTurn() {
     const chatbotTurnObject: ChatbotTurn = {
       id: this.history.turns.length + 1,
-      message: this.role === UserRole.Vessel ? this.scenario.scenarioTurns[this.currentTurn]!.vtsMessage : this.scenario.scenarioTurns[this.currentTurn]!.vesselMessage,
+      message:
+        this.role === UserRole.Vessel
+          ? this.scenario.scenarioTurns[this.scenarioIndex]!.vtsMessage
+          : this.scenario.scenarioTurns[this.scenarioIndex]!.vesselMessage,
       timestamp: Date.now(),
       type: TurnType.Chatbot,
+    };
+    if (!this.chatbotIsStarter) {
+      this.scenarioIndex++;
     }
-    if(!this.chatbotIsStarter){
-      this.currentTurn++;
-    }
-    if(this.role === UserRole.Vessel){
+    if (this.role === UserRole.Vessel) {
       this.history = {
-        turns: [... this.history.turns, chatbotTurnObject],
-        intruction: this.scenario.scenarioTurns[this.currentTurn]!.vesselInstruction
-      }
+        turns: [...this.history.turns, chatbotTurnObject],
+        intruction:
+          this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction,
+      };
     } else {
       this.history = {
-        turns: [... this.history.turns, chatbotTurnObject],
-        intruction: this.scenario.scenarioTurns[this.currentTurn]!.vtsInstruction
-      }
+        turns: [...this.history.turns, chatbotTurnObject],
+        intruction:
+          this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction,
+      };
     }
     return chatbotTurnObject;
   }
   //private endScenario() {}
+  retryScenario(): ScenarioChatHistory {
+    this.scenarioIndex = 0;
+    return this.startScenario();
+  }
 
   resumeScenario(): ScenarioChatHistory {
     return this.history;

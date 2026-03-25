@@ -17,7 +17,7 @@ export default function MessageBubble({
   const isUser = messageType === TurnType.User;
   const stylingMap = {
     user: 'bg-blue-500 text-white self-end rounded-br-none',
-    bot: 'bg-slate-200 text-slate-900 self-start rounded-bl-none',
+    bot: 'bg-slate-200 dark:bg-slate-700 dark:text-white text-slate-900 self-start rounded-bl-none',
   };
   const bubbleStyle =
     isUser ? stylingMap.user : stylingMap.bot;

@@ -20,6 +20,17 @@ export interface SubmitAnswerRequest {
 
 export interface SubmitAnswerResponse {
   userTurn: UserTurn;
+}
+
+export interface GetFeedbackResponse {
+  turnWithFeedback: UserTurn;
+}
+
+export interface GetNextTurnResponse {
   chatbotTurn: ChatbotTurn;
   instruction: string;
+}
+
+export interface RetryScenarioResponse {
+  history: ScenarioChatHistory;
 }

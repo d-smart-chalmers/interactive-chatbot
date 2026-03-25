@@ -32,7 +32,6 @@ export default function Dashboard() {
   }, []);
 
   const onClickScenario = (id: string) => {
-    console.log(id);
     const route = '/scenario/' + id;
     navigate(route);
   };

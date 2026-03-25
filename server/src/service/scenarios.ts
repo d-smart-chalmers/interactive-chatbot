@@ -55,15 +55,37 @@ export class ScenariosService {
     return { description, history };
   }
 
-  submitTurn(userId: string, scenarioId: string, turn: string, timestamp: number) {
-    const sManager = this.activeScenarios.get(userId);
-    if (!sManager) {
-      throw new HttpError("No active scenario found", 404);
-    }
+  submitAnswer(userId: string, scenarioId: string, answer: string, timestamp: number) {
+    const sManager = this.getScenarioManagerOrThrow(userId);
     if (sManager.getId() !== scenarioId) {
       throw new HttpError("Scenario not found", 404);
     }
-    const {userTurn, chatbotTurn, instruction} = sManager.submitTurn(turn, timestamp);
-    return {userTurn, chatbotTurn, instruction};
+    const userTurn = sManager.submitAnswer(answer, timestamp);
+    return userTurn;
+  }
+
+  getFeedback(userId: string, userTurnId: number) {
+    const sManager = this.getScenarioManagerOrThrow(userId);
+    const turnWithFeedback = sManager.getFeedback(userTurnId);
+    return turnWithFeedback;
+  }
+  getNextTurn(userId: string) {
+    const sManager = this.getScenarioManagerOrThrow(userId);
+    const { chatbotTurn, instruction } = sManager.getNextTurn();
+    return { chatbotTurn, instruction };
+  }
+
+  retryScenario(userId: string) {
+    const sManager = this.getScenarioManagerOrThrow(userId);
+    const updatedHistory = sManager.retryScenario();
+    return updatedHistory;
+  }
+
+  private getScenarioManagerOrThrow(userId: string) {
+    const sManager = this.activeScenarios.get(userId);
+    if(!sManager){
+      throw new HttpError("No active scenario found", 404);
+    }
+    return sManager;
   }
 }

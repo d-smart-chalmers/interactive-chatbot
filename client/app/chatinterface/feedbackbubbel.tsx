@@ -20,8 +20,8 @@ export default function FeedbackBubble({
   });
 
   const bubbleStyle = feedbackCorrect
-    ? ' bg-green-50 text-green-900 border-green-200'
-    : ' bg-red-100 text-red-900 border-red-200';
+    ? ' bg-green-50 text-green-900 border-green-200 dark:bg-green-950 dark:border-green-900 dark:text-green-300'
+    : ' bg-red-100 text-red-900 border-red-200 dark:bg-red-950 dark:border-red-900 dark:text-red-300';
   const textStyle = feedbackCorrect ? 'text-green-500' : 'text-red-500';
 
   return (
@@ -34,7 +34,7 @@ export default function FeedbackBubble({
             Correct
           </span>
         ) : (
-          <span className="flex items-center gap-1">
+          <span className={`flex items-center gap-1 ${textStyle}`}>
             <CircleX className="h-4 w-4" />
             Incorrect
           </span>

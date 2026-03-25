@@ -24,8 +24,8 @@ export interface BaseTurn{
 
 }
 export interface UserTurn extends BaseTurn{
-    feedback: string,
-    correct: boolean,
+    feedback?: string,
+    correct?: boolean,
 }
 export interface ChatbotTurn extends BaseTurn{
 

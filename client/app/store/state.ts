@@ -25,6 +25,7 @@ interface ScenarioChatHistoryState {
   turns: TurnHistory[];
   intruction: string;
   addTurn: (turn: TurnHistory) => void;
+  updateTurn: (turn: TurnHistory) => void;
   setTurns: (turns: TurnHistory[]) => void;
   setInstruction: (instruction: string) => void;
   setHistory: (history: ScenarioChatHistory) => void;
@@ -34,6 +35,7 @@ export const useChatHistoryStore = create<ScenarioChatHistoryState>((set) => ({
   turns: [],
   intruction: '',
   addTurn: (turn) => set((state) => ({ turns: [...state.turns, turn] })),
+  updateTurn: (turn) => set((state) => ({ turns: state.turns.map(t => t.id === turn.id ? turn : t) })),
   setTurns: (turns) => set({ turns }),
   setInstruction: (instruction) => set({ intruction: instruction }),
   setHistory: (history) =>
