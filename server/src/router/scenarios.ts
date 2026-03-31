@@ -12,6 +12,7 @@ import {
   SubmitAnswerResponse,
 } from "@shared/scenarios/api";
 import { requireUser } from "@src/middleware/requireUser";
+import CerebrasLLMService from "@src/service/cerebrasllmservice";
 
 let scenariosService: ScenariosService;
 export function initScenariosRouter(scenarios: ScenariosService) {
@@ -107,3 +108,21 @@ scenariosRouter.post(
     res.status(200).send({ history });
   }),
 );
+
+//TODO: REMOVE: Used for manual testing 
+scenariosRouter.get(
+  '/feedback',
+  asyncHandler(async (req: Request, res: Response) => {
+    const llmservice = new CerebrasLLMService()
+    const correct = await llmservice.correctSpelling("testnsing testning")
+    res.status(200).send({ correct });
+  })
+)
+scenariosRouter.get(
+  '/compare',
+  asyncHandler(async (req: Request, res: Response) => {
+    const llmservice = new CerebrasLLMService()
+    const correct = await llmservice.compareMeaning("it's very cold outside", "the weather is cold")
+    res.status(200).send({ correct });
+  })
+)

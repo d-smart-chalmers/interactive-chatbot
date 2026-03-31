@@ -28,10 +28,10 @@ const aScen: Scenario[] = aScenarios.map((s) => {
     starter: s.starter as Starter,
     scenarioTurns: s.turns.map((t) => {
       return {
-        vesselInstruction: t.vessel_instruction,
-        vesselMessage: t.vessel_message,
-        vtsMessage: t.vts_message,
-        vtsInstruction: t.vts_instruction,
+        vesselInstruction: t.vessel_instruction ?? "",
+        vesselMessage: t.vessel_message ?? "",
+        vtsMessage: t.vts_message ?? "",
+        vtsInstruction: t.vts_instruction ?? "",
       };
     }),
   };
@@ -43,10 +43,10 @@ const bScen: Scenario[] = bScenarios.map((s) => {
     starter: s.starter as Starter,
     scenarioTurns: s.turns.map((t) => {
       return {
-        vesselInstruction: t.vessel_instruction,
-        vesselMessage: t.vessel_message,
-        vtsMessage: t.vts_message,
-        vtsInstruction: t.vts_instruction,
+        vesselInstruction: t.vessel_instruction ?? "",
+        vesselMessage: t.vessel_message ?? "",
+        vtsMessage: t.vts_message ?? "",
+        vtsInstruction: t.vts_instruction ?? "",
       };
     }),
   };

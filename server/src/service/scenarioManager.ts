@@ -116,14 +116,14 @@ export class ScenarioManager {
     if (this.role === UserRole.Vessel) {
       this.history = {
         turns: [...this.history.turns, chatbotTurnObject],
-        intruction:
-          this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction,
+        intruction: this.scenarioIndex < this.scenario.scenarioTurns.length ?
+          this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction : "TEMPORARY MESSAGE: Communication ended"
       };
     } else {
       this.history = {
         turns: [...this.history.turns, chatbotTurnObject],
-        intruction:
-          this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction,
+        intruction: this.scenarioIndex < this.scenario.scenarioTurns.length ?
+          this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction : "TEMPORARY MESSAGE: Communication ended"
       };
     }
     return chatbotTurnObject;
