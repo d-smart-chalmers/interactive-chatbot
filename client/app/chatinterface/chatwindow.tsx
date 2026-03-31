@@ -21,16 +21,39 @@ export default function ChatWindowComponent({
   }, [historyStore.turns]);
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="relative z-2 flex w-full shrink-0 flex-col border-b border-amber-200 bg-amber-50 p-5 text-amber-800 shadow-md dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
-        <span className="font-bold">Instructions</span>
-        {instruction}
-      </div>
+      <AnimatePresence mode="wait">
+        {!historyStore.scenarioEnded ? (
+          <motion.div
+            key={instruction}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="relative z-2 flex w-full shrink-0 flex-col border-b border-amber-200 bg-amber-50 p-5 text-amber-800 shadow-md dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200"
+          >
+            <span className="font-bold">Instructions</span>
+            {instruction}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="ended"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="relative z-2 flex w-full shrink-0 flex-col border-b border-red-200 bg-red-50 p-5 text-red-800 shadow-md dark:border-red-900 dark:bg-red-950 dark:text-red-200"
+          >
+            <span className="font-bold">Scenario ended</span>
+            {'Navigate back to the home screen to pick another scenario.'}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="dark:bg-card flex min-h-0 flex-1 flex-col justify-end gap-4 overflow-y-auto bg-gray-50 p-5">
         <AnimatePresence initial={false}>
           {historyStore.turns.map((turn) => {
             const isUser = turn.type === TurnType.User;
 
-            return (
+            return turn.message !== '' ? (
               <motion.div
                 layout
                 key={turn.id}
@@ -42,7 +65,7 @@ export default function ChatWindowComponent({
                   scale: { duration: 0.2 },
                 }}
                 style={{
-                  originX: isUser ? 1 : 0,
+                  originX: isUser ? 0.5 : 0,
                   originY: 1,
                 }}
               >
@@ -59,7 +82,7 @@ export default function ChatWindowComponent({
                   messageType={turn.type}
                 />
               </motion.div>
-            );
+            ) : null;
           })}
         </AnimatePresence>
         <div ref={scrollRef} />

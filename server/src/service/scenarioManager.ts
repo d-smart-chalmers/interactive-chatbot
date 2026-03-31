@@ -80,6 +80,9 @@ export class ScenarioManager {
   }
 
   getNextTurn(): { chatbotTurn: ChatbotTurn; instruction: string } {
+    if (this.scenarioIndex >= this.scenario.scenarioTurns.length) {
+      return { chatbotTurn: undefined as unknown as ChatbotTurn, instruction: ""}
+    }
     const chatbotTurnObject = this.createChatbotTurn();
     const instruction = this.history.intruction;
     return { chatbotTurn: chatbotTurnObject, instruction };
@@ -117,13 +120,13 @@ export class ScenarioManager {
       this.history = {
         turns: [...this.history.turns, chatbotTurnObject],
         intruction: this.scenarioIndex < this.scenario.scenarioTurns.length ?
-          this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction : "TEMPORARY MESSAGE: Communication ended"
+          this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction : ""
       };
     } else {
       this.history = {
         turns: [...this.history.turns, chatbotTurnObject],
         intruction: this.scenarioIndex < this.scenario.scenarioTurns.length ?
-          this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction : "TEMPORARY MESSAGE: Communication ended"
+          this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction : ""
       };
     }
     return chatbotTurnObject;

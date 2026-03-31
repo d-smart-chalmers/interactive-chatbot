@@ -4,6 +4,7 @@ import {
   type TurnHistory,
 } from '@shared/scenarios/model';
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface UserRoleState {
   userRole: UserRole;
@@ -24,16 +25,19 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
 interface ScenarioChatHistoryState {
   turns: TurnHistory[];
   intruction: string;
+  scenarioEnded: boolean;
   addTurn: (turn: TurnHistory) => void;
   updateTurn: (turn: TurnHistory) => void;
   setTurns: (turns: TurnHistory[]) => void;
   setInstruction: (instruction: string) => void;
   setHistory: (history: ScenarioChatHistory) => void;
+  setScenarioEnded: (ended: boolean) => void;
 }
 
-export const useChatHistoryStore = create<ScenarioChatHistoryState>((set) => ({
+export const useChatHistoryStore = create<ScenarioChatHistoryState>()(persist((set) => ({
   turns: [],
   intruction: '',
+  scenarioEnded: false,
   addTurn: (turn) => set((state) => ({ turns: [...state.turns, turn] })),
   updateTurn: (turn) =>
     set((state) => ({
@@ -43,4 +47,14 @@ export const useChatHistoryStore = create<ScenarioChatHistoryState>((set) => ({
   setInstruction: (instruction) => set({ intruction: instruction }),
   setHistory: (history) =>
     set({ turns: history.turns, intruction: history.intruction }),
-}));
+  setScenarioEnded: (ended) => set({ scenarioEnded: ended }),
+}),
+{
+  name: 'scenario-storage',
+  storage: createJSONStorage(() => sessionStorage),
+  partialize: (state) => ({
+    scenarioEnded: state.scenarioEnded
+  })
+}
+)
+);

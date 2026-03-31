@@ -41,12 +41,12 @@ scenariosRouter.post(
       const scenarioId = req.params.id;
       const userRole = req.body.userRole;
       const userId = req.session.userId!;
-      const { description, history } = scenariosService.startScenario(
+      const { description, history, newScenario} = scenariosService.startScenario(
         userId,
         scenarioId,
         userRole,
       );
-      res.status(200).send({ description, history });
+      res.status(200).send({ description, history, newScenario });
     },
   ),
 );

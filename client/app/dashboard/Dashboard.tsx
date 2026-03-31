@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Switch } from '../components/ui/switch';
 import VesselIcon from './vessel.svg?react';
 import VtsIcon from './vts.svg?react';
@@ -19,6 +19,7 @@ export default function Dashboard() {
   const [bScenarios, setBScenarios] = useState<ScenarioDescription[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const hasFetched = useRef(false);
 
   const fetchData = async () => {
     const response = await api.get('/scenarios/descriptions');
@@ -28,7 +29,12 @@ export default function Dashboard() {
     setLoading(false);
   };
   useEffect(() => {
+    if (hasFetched.current){
+      return;
+    }
+    hasFetched.current = true;
     fetchData();
+    console.log("fetching data")
   }, []);
 
   const onClickScenario = (id: string) => {

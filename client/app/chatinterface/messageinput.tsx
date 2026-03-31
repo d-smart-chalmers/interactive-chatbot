@@ -9,9 +9,12 @@ import { useState } from 'react';
 
 interface MessageInputComponentProps {
   onSubmit: (message: string, timestamp: number) => void;
+  disableSubmit: boolean;
 }
 export default function MessageInputComponent({
   onSubmit,
+  disableSubmit,
+
 }: MessageInputComponentProps) {
   const [message, setMessage] = useState('');
 
@@ -38,7 +41,8 @@ export default function MessageInputComponent({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="min-h-20" // Good for textareas
+          className="min-h-20"
+          disabled={disableSubmit}
         />
         <InputGroupAddon align="inline-end">
           <div className="ml-auto flex flex-col items-center gap-2">
@@ -46,10 +50,11 @@ export default function MessageInputComponent({
               variant="default"
               size="sm"
               onClick={handleSendMessage}
+              disabled={disableSubmit}
             >
               <Send className="h-4 w-4" />
             </InputGroupButton>
-            <InputGroupButton variant="ghost" size="sm">
+            <InputGroupButton variant="ghost" size="sm" disabled={disableSubmit}>
               <Mic className="h-4 w-4" />
             </InputGroupButton>
           </div>
@@ -58,7 +63,8 @@ export default function MessageInputComponent({
       <span className="text-sm font-bold">Tips:</span>{' '}
       <span className="text-sm font-light italic">
         {' '}
-        bla bla Maybe not necessary?
+        Use proper radio protocol including vessel names, positions, and
+        standard phrases like "OVER" and "OUT"
       </span>
     </div>
   );

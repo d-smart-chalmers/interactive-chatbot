@@ -11,6 +11,7 @@ export interface StartScenarioRequest {
 export interface StartScenarioResponse {
   description: string;
   history: ScenarioChatHistory;
+  newScenario: boolean;
 }
 
 export interface SubmitAnswerRequest {

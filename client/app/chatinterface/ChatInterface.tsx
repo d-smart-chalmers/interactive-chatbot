@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import { api } from '~/service/api';
 import type {
   GetFeedbackResponse,
@@ -22,8 +22,6 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from '~/components/ui/drawer';
-import type { UserTurn } from '@shared/scenarios/model';
-import LoadingSpinner from './loadingspinner';
 
 interface ChatinterfaceProps {
   id: string;
@@ -37,10 +35,15 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
   const [disableRetry, setDisableRetry] = useState(true);
   const navigate = useNavigate();
   const [openFeedback, setOpenFeedback] = useState(false);
-
+  const [disableSubmit, setDisableSubmit] = useState(chatHistoryStore.scenarioEnded);
   const [mounted, setMounted] = useState(false);
-
+  const hasFetched = useRef(false);
   useEffect(() => {
+    if (hasFetched.current) {
+      return;
+    }
+    hasFetched.current = true;
+    setMounted(true);
     async function fetchData() {
       const response = await api.post(`/scenarios/start-scenario/${id}`, {
         userRole: userRoleStore.userRole,
@@ -49,16 +52,32 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
         const data = response.data as StartScenarioResponse;
         setDescription(data.description);
         chatHistoryStore.setHistory(data.history);
+        if (data.newScenario) {
+          chatHistoryStore.setScenarioEnded(false);
+          setDisableSubmit(false);
+          setDisableRetry(true);
+        } else {
+          setDisableRetry(false);
+        }
       } else {
         navigate('/');
       }
     }
     fetchData();
-    setMounted(true);
-  }, [id, setMounted, mounted]);
+
+  }, [id]);
+
+  useEffect(() => {
+    if (chatHistoryStore.scenarioEnded) {
+      setDisableSubmit(true);
+      setDisableRetry(false);
+    }
+  }, [chatHistoryStore.scenarioEnded])
 
   async function onRetry() {
     setDisableRetry(true);
+    setDisableSubmit(false);
+    chatHistoryStore.setScenarioEnded(false);
     const response = await api.post(`/scenarios/retry-scenario`);
     if (response.status === 200) {
       const data = response.data as RetryScenarioResponse;
@@ -70,6 +89,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
     setOpenFeedback(true);
   }
   async function submitMessage(message: string, timestamp: number) {
+    setDisableSubmit(true);
     const submitResponse = await api.post(`/scenarios/submit-answer/${id}`, {
       answer: message,
       timestamp,
@@ -93,11 +113,21 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
           const nextTurnResponse = await api.get(`/scenarios/get-next-turn`);
           if (nextTurnResponse.status === 200) {
             const nextTurnData = nextTurnResponse.data as GetNextTurnResponse;
-            chatHistoryStore.addTurn(nextTurnData.chatbotTurn);
-            chatHistoryStore.setInstruction(nextTurnData.instruction);
+            if (
+              nextTurnData.instruction === '' ||
+              nextTurnData.chatbotTurn === undefined
+            ) {
+              chatHistoryStore.setScenarioEnded(true);
+            } else {
+              chatHistoryStore.setInstruction(nextTurnData.instruction);
+              chatHistoryStore.addTurn(nextTurnData.chatbotTurn);
+              setDisableSubmit(false);
+            }
           } else {
             console.log('Error getting next turn');
           }
+        } else {
+          setDisableSubmit(false);
         }
       } else {
         console.log('Error getting feedback');
@@ -124,7 +154,10 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
             <ChatWindowComponent instruction={chatHistoryStore.intruction} />
           </div>
           <div className="shrink-0">
-            <MessageInputComponent onSubmit={submitMessage} />
+            <MessageInputComponent
+              onSubmit={submitMessage}
+              disableSubmit={disableSubmit}
+            />
           </div>
         </div>
 
