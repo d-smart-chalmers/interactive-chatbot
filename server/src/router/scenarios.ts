@@ -109,7 +109,7 @@ scenariosRouter.post(
 //TODO: REMOVE: Used for manual testing
 scenariosRouter.get(
   "/feedback",
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (_req: Request, res: Response) => {
     const llmservice = new CerebrasLLMService();
     const correct = await llmservice.correctSpelling("testnsing testning");
     res.status(200).send({ correct });
@@ -117,7 +117,7 @@ scenariosRouter.get(
 );
 scenariosRouter.get(
   "/compare",
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (_req: Request, res: Response) => {
     const llmservice = new CerebrasLLMService();
     const correct = await llmservice.compareMeaning(
       "it's very cold outside",
