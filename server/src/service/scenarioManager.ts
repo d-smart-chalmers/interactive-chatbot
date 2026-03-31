@@ -81,7 +81,10 @@ export class ScenarioManager {
 
   getNextTurn(): { chatbotTurn: ChatbotTurn; instruction: string } {
     if (this.scenarioIndex >= this.scenario.scenarioTurns.length) {
-      return { chatbotTurn: undefined as unknown as ChatbotTurn, instruction: ""}
+      return {
+        chatbotTurn: undefined as unknown as ChatbotTurn,
+        instruction: "",
+      };
     }
     const chatbotTurnObject = this.createChatbotTurn();
     const instruction = this.history.intruction;
@@ -119,14 +122,18 @@ export class ScenarioManager {
     if (this.role === UserRole.Vessel) {
       this.history = {
         turns: [...this.history.turns, chatbotTurnObject],
-        intruction: this.scenarioIndex < this.scenario.scenarioTurns.length ?
-          this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction : ""
+        intruction:
+          this.scenarioIndex < this.scenario.scenarioTurns.length
+            ? this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction
+            : "",
       };
     } else {
       this.history = {
         turns: [...this.history.turns, chatbotTurnObject],
-        intruction: this.scenarioIndex < this.scenario.scenarioTurns.length ?
-          this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction : ""
+        intruction:
+          this.scenarioIndex < this.scenario.scenarioTurns.length
+            ? this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction
+            : "",
       };
     }
     return chatbotTurnObject;

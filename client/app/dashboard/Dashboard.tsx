@@ -29,12 +29,12 @@ export default function Dashboard() {
     setLoading(false);
   };
   useEffect(() => {
-    if (hasFetched.current){
+    if (hasFetched.current) {
       return;
     }
     hasFetched.current = true;
     fetchData();
-    console.log("fetching data")
+    console.log('fetching data');
   }, []);
 
   const onClickScenario = (id: string) => {

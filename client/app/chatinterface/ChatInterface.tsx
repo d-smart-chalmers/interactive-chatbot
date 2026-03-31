@@ -35,7 +35,9 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
   const [disableRetry, setDisableRetry] = useState(true);
   const navigate = useNavigate();
   const [openFeedback, setOpenFeedback] = useState(false);
-  const [disableSubmit, setDisableSubmit] = useState(chatHistoryStore.scenarioEnded);
+  const [disableSubmit, setDisableSubmit] = useState(
+    chatHistoryStore.scenarioEnded,
+  );
   const [mounted, setMounted] = useState(false);
   const hasFetched = useRef(false);
   useEffect(() => {
@@ -64,7 +66,6 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       }
     }
     fetchData();
-
   }, [id]);
 
   useEffect(() => {
@@ -72,7 +73,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       setDisableSubmit(true);
       setDisableRetry(false);
     }
-  }, [chatHistoryStore.scenarioEnded])
+  }, [chatHistoryStore.scenarioEnded]);
 
   async function onRetry() {
     setDisableRetry(true);

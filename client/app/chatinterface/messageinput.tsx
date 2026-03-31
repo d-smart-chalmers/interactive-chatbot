@@ -14,7 +14,6 @@ interface MessageInputComponentProps {
 export default function MessageInputComponent({
   onSubmit,
   disableSubmit,
-
 }: MessageInputComponentProps) {
   const [message, setMessage] = useState('');
 
@@ -54,7 +53,11 @@ export default function MessageInputComponent({
             >
               <Send className="h-4 w-4" />
             </InputGroupButton>
-            <InputGroupButton variant="ghost" size="sm" disabled={disableSubmit}>
+            <InputGroupButton
+              variant="ghost"
+              size="sm"
+              disabled={disableSubmit}
+            >
               <Mic className="h-4 w-4" />
             </InputGroupButton>
           </div>

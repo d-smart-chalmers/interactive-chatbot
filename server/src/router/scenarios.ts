@@ -41,11 +41,8 @@ scenariosRouter.post(
       const scenarioId = req.params.id;
       const userRole = req.body.userRole;
       const userId = req.session.userId!;
-      const { description, history, newScenario} = scenariosService.startScenario(
-        userId,
-        scenarioId,
-        userRole,
-      );
+      const { description, history, newScenario } =
+        scenariosService.startScenario(userId, scenarioId, userRole);
       res.status(200).send({ description, history, newScenario });
     },
   ),
@@ -109,20 +106,23 @@ scenariosRouter.post(
   }),
 );
 
-//TODO: REMOVE: Used for manual testing 
+//TODO: REMOVE: Used for manual testing
 scenariosRouter.get(
-  '/feedback',
+  "/feedback",
   asyncHandler(async (req: Request, res: Response) => {
-    const llmservice = new CerebrasLLMService()
-    const correct = await llmservice.correctSpelling("testnsing testning")
+    const llmservice = new CerebrasLLMService();
+    const correct = await llmservice.correctSpelling("testnsing testning");
     res.status(200).send({ correct });
-  })
-)
+  }),
+);
 scenariosRouter.get(
-  '/compare',
+  "/compare",
   asyncHandler(async (req: Request, res: Response) => {
-    const llmservice = new CerebrasLLMService()
-    const correct = await llmservice.compareMeaning("it's very cold outside", "the weather is cold")
+    const llmservice = new CerebrasLLMService();
+    const correct = await llmservice.compareMeaning(
+      "it's very cold outside",
+      "the weather is cold",
+    );
     res.status(200).send({ correct });
-  })
-)
+  }),
+);

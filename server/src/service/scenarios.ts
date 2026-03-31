@@ -45,14 +45,14 @@ export class ScenariosService {
     if (sManager) {
       if (sManager.getId() === scenarioId && sManager.getRole() === userRole) {
         const history = sManager.resumeScenario();
-        return { description, history, newScenario: false};
+        return { description, history, newScenario: false };
       }
     }
     sManager = new ScenarioManager(scenario, userRole);
     this.activeScenarios.set(userId, sManager);
     const history = sManager.startScenario();
 
-    return { description, history, newScenario: true};
+    return { description, history, newScenario: true };
   }
 
   submitAnswer(

@@ -34,27 +34,29 @@ interface ScenarioChatHistoryState {
   setScenarioEnded: (ended: boolean) => void;
 }
 
-export const useChatHistoryStore = create<ScenarioChatHistoryState>()(persist((set) => ({
-  turns: [],
-  intruction: '',
-  scenarioEnded: false,
-  addTurn: (turn) => set((state) => ({ turns: [...state.turns, turn] })),
-  updateTurn: (turn) =>
-    set((state) => ({
-      turns: state.turns.map((t) => (t.id === turn.id ? turn : t)),
-    })),
-  setTurns: (turns) => set({ turns }),
-  setInstruction: (instruction) => set({ intruction: instruction }),
-  setHistory: (history) =>
-    set({ turns: history.turns, intruction: history.intruction }),
-  setScenarioEnded: (ended) => set({ scenarioEnded: ended }),
-}),
-{
-  name: 'scenario-storage',
-  storage: createJSONStorage(() => sessionStorage),
-  partialize: (state) => ({
-    scenarioEnded: state.scenarioEnded
-  })
-}
-)
+export const useChatHistoryStore = create<ScenarioChatHistoryState>()(
+  persist(
+    (set) => ({
+      turns: [],
+      intruction: '',
+      scenarioEnded: false,
+      addTurn: (turn) => set((state) => ({ turns: [...state.turns, turn] })),
+      updateTurn: (turn) =>
+        set((state) => ({
+          turns: state.turns.map((t) => (t.id === turn.id ? turn : t)),
+        })),
+      setTurns: (turns) => set({ turns }),
+      setInstruction: (instruction) => set({ intruction: instruction }),
+      setHistory: (history) =>
+        set({ turns: history.turns, intruction: history.intruction }),
+      setScenarioEnded: (ended) => set({ scenarioEnded: ended }),
+    }),
+    {
+      name: 'scenario-storage',
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({
+        scenarioEnded: state.scenarioEnded,
+      }),
+    },
+  ),
 );

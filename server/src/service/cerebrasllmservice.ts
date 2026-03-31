@@ -24,35 +24,36 @@ export default class CerebrasLLMService implements LLMService {
         },
       ],
       prediction: {
-        type:"content",
-        content: text
-      }
+        type: "content",
+        content: text,
+      },
     });
     return (response as any).choices[0].message.content;
   }
   async compareMeaning(text1: string, text2: string): Promise<boolean> {
-    const prompt = "I want you to compare the following two texts determine if they mean the same thing. Do not return any comments. If they approximately mean the same return 'true', else return 'false'"
-    const bool = 'true';
+    const prompt =
+      "I want you to compare the following two texts determine if they mean the same thing. Do not return any comments. If they approximately mean the same return 'true', else return 'false'";
+    const bool = "true";
     const response = await this.llmClient.chat.completions.create({
-        model: "llama3.1-8b",
-        messages: [
-            {
-                role: "user",
-                content: prompt,
-            },
-            {
-                role: "user",
-                content: "Text 1: " + text1,
-            },
-            {
-                role: "user",
-                content: "Text 2: " + text2,
-            },
-        ],
-        prediction: {
-            type:"content",
-            content: bool
-        }
+      model: "llama3.1-8b",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+        {
+          role: "user",
+          content: "Text 1: " + text1,
+        },
+        {
+          role: "user",
+          content: "Text 2: " + text2,
+        },
+      ],
+      prediction: {
+        type: "content",
+        content: bool,
+      },
     });
     return (response as any).choices[0].message.content === bool;
   }
