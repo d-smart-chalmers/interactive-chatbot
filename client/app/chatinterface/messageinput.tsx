@@ -31,10 +31,11 @@ export default function MessageInputComponent({
   const handleMicrophone = () => {
     const globalWindow = window as any;
     const SpeechRecognition =
-      globalWindow.SpeechRecognition ||
-      globalWindow.webkitSpeechRecognition;
-    if(!SpeechRecognition){
-      toast.error("Browser not supported", { description: "Your browser doesn't support Speech Recognition." });
+      globalWindow.SpeechRecognition || globalWindow.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error('Browser not supported', {
+        description: "Your browser doesn't support Speech Recognition.",
+      });
       return;
     }
     const recognition = new SpeechRecognition();
@@ -44,7 +45,7 @@ export default function MessageInputComponent({
     };
     recognition.onend = () => {
       setIsSpeaking(false);
-    }
+    };
 
     recognition.onresult = (event: any) => {
       const result = event.results[0][0].transcript;
@@ -66,7 +67,6 @@ export default function MessageInputComponent({
   return (
     <div className="border-t-2 p-6">
       <InputGroup className="relative overflow-hidden rounded-md border border-slate-200">
-        
         {/* FRAMER MOTION OVERLAY */}
         <AnimatePresence>
           {isSpeaking && (
@@ -74,27 +74,27 @@ export default function MessageInputComponent({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-800/20 backdrop-blur-sm pointer-events-none"
+              className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-800/20 backdrop-blur-sm"
             >
-              <div className="flex items-center justify-center gap-1.5 h-16 m-4">
+              <div className="m-4 flex h-16 items-center justify-center gap-1.5">
                 {[...Array(12)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="w-1.5 bg-black rounded-full"
+                    className="w-1.5 rounded-full bg-black"
                     animate={{
                       // Different heights for different bars to look like a real signal
                       height: [
-                        "20%", 
-                        `${Math.random() * 60 + 40}%`, 
-                        "30%", 
-                        `${Math.random() * 40 + 20}%`, 
-                        "20%"
+                        '20%',
+                        `${Math.random() * 60 + 40}%`,
+                        '30%',
+                        `${Math.random() * 40 + 20}%`,
+                        '20%',
                       ],
                     }}
                     transition={{
                       duration: 0.8,
                       repeat: Infinity,
-                      ease: "easeInOut",
+                      ease: 'easeInOut',
                       delay: i * 0.05,
                     }}
                   />
@@ -105,14 +105,18 @@ export default function MessageInputComponent({
         </AnimatePresence>
         <InputGroupTextarea
           id="textarea"
-          placeholder={isSpeaking ? "" : "Type your radio transmission here... (Press 'Enter' to send)"}
+          placeholder={
+            isSpeaking
+              ? ''
+              : "Type your radio transmission here... (Press 'Enter' to send)"
+          }
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           className="min-h-20"
           disabled={disableSubmit || isSpeaking}
         />
-        
+
         <InputGroupAddon align="inline-end">
           <div className="ml-auto flex flex-col items-center gap-2">
             <InputGroupButton
