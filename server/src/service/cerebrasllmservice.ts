@@ -8,10 +8,7 @@ export default class CerebrasLLMService implements LLMService {
       apiKey: process.env.CEREBRAS_API_KEY,
     });
   }
-  async correctSpelling(
-    userInput: string,
-    scenarioAnswer: string,
-  ): Promise<string> {
+  async correctSpelling(userInput: string): Promise<string> {
     const response = await this.llmClient.chat.completions.create({
       model: "llama3.1-8b",
       messages: [
@@ -38,7 +35,7 @@ export default class CerebrasLLMService implements LLMService {
       ],
       prediction: {
         type: "content",
-        content: scenarioAnswer,
+        content: userInput,
       },
     });
     return (response as any).choices[0].message.content;
