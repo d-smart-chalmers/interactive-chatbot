@@ -111,7 +111,10 @@ scenariosRouter.get(
   "/feedback",
   asyncHandler(async (_req: Request, res: Response) => {
     const llmservice = new CerebrasLLMService();
-    const correct = await llmservice.correctSpelling("testnsing testning");
+    const correct = await llmservice.correctSpelling(
+      "testnsing testning",
+      "testing testing",
+    );
     res.status(200).send({ correct });
   }),
 );

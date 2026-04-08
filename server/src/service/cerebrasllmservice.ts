@@ -8,46 +8,67 @@ export default class CerebrasLLMService implements LLMService {
       apiKey: process.env.CEREBRAS_API_KEY,
     });
   }
-  async correctSpelling(text: string): Promise<string> {
-    const prompt =
-      "I want you to correct any obvious spelling or grammar misstakes in this text. Only correct the text, if necessary, and dont add any comments.";
+  async correctSpelling(
+    userInput: string,
+    scenarioAnswer: string,
+  ): Promise<string> {
     const response = await this.llmClient.chat.completions.create({
       model: "llama3.1-8b",
       messages: [
         {
-          role: "user",
-          content: prompt,
+          role: "system",
+          content: `
+          You correct spelling in maritime communication messages.
+
+          Rules:
+          - Fix obvious spelling mistakes.
+          - Correct NATO phonetic alphabet words if misspelled. The correct forms are:
+            Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett,
+            Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango,
+            Uniform, Victor, Whiskey, X-ray, Yankee, Zulu.
+          - If they are spelled correctly, do not change them.
+          - Do not modify call signs, coordinates, or numbers.
+          - Return only the corrected text without comments.
+          `,
         },
         {
           role: "user",
-          content: text,
+          content: userInput,
         },
       ],
       prediction: {
         type: "content",
-        content: text,
+        content: scenarioAnswer,
       },
     });
     return (response as any).choices[0].message.content;
   }
-  async compareMeaning(text1: string, text2: string): Promise<boolean> {
-    const prompt =
-      "I want you to compare the following two texts determine if they mean the same thing. Do not return any comments. If they approximately mean the same return 'true', else return 'false'";
+  async compareMeaning(
+    userInput: string,
+    scenarioAnswer: string,
+  ): Promise<boolean> {
     const bool = "true";
     const response = await this.llmClient.chat.completions.create({
       model: "llama3.1-8b",
       messages: [
         {
-          role: "user",
-          content: prompt,
+          role: "system",
+          content: `
+          You compare two texts to determine if they mean the same thing.
+          
+          Rules:
+          - Do not return any comments.
+          - If they mean approximately the same thing, return true.
+          - If they do not approximately the same thing, return false.
+          `,
         },
         {
           role: "user",
-          content: "Text 1: " + text1,
+          content: "Text 1: " + userInput,
         },
         {
           role: "user",
-          content: "Text 2: " + text2,
+          content: "Text 2: " + scenarioAnswer,
         },
       ],
       prediction: {
