@@ -69,11 +69,12 @@ export class ScenariosService {
     return userTurn;
   }
 
-  getFeedback(userId: string, userTurnId: number) {
+  async getFeedback(userId: string, userTurnId: number) {
     const sManager = this.getScenarioManagerOrThrow(userId);
     const turnWithFeedback = sManager.getFeedback(userTurnId);
     return turnWithFeedback;
   }
+
   getNextTurn(userId: string) {
     const sManager = this.getScenarioManagerOrThrow(userId);
     const { chatbotTurn, instruction } = sManager.getNextTurn();

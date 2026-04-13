@@ -74,14 +74,19 @@ scenariosRouter.get(
   "/get-feedback/:userTurnId",
   requireUser,
   asyncHandler(
-    (
+    async (
       req: Request<{ userTurnId: string }>,
       res: Response<GetFeedbackResponse>,
     ) => {
       const userTurnId = parseInt(req.params.userTurnId);
       const userId = req.session.userId!;
-      const turnWithFeedback = scenariosService.getFeedback(userId, userTurnId);
-      res.status(200).send({ turnWithFeedback });
+
+      const userTurnWithFeedback = await scenariosService.getFeedback(
+        userId,
+        userTurnId,
+      );
+
+      res.status(200).send({ turnWithFeedback: userTurnWithFeedback });
     },
   ),
 );

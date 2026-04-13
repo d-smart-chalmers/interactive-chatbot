@@ -18,14 +18,13 @@ export default class CerebrasLLMService implements LLMService {
           You correct spelling in maritime communication messages.
 
           Rules:
-          - Fix obvious spelling mistakes.
-          - Correct NATO phonetic alphabet words if misspelled. The correct forms are:
-            Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett,
-            Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango,
-            Uniform, Victor, Whiskey, X-ray, Yankee, Zulu.
-          - If they are spelled correctly, do not change them.
+          - Fix only obvious spelling mistakes.
+          - Correct NATO phonetic alphabet words if slightly misspelled.
+          - If phonetic alphabet words are spelled correctly, do not change them.
           - Do not modify call signs, coordinates, or numbers.
-          - Return only the corrected text without comments.
+          - Return only the original text with corrected spelling.
+          - Do not add any comments or notes.
+          - Do not alter the meaning of the message.
           `,
         },
         {
@@ -50,22 +49,21 @@ export default class CerebrasLLMService implements LLMService {
       messages: [
         {
           role: "system",
-          content: `
-          You compare two texts to determine if they mean the same thing.
+          content:
+            `
+          You compare a maritime communication message to determine if it is are similar and return only true or false.
           
           Rules:
-          - Do not return any comments.
-          - If they mean approximately the same thing, return true.
-          - If they do not approximately the same thing, return false.
-          `,
+          - Do not return any comments or notes.
+          - If the messages have similar meaning and structure, return true.
+          - If the message have different meaning, return false.
+
+          Compare the message to: 
+          ` + scenarioAnswer,
         },
         {
           role: "user",
-          content: "Text 1: " + userInput,
-        },
-        {
-          role: "user",
-          content: "Text 2: " + scenarioAnswer,
+          content: userInput,
         },
       ],
       prediction: {
@@ -73,6 +71,6 @@ export default class CerebrasLLMService implements LLMService {
         content: bool,
       },
     });
-    return (response as any).choices[0].message.content === bool;
+    return (response as any).choices[0].message.content.toLowerCase() === bool;
   }
 }
