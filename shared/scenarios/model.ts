@@ -7,6 +7,7 @@ export enum UserRole {
   Vessel = "vessel",
   VTS = "vts",
 }
+
 export enum TurnType {
   User = "user",
   Chatbot = "chatbot",
@@ -16,6 +17,7 @@ export interface ScenarioChatHistory {
   turns: TurnHistory[];
   intruction: string;
 }
+
 export interface BaseTurn {
   id: number;
   message: string;
@@ -23,10 +25,12 @@ export interface BaseTurn {
   type: TurnType;
   role: UserRole;
 }
+
 export interface UserTurn extends BaseTurn {
   feedback?: string;
   correct?: boolean;
 }
+
 export interface ChatbotTurn extends BaseTurn {}
 
 export type TurnHistory = UserTurn | ChatbotTurn;

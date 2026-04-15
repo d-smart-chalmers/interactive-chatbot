@@ -17,14 +17,12 @@ import AnthropicLLMService from "@src/service/anthropicllmservice";
 import OpenAILLMService from "@src/service/openaillmservice";
 import LLMService from "@src/service/llmservice.interface";
 
-
 let scenariosService: ScenariosService;
 let LLM_Service: LLMService;
 
 export function initScenariosRouter(scenarios: ScenariosService) {
   scenariosService = scenarios;
   LLM_Service = new CerebrasLLMService();
-
 }
 export const scenariosRouter = express.Router();
 
@@ -124,7 +122,9 @@ scenariosRouter.get(
   "/feedback",
   asyncHandler(async (_req: Request, res: Response) => {
     const llmservice = LLM_Service;
-    const correct = await llmservice.correctSpelling("Europe VTS, this is MV Sunrise. INFORMAToin. We are enterin VTS area in transit to Hamburg. Over.");
+    const correct = await llmservice.correctSpelling(
+      "Europe VTS, this is MV Sunrise. INFORMAToin. We are enterin VTS area in transit to Hamburg. Over.",
+    );
     res.status(200).send({ correct });
   }),
 );

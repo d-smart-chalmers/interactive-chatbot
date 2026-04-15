@@ -10,7 +10,6 @@ export default class AnthropicLLMService implements LLMService {
   }
 
   async correctSpelling(userInput: string): Promise<string> {
-    
     const response = await this.llmClient.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
@@ -27,9 +26,10 @@ export default class AnthropicLLMService implements LLMService {
           },
         },
       },
-      system:[{ 
-        type: "text",
-        text: `
+      system: [
+        {
+          type: "text",
+          text: `
           You correct spelling in maritime communication messages.
 
           Rules:
@@ -41,8 +41,9 @@ export default class AnthropicLLMService implements LLMService {
           - Do not add any comments or notes.
           - Do not alter the meaning of the message.
           `,
-        cache_control: {type: "ephemeral"}
-      }],
+          cache_control: { type: "ephemeral" },
+        },
+      ],
       messages: [
         {
           role: "user",
@@ -51,7 +52,8 @@ export default class AnthropicLLMService implements LLMService {
       ],
     });
     console.log(response);
-    const json_schema = response.content[0]!.type === "text" ? response.content[0]!.text : "";
+    const json_schema =
+      response.content[0]!.type === "text" ? response.content[0]!.text : "";
     const corrected_text = JSON.parse(json_schema).corrected_text as string;
     return corrected_text;
   }
@@ -93,9 +95,9 @@ export default class AnthropicLLMService implements LLMService {
       ],
     });
     console.log(response);
-    const json_schema = response.content[0]!.type === "text" ? response.content[0]!.text : "";
+    const json_schema =
+      response.content[0]!.type === "text" ? response.content[0]!.text : "";
     const same_meaning = JSON.parse(json_schema).same_meaning as boolean;
-    return same_meaning
+    return same_meaning;
   }
-  
 }
