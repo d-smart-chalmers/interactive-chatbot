@@ -1,16 +1,20 @@
+import { UserRole } from "@shared/scenarios/model";
+
 interface ScenarioTurn {
   vesselInstruction: string;
   vesselMessage: string;
   vtsInstruction: string;
   vtsMessage: string;
 }
-export enum Starter {
-  VESSEL = "vessel",
-  VTS = "vts",
+
+interface Participant {
+  role: UserRole;
+  name: string;
 }
+
 export interface Scenario {
   id: string;
   description: string;
-  starter: Starter;
+  participants: { starter: Participant; responder: Participant };
   scenarioTurns: ScenarioTurn[];
 }

@@ -2,7 +2,10 @@ export const aScenarios = [
   {
     id: "1",
     name: "Providing information on a passage through a strait",
-    starter: "vessel",
+    participants: {
+      starter: { role: "vessel", name: "MV Sunrise" },
+      responder: { role: "vts", name: "Europe VTS" },
+    },
     turns: [
       {
         vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
@@ -33,7 +36,7 @@ export const aScenarios = [
           "Europe VTS, this is MV Sunrise. ANSWER. No fishing vessels in the vicinity. Over.",
         vts_instruction: "Grant permission to increase speed.",
         vts_message:
-          "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to increase speed. Out.",
+          "MV Sunrise, this is Europe VTS. INFORMATION. You have permission to increase speed. Over.",
       },
       {
         vessel_instruction:
@@ -43,6 +46,7 @@ export const aScenarios = [
       },
     ],
   },
+  /*
   {
     id: "2",
     name: "Providing and reading back anchoring position coordinates",
@@ -883,6 +887,7 @@ export const aScenarios = [
       },
     ],
   },
+  */
 ];
 
 export const bScenarios = [
@@ -890,6 +895,10 @@ export const bScenarios = [
     id: "31",
     name: "Checking a reported spillage",
     starter: "vts",
+    participants: {
+      starter: { role: "vts", name: "Europe VTS" },
+      responder: { role: "vessel", name: "MV Sunrise" },
+    },
     turns: [
       {
         vts_instruction: "Call MV Sunrise.",
@@ -915,7 +924,7 @@ export const bScenarios = [
           "Europe VTS, this is MV Sunrise. INTENTION. I will check and report. Stand by. Out.",
       },
     ],
-  },
+  } /*
   {
     id: "32",
     name: "Vessel must reduce excessive speed",
@@ -1249,4 +1258,5 @@ export const bScenarios = [
       },
     ],
   },
+  */,
 ];

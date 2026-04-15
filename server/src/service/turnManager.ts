@@ -45,9 +45,17 @@ export class TurnManager {
 
     if (turnAnswer === undefined) turnAnswer = "Failed to find turn message";
 
-    const correct = await this.llmModel.compareMeaning(userText, turnAnswer);
+    //TODO: want to swap back to userText with better model
+    const correct = await this.llmModel.compareMeaning(
+      userTurn.message,
+      turnAnswer,
+    );
 
-    let messageFeedback = this.controlUserMessage(userTurn, correct);
+    let messageFeedback = this.controlUserMessage(
+      userTurn,
+      turnAnswer,
+      correct,
+    );
 
     // TODO: remove later, just used for testing atm
     messageFeedback =
@@ -91,16 +99,20 @@ export class TurnManager {
   }
 
   // TODO still need to properly implement this
-  private controlUserMessage(turnInfo: UserTurn, correct: boolean): string {
-    let message = turnInfo.message;
+  private controlUserMessage(
+    userTurn: UserTurn,
+    turnAnswer: string,
+    correct: boolean,
+  ): string {
+    const userMessage = userTurn.message.toLowerCase();
 
-    let greeting = identifyGreeting(message);
+    const greeting = userMessage;
 
-    let isGreetingCorrect = checkGreeting(greeting);
+    const isGreetingCorrect = checkGreeting(greeting);
 
-    let contentArray = identifyContent(message);
+    const content = identifyContent(userMessage);
 
-    let isContentCorrect = checkContent(contentArray);
+    const isContentCorrect = checkContent(content);
 
     let feedback = "";
 
@@ -121,25 +133,19 @@ export class TurnManager {
   }
 }
 
-function identifyGreeting(userInput: string): string {
-  let greeting = userInput;
-
-  return greeting;
-}
-
 function checkGreeting(greeting: string): boolean {
   if (greeting) return true;
 
   return true;
 }
 
-function identifyContent(userInput: string): string[] {
-  let content = [userInput];
+function identifyContent(userInput: string): string {
+  let content = userInput;
 
   return content;
 }
 
-function checkContent(content: string[]): boolean {
+function checkContent(content: string): boolean {
   if (content) return true;
 
   return true;

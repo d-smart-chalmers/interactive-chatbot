@@ -6,7 +6,8 @@ import createMemoryStore from "memorystore";
 import { aScenarios, bScenarios } from "./lib/scenarios";
 import { ScenariosService } from "./service/scenarios";
 import { config as configDotEnv } from "dotenv";
-import { Scenario, Starter } from "./model/scenarios.interface";
+import { Scenario } from "./model/scenarios.interface";
+import { UserRole } from "@shared/scenarios/model";
 
 configDotEnv();
 
@@ -25,7 +26,16 @@ const aScen: Scenario[] = aScenarios.map((s) => {
   return {
     id: s.id,
     description: s.name,
-    starter: s.starter as Starter,
+    participants: {
+      starter: {
+        role: s.participants.starter.role as UserRole,
+        name: s.participants.starter.name,
+      },
+      responder: {
+        role: s.participants.responder.role as UserRole,
+        name: s.participants.responder.name,
+      },
+    },
     scenarioTurns: s.turns.map((t) => {
       return {
         vesselInstruction: t.vessel_instruction ?? "",
@@ -36,11 +46,21 @@ const aScen: Scenario[] = aScenarios.map((s) => {
     }),
   };
 });
+
 const bScen: Scenario[] = bScenarios.map((s) => {
   return {
     id: s.id,
     description: s.name,
-    starter: s.starter as Starter,
+    participants: {
+      starter: {
+        role: s.participants.starter.role as UserRole,
+        name: s.participants.starter.name,
+      },
+      responder: {
+        role: s.participants.responder.role as UserRole,
+        name: s.participants.responder.name,
+      },
+    },
     scenarioTurns: s.turns.map((t) => {
       return {
         vesselInstruction: t.vessel_instruction ?? "",

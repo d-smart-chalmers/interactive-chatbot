@@ -5,7 +5,7 @@ import {
   UserRole,
   UserTurn,
 } from "@shared/scenarios/model";
-import { Scenario, Starter } from "../model/scenarios.interface";
+import { Scenario } from "../model/scenarios.interface";
 import { TurnManager } from "./turnManager";
 
 export class ScenarioManager {
@@ -22,12 +22,8 @@ export class ScenarioManager {
     this.userRole = userRole;
     this.chatbotRole =
       userRole === UserRole.VTS ? UserRole.Vessel : UserRole.VTS;
-    //TODO can simplify this most likely, starter can use userrole for example
     this.chatbotIsStarter =
-      (this.scenario.starter === Starter.VTS &&
-        this.chatbotRole === UserRole.VTS) ||
-      (this.scenario.starter === Starter.VESSEL &&
-        this.chatbotRole === UserRole.Vessel);
+      scenario.participants.starter.role === this.chatbotRole;
     this.history = {
       turns: [],
       intruction: "",
@@ -40,7 +36,7 @@ export class ScenarioManager {
     this.history = {
       turns:
         this.userRole === UserRole.Vessel
-          ? this.scenario.starter === Starter.VESSEL
+          ? this.scenario.participants.starter.role === UserRole.Vessel
             ? []
             : [
                 {
@@ -51,7 +47,7 @@ export class ScenarioManager {
                   role: UserRole.VTS,
                 },
               ]
-          : this.scenario.starter === Starter.VTS
+          : this.scenario.participants.starter.role === UserRole.VTS
             ? []
             : [
                 {
