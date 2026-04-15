@@ -23,7 +23,7 @@ let LLM_Service: LLMService;
 
 export function initScenariosRouter(scenarios: ScenariosService) {
   scenariosService = scenarios;
-  LLM_Service = new OpenAILLMService();
+  LLM_Service = new CerebrasLLMService();
 
 }
 export const scenariosRouter = express.Router();
