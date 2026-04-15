@@ -13,10 +13,18 @@ import {
 } from "@shared/scenarios/api";
 import { requireUser } from "@src/middleware/requireUser";
 import CerebrasLLMService from "@src/service/cerebrasllmservice";
+import AnthropicLLMService from "@src/service/anthropicllmservice";
+import OpenAILLMService from "@src/service/openaillmservice";
+import LLMService from "@src/service/llmservice.interface";
+
 
 let scenariosService: ScenariosService;
+let LLM_Service: LLMService;
+
 export function initScenariosRouter(scenarios: ScenariosService) {
   scenariosService = scenarios;
+  LLM_Service = new OpenAILLMService();
+
 }
 export const scenariosRouter = express.Router();
 
@@ -115,18 +123,18 @@ scenariosRouter.post(
 scenariosRouter.get(
   "/feedback",
   asyncHandler(async (_req: Request, res: Response) => {
-    const llmservice = new CerebrasLLMService();
-    const correct = await llmservice.correctSpelling("testnsing testning");
+    const llmservice = LLM_Service;
+    const correct = await llmservice.correctSpelling("Europe VTS, this is MV Sunrise. INFORMAToin. We are enterin VTS area in transit to Hamburg. Over.");
     res.status(200).send({ correct });
   }),
 );
 scenariosRouter.get(
   "/compare",
   asyncHandler(async (_req: Request, res: Response) => {
-    const llmservice = new CerebrasLLMService();
+    const llmservice = LLM_Service;
     const correct = await llmservice.compareMeaning(
-      "it's very cold outside",
-      "the weather is cold",
+      "We are enterin VTS area in transit to Hamburg",
+      "we are soon entering hamburg",
     );
     res.status(200).send({ correct });
   }),
