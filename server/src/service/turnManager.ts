@@ -1,18 +1,19 @@
 import { UserRole, UserTurn } from "@shared/scenarios/model";
 import { Scenario } from "@src/model/scenarios.interface";
-import CerebrasLLMService from "./cerebrasllmservice";
+import OpenAILLMService from "./openaillmservice";
+import LLMService from "./llmservice.interface";
 
 export class TurnManager {
   private feedbackPromises: Map<number, Promise<UserTurn>>;
   private userRole: UserRole;
   private scenario: Scenario;
-  private llmModel: CerebrasLLMService;
+  private llmModel: LLMService;
 
   constructor(scenario: Scenario, userRole: UserRole) {
     this.scenario = scenario;
     this.userRole = userRole;
     this.feedbackPromises = new Map();
-    this.llmModel = new CerebrasLLMService();
+    this.llmModel = new OpenAILLMService();
   }
 
   async startGenerateFeedback(

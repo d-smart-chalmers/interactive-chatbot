@@ -13,6 +13,7 @@ export default class OpenAILLMService implements LLMService {
   });
   constructor() {
     this.llmClient = new OpenAI({
+      baseURL: process.env.OPENAI_BASE_URL,
       apiKey: process.env.OPENAI_API_KEY,
     });
   }
