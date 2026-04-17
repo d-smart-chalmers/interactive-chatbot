@@ -27,6 +27,10 @@ export class TurnManager {
 
     const promise = this.generateFeedback(userTurn, scenarioIndex);
 
+    promise.catch(() => {
+      this.feedbackPromises.delete(userTurn.id);
+    });
+
     this.feedbackPromises.set(userTurn.id, promise);
   }
 
@@ -46,46 +50,35 @@ export class TurnManager {
 
     if (turnAnswer === undefined) turnAnswer = "Failed to find turn message";
 
-    //TODO: want to swap back to userText with better model
-    const correct = await this.llmModel.compareMeaning(
+    let messageFeedback = await this.controlUserMessage(
       userTurn.message,
+      userText,
       turnAnswer,
+      scenarioIndex,
     );
 
-    let messageFeedback = this.controlUserMessage(
-      userTurn,
-      turnAnswer,
-      correct,
-    );
-
-    // TODO: remove later, just used for testing atm
-    messageFeedback =
-      "Correct?: " +
-      correct +
-      messageFeedback +
-      " User answer: " +
-      userText +
-      " and turn answer: " +
-      turnAnswer;
+    // TODO: remove later, just used for testing
+    let testFeedback =
+      messageFeedback.feedback + " and turn answer: " + turnAnswer;
 
     const updatedTurn: UserTurn = {
       ...userTurn,
-      feedback: messageFeedback,
-      correct: correct,
+      feedback: testFeedback,
+      correct: messageFeedback.correct,
     };
 
     return updatedTurn;
   }
 
-  async waitForFeedback(userTurnIndex: number): Promise<UserTurn> {
-    const feedbackPromise = this.feedbackPromises.get(userTurnIndex);
+  async waitForFeedback(userTurnId: number): Promise<UserTurn> {
+    const feedbackPromise = this.feedbackPromises.get(userTurnId);
 
     if (!feedbackPromise) {
-      console.log("Feedback promise missing for turn:", userTurnIndex);
+      console.log("Feedback promise missing for turn:", userTurnId);
 
       return {
-        id: userTurnIndex,
-        message: "debug",
+        id: userTurnId,
+        message: "Please send again, error in backend",
         feedback: "Fallback feedback generated in waitForFeedback",
         correct: false,
         timestamp: Date.now(),
@@ -94,66 +87,268 @@ export class TurnManager {
 
     const updatedTurn = await feedbackPromise;
 
-    this.feedbackPromises.delete(userTurnIndex);
+    this.feedbackPromises.delete(userTurnId);
 
     return updatedTurn;
   }
 
-  // TODO still need to properly implement this
-  private controlUserMessage(
-    userTurn: UserTurn,
+  private async controlUserMessage(
+    userInput: string,
+    correctedUserInput: string,
     turnAnswer: string,
-    correct: boolean,
-  ): string {
-    const userMessage = userTurn.message.toLowerCase();
+    scenarioIndex: number,
+  ): Promise<{ feedback: string; correct: boolean }> {
+    const userMessage = this.normalize(userInput);
+    const correctedUserMessage = this.normalize(correctedUserInput);
+    const turnMessage = this.normalize(turnAnswer);
 
-    const greeting = userMessage;
+    const parsedCorrected = this.controlOpening(
+      correctedUserMessage,
+      scenarioIndex,
+    );
+    // Fallback in case spell check breaks call signs
+    const parsedOriginal = this.controlOpening(userMessage, scenarioIndex);
 
-    const isGreetingCorrect = checkGreeting(greeting);
+    const parsedOpening =
+      parsedCorrected.correct || !parsedOriginal.correct
+        ? parsedCorrected
+        : parsedOriginal;
 
-    const content = identifyContent(userMessage);
+    const { openingFeedback, messageWithoutOpening } = parsedOpening;
 
-    const isContentCorrect = checkContent(content);
+    const parseEndingMessage = this.controlEnding(
+      messageWithoutOpening,
+      turnMessage,
+    );
 
-    let feedback = "";
+    let correct = true;
 
-    if (correct) {
-      feedback = feedback + "Message is good";
-    } else {
-      feedback = feedback + "Message is not sufficient";
+    let feedback = openingFeedback + parseEndingMessage.feedback;
+
+    if (this.countWords(parseEndingMessage.remainingMessage) !== 0) {
+      const turnMessageContent = this.getTurnAnswerContent(turnMessage);
+
+      const contentFeedback = await this.compareTexts(
+        parseEndingMessage.remainingMessage,
+        turnMessageContent,
+      );
+
+      feedback = feedback + contentFeedback.feedback;
+      correct = contentFeedback.correct;
     }
 
-    return feedback;
+    return { feedback: feedback, correct: correct };
   }
 
   private async compareTexts(
     userInput: string,
     turnAnswer: string,
-  ): Promise<boolean> {
-    return await this.llmModel.compareMeaning(userInput, turnAnswer);
+  ): Promise<{ feedback: string; correct: boolean }> {
+    const correctContent = await this.llmModel.compareMeaning(
+      userInput,
+      turnAnswer,
+    );
+
+    let feedback = "";
+
+    if (correctContent) {
+      feedback = "Content is correct. ";
+    } else {
+      feedback = "Content is missing information. ";
+    }
+
+    const userInputWords = this.countWords(userInput);
+    const turnAnswerWords = this.countWords(turnAnswer);
+
+    if (userInputWords > turnAnswerWords + 5) {
+      feedback = feedback + "Content includes more words than needed. ";
+    }
+
+    return { feedback: feedback, correct: correctContent };
   }
-}
 
-function checkGreeting(greeting: string): boolean {
-  if (greeting) return true;
+  private controlOpening(
+    message: string,
+    scenarioIndex: number,
+  ): {
+    messageWithoutOpening: string;
+    correct: boolean;
+    openingFeedback: string;
+  } {
+    const sender =
+      this.userRole === this.scenario.participants.starter.role
+        ? this.scenario.participants.starter.name.toLowerCase()
+        : this.scenario.participants.responder.name.toLowerCase();
 
-  return true;
-}
+    const receiver =
+      this.userRole === this.scenario.participants.starter.role
+        ? this.scenario.participants.responder.name.toLowerCase()
+        : this.scenario.participants.starter.name.toLowerCase();
 
-function identifyContent(userInput: string): string {
-  let content = userInput;
+    const includesReceiver = message.includes(receiver);
+    const includesSender = message.includes(sender);
 
-  return content;
-}
+    let feedback = "";
+    let correctOpening = false;
 
-function checkContent(content: string): boolean {
-  if (content) return true;
+    if (!includesReceiver && !includesSender) {
+      feedback = feedback + "Missing call signs in message. ";
+    } else if (!includesReceiver) {
+      feedback = feedback + "Missing receiver call sign in message. ";
+    } else if (!includesSender) {
+      feedback = feedback + "Missing sender call sign in message. ";
+    }
 
-  return true;
-}
+    const senderIndex = message.indexOf(sender.toLowerCase());
+    const receiverIndex = message.indexOf(receiver.toLowerCase());
 
-function identifyEnding(userInput: string): string {
-  let ending = userInput;
+    const endIndex =
+      senderIndex === -1 && receiverIndex === -1
+        ? 0
+        : Math.max(
+            senderIndex + sender.length,
+            receiverIndex + receiver.length,
+          );
 
-  return ending;
+    const opening = message.slice(0, endIndex).trim();
+    const remainingMessage = message
+      .slice(endIndex)
+      .replace(/^[\s.]+/, "")
+      .trim();
+
+    const matchReceiver = opening.match(new RegExp(receiver, "gi"));
+
+    // Checking matchReceiver instead of includesReceiver for null check
+    if (matchReceiver === null || !includesSender)
+      return {
+        messageWithoutOpening: remainingMessage,
+        correct: correctOpening,
+        openingFeedback: feedback,
+      };
+
+    const correctOrder = senderIndex > receiverIndex;
+
+    if (!correctOrder) feedback = "Callsigns in wrong order. ";
+
+    const isFirstMessage =
+      scenarioIndex === 0 &&
+      this.userRole === this.scenario.participants.starter.role;
+
+    if (
+      isFirstMessage &&
+      (matchReceiver.length < 2 || matchReceiver.length > 3)
+    ) {
+      feedback =
+        feedback +
+        "First message should contain the receiver two or three times. ";
+    } else if (!isFirstMessage && matchReceiver.length !== 1) {
+      feedback = feedback + "Message should contain the receiver once. ";
+    }
+
+    if (!opening.includes("this is"))
+      feedback = feedback + "Opening should contain this is. ";
+
+    const wordsInOpening = this.countWords(opening);
+    const shouldContainWords =
+      this.countWords(sender) +
+      this.countWords(receiver) * matchReceiver.length +
+      2; // +2 is for "this is"
+
+    if (wordsInOpening > shouldContainWords)
+      feedback = feedback + "Opening consists of more words than needed. ";
+
+    if (feedback === "") {
+      feedback = "Correct opening! ";
+      correctOpening = true;
+    }
+
+    //TODO remove, just for testing
+    console.log("Message: ", message);
+    console.log("Opening: ", opening);
+    console.log("Remaining message: ", remainingMessage);
+    console.log("Feedback: ", feedback);
+    console.log("Words in opening: ", wordsInOpening);
+    console.log("Opening should contain this many words: ", shouldContainWords);
+    console.log("Correct opening? ", correctOpening);
+
+    return {
+      messageWithoutOpening: remainingMessage,
+      correct: correctOpening,
+      openingFeedback: feedback,
+    };
+  }
+
+  private controlEnding(
+    message: string,
+    turnAnswer: string,
+  ): {
+    remainingMessage: string;
+    correct: boolean;
+    feedback: string;
+  } {
+    const correctEnding = turnAnswer.match(/\b(over|out)\b\.?\s*$/i);
+    const match = message.match(/\b(over and out|over|out)\b\.?\s*$/i);
+
+    let feedback = "";
+    let correct = false;
+
+    // correctEnding should never be null
+    if (match === null || correctEnding === null) {
+      return {
+        remainingMessage: message,
+        correct: correct,
+        feedback: "Message is missing ending. ",
+      };
+    }
+
+    if (correctEnding[1] === match[1]) {
+      feedback = "Ending is correct. ";
+      correct = true;
+    } else {
+      feedback = "Incorrect ending of message. ";
+    }
+
+    const remaining = message.slice(0, match.index).trim();
+
+    return {
+      remainingMessage: remaining,
+      correct: correct,
+      feedback: feedback,
+    };
+  }
+
+  private getTurnAnswerContent(message: string): string {
+    const sender =
+      this.userRole === this.scenario.participants.starter.role
+        ? this.scenario.participants.starter.name.toLowerCase()
+        : this.scenario.participants.responder.name.toLowerCase();
+
+    const indexSender = message.indexOf(sender);
+
+    if (indexSender === -1) return message;
+
+    let remainingMessage = message.slice(indexSender + sender.length).trim();
+
+    remainingMessage = remainingMessage
+      .replace(/\s*\b(over|out)\b\.?\s*$/i, "")
+      .trim();
+
+    return remainingMessage;
+  }
+
+  private normalize(message: string): string {
+    return message
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // strip diacritics
+      .replace(/[^\w\s]/g, "") // remove punctuation (including dots)
+      .replace(/\s+/g, " ") // collapse multiple spaces
+      .trim();
+  }
+
+  private countWords(text: string): number {
+    const words = text.match(/\b\w+\b/g);
+
+    return words ? words.length : 0;
+  }
 }
