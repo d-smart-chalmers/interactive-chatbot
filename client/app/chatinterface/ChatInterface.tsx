@@ -22,6 +22,7 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from '~/components/ui/drawer';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface ChatinterfaceProps {
   id: string;
@@ -101,8 +102,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       const userTurnId = data.userTurn.id;
       chatHistoryStore.addTurn(data.userTurn);
       setDisableRetry(false);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      setOpenFeedback(true)
       const feedbackResponse = await api.get(
         `/scenarios/get-feedback/${userTurnId}`,
       );
@@ -110,7 +110,6 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
         const feedbackData = feedbackResponse.data as GetFeedbackResponse;
         chatHistoryStore.updateTurn(feedbackData.turnWithFeedback);
         if (feedbackData.turnWithFeedback.correct) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
           const nextTurnResponse = await api.get(`/scenarios/get-next-turn`);
           if (nextTurnResponse.status === 200) {
             const nextTurnData = nextTurnResponse.data as GetNextTurnResponse;
@@ -141,7 +140,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
     return <div className="flex h-screen items-center justify-center"></div>; //empty screen before mount to avoid hydration error
   }
   return (
-    <div className="flex h-dvh flex-col overflow-hidden">
+    <div className="relative flex h-dvh flex-col overflow-hidden">
       <ChatHeader
         description={description}
         onRetry={onRetry}
@@ -175,15 +174,29 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
             direction="right"
           >
             <DrawerTitle aria-describedby="Real-time feedback" />
-            <DrawerContent>
+            <DrawerContent className='overflow-y-auto pb-10'>
               <DrawerDescription className="sr-only">
-                Track your performance and protocol adherence
+                Real-time feedback. Track your performance and protocol adherence.
               </DrawerDescription>
               <FeedbackWindow />
             </DrawerContent>
           </Drawer>
         )}
       </div>
+      <AnimatePresence>
+        {disableSubmit && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
+          >
+            <div className="rounded-lg border border-white/20 bg-white/10 px-6 py-3 font-semibold text-white shadow-2xl backdrop-blur-md">
+              Waiting for feedback
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

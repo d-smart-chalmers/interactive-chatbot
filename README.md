@@ -41,7 +41,8 @@ The project is a monorepo with the following structure:
     -   `dotenv` for managing environment variables.
     -   `express-async-handler` for handling async errors in Express.
     -   `express-session` for session management.
-    -   `@cerebras/cerebras_cloud_sdk` for interacting with the Cerebras Cloud for free access to language model 'llama3.1-8b'.
+    -   `openai` for interacting with OpenAI's AI models.
+    -   `zod` for schema validation.
 
 ---
 
