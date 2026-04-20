@@ -102,7 +102,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       const userTurnId = data.userTurn.id;
       chatHistoryStore.addTurn(data.userTurn);
       setDisableRetry(false);
-      setOpenFeedback(true)
+      setOpenFeedback(true);
       const feedbackResponse = await api.get(
         `/scenarios/get-feedback/${userTurnId}`,
       );
@@ -174,9 +174,10 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
             direction="right"
           >
             <DrawerTitle aria-describedby="Real-time feedback" />
-            <DrawerContent className='overflow-y-auto pb-10'>
+            <DrawerContent className="overflow-y-auto pb-10">
               <DrawerDescription className="sr-only">
-                Real-time feedback. Track your performance and protocol adherence.
+                Real-time feedback. Track your performance and protocol
+                adherence.
               </DrawerDescription>
               <FeedbackWindow />
             </DrawerContent>
