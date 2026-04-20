@@ -2,10 +2,17 @@ import { TurnType, type UserTurn } from '@shared/scenarios/model';
 import { useChatHistoryStore } from '~/store/state';
 import FeedbackBubble from './feedbackbubbel';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 export default function FeedbackWindow() {
   const historyStore = useChatHistoryStore();
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [historyStore.turns]);
   return (
     <div>
       <div className="relative z-2 flex min-h-22 w-full flex-col border-b-2 border-blue-200 bg-blue-100 p-4 shadow-md dark:border-cyan-900 dark:bg-cyan-950 dark:text-white dark:shadow-cyan-950/80">
@@ -45,6 +52,7 @@ export default function FeedbackWindow() {
             ) : null,
           )}
         </AnimatePresence>
+        <div ref={scrollRef} />
       </div>
     </div>
   );
