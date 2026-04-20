@@ -2,6 +2,12 @@ import { UserRole, UserTurn } from "@shared/scenarios/model";
 import { Scenario } from "@src/model/scenarios.interface";
 import OpenAILLMService from "./openaillmservice";
 import LLMService from "./llmservice.interface";
+import {
+  AmbiguesWords,
+  MessageMarkers,
+  PhoneticAlphabet,
+} from "@src/model/turnMessages.interface";
+import CerebrasLLMService from "./cerebrasllmservice";
 
 export class TurnManager {
   private feedbackPromises: Map<number, Promise<UserTurn>>;
@@ -13,7 +19,8 @@ export class TurnManager {
     this.scenario = scenario;
     this.userRole = userRole;
     this.feedbackPromises = new Map();
-    this.llmModel = new OpenAILLMService();
+    // TODO swap back to openAI later
+    this.llmModel = new CerebrasLLMService();
   }
 
   async startGenerateFeedback(
@@ -128,7 +135,7 @@ export class TurnManager {
     if (this.countWords(parseEndingMessage.remainingMessage) !== 0) {
       const turnMessageContent = this.getTurnAnswerContent(turnMessage);
 
-      const contentFeedback = await this.compareTexts(
+      const contentFeedback = await this.controlContent(
         parseEndingMessage.remainingMessage,
         turnMessageContent,
       );
@@ -140,7 +147,7 @@ export class TurnManager {
     return { feedback: feedback, correct: correct };
   }
 
-  private async compareTexts(
+  private async controlContent(
     userInput: string,
     turnAnswer: string,
   ): Promise<{ feedback: string; correct: boolean }> {
@@ -157,12 +164,52 @@ export class TurnManager {
       feedback = "Content is missing information. ";
     }
 
-    const userInputWords = this.countWords(userInput);
-    const turnAnswerWords = this.countWords(turnAnswer);
+    const userWordCount = this.countWords(userInput);
+    const turnWordCount = this.countWords(turnAnswer);
 
-    if (userInputWords > turnAnswerWords + 5) {
-      feedback = feedback + "Content includes more words than needed. ";
+    // + 5 is just taken out of thin air
+    if (userWordCount >= turnWordCount + 5) {
+      feedback += "Content includes more words than needed. ";
     }
+
+    const turnWords = this.getWords(turnAnswer);
+    const userWords = this.getWords(userInput);
+
+    // Check if the first word is a message marker and then to see if that is included in the user message.
+    const turnFirstWord = turnWords[0];
+    const turnFirstWordMarker = Object.values(MessageMarkers).includes(
+      turnFirstWord as MessageMarkers,
+    )
+      ? (turnFirstWord as MessageMarkers)
+      : null;
+
+    const userMessageMarkers = this.findMatches(userWords, MessageMarkers);
+
+    const userHasTurnMarker =
+      turnFirstWordMarker !== null &&
+      userMessageMarkers.includes(turnFirstWordMarker);
+
+    const userHasAnyMarker = userMessageMarkers.length > 0;
+
+    const userAmbiguousWords = this.findMatches(userWords, AmbiguesWords);
+
+    const turnPhoneticWords = this.findMatches(turnWords, PhoneticAlphabet);
+    const userPhoneticWords = this.findMatches(userWords, PhoneticAlphabet);
+
+    const userPhoneticSet = new Set(userPhoneticWords);
+    const userHasAllTurnPhonetics = turnPhoneticWords.every((w) =>
+      userPhoneticSet.has(w),
+    );
+
+    if (userAmbiguousWords.length !== 0) feedback += "Ambiguous words used. ";
+
+    if (turnFirstWordMarker && !userHasAnyMarker)
+      feedback += "Missing message Marker. ";
+    if (turnFirstWordMarker && userHasAnyMarker && !userHasTurnMarker)
+      feedback += "Control that message marker is appropriate. ";
+
+    if (!userHasAllTurnPhonetics)
+      feedback += "Missing phonetic alphabet words from expected response. ";
 
     return { feedback: feedback, correct: correctContent };
   }
@@ -177,13 +224,13 @@ export class TurnManager {
   } {
     const sender =
       this.userRole === this.scenario.participants.starter.role
-        ? this.scenario.participants.starter.name.toLowerCase()
-        : this.scenario.participants.responder.name.toLowerCase();
+        ? this.scenario.participants.starter.name
+        : this.scenario.participants.responder.name;
 
     const receiver =
       this.userRole === this.scenario.participants.starter.role
-        ? this.scenario.participants.responder.name.toLowerCase()
-        : this.scenario.participants.starter.name.toLowerCase();
+        ? this.scenario.participants.responder.name
+        : this.scenario.participants.starter.name;
 
     const includesReceiver = message.includes(receiver);
     const includesSender = message.includes(sender);
@@ -199,8 +246,8 @@ export class TurnManager {
       feedback = feedback + "Missing sender call sign in message. ";
     }
 
-    const senderIndex = message.indexOf(sender.toLowerCase());
-    const receiverIndex = message.indexOf(receiver.toLowerCase());
+    const senderIndex = message.indexOf(sender);
+    const receiverIndex = message.indexOf(receiver);
 
     const endIndex =
       senderIndex === -1 && receiverIndex === -1
@@ -228,7 +275,7 @@ export class TurnManager {
 
     const correctOrder = senderIndex > receiverIndex;
 
-    if (!correctOrder) feedback = "Callsigns in wrong order. ";
+    if (!correctOrder) feedback = "Call signs in wrong order. ";
 
     const isFirstMessage =
       scenarioIndex === 0 &&
@@ -266,10 +313,6 @@ export class TurnManager {
     console.log("Message: ", message);
     console.log("Opening: ", opening);
     console.log("Remaining message: ", remainingMessage);
-    console.log("Feedback: ", feedback);
-    console.log("Words in opening: ", wordsInOpening);
-    console.log("Opening should contain this many words: ", shouldContainWords);
-    console.log("Correct opening? ", correctOpening);
 
     return {
       messageWithoutOpening: remainingMessage,
@@ -346,9 +389,19 @@ export class TurnManager {
       .trim();
   }
 
-  private countWords(text: string): number {
-    const words = text.match(/\b\w+\b/g);
+  private getWords(text: string): string[] {
+    return text.match(/\b\w+\b/g)?.map((w) => w) ?? [];
+  }
 
-    return words ? words.length : 0;
+  private countWords(text: string): number {
+    return this.getWords(text).length;
+  }
+
+  private findMatches<T extends string>(
+    words: string[],
+    enumObj: Record<string, T>,
+  ): T[] {
+    const validValues = new Set(Object.values(enumObj));
+    return words.filter((w): w is T => validValues.has(w as T));
   }
 }

@@ -3,8 +3,8 @@ export const aScenarios = [
     id: "1",
     name: "Providing information on a passage through a strait",
     participants: {
-      starter: { role: "vessel", name: "MV Sunrise" },
-      responder: { role: "vts", name: "Europe VTS" },
+      starter: { role: "vessel", name: "mv sunrise" },
+      responder: { role: "vts", name: "europe vts" },
     },
     turns: [
       {
