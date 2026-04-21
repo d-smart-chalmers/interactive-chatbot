@@ -88,3 +88,4 @@ app.use(
 );
 initScenariosRouter(scenariosService);
 app.use("/scenarios", scenariosRouter);
+app.use(express.static('public'));
