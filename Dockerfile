@@ -42,18 +42,18 @@ FROM node:24-alpine AS production
 ENV NODE_ENV=production
 WORKDIR /app
 
-# copy only the build dir from server-builder
+# 1. Copy the Backend (Express)
 COPY --from=server-builder /app/server/dist ./dist
 COPY --from=server-builder /app/server/package*.json ./
 
-# install runtime dependencies
-RUN npm clean-install
+# 2. Copy the Frontend SSR Build (The "Brain")
+COPY --from=client-builder /app/client/build/server ./build/server
 
-# copy only the build dir from client-builder into /app/public, serve from express backend
+# 3. Copy the Frontend Static Assets (CSS, JS, Images)
 COPY --from=client-builder /app/client/build/client ./public
 
-# expose port 3000
-EXPOSE 3000
+# 4. Install production dependencies
+RUN npm clean-install
 
-# start server
+EXPOSE 3000
 CMD ["node", "dist/index.js"]

@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { HttpError } from "../router/httpError";
+import { HttpError } from "../router/httpError.js";
 
 /**
  * Global Express error-handling middleware.

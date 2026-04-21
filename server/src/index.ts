@@ -1,4 +1,4 @@
-import { app } from "./start";
+import { app } from "./start.js";
 
 const PORT: number = 8080;
 app.listen(PORT, () => {

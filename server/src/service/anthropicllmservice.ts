@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import LLMService from "./llmservice.interface";
+import LLMService from "./llmservice.interface.js";
 
 //TODO: Remove in production
 export default class AnthropicLLMService implements LLMService {

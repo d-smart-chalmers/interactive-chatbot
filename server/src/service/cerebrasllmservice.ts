@@ -1,5 +1,5 @@
 import Cerebras from "@cerebras/cerebras_cloud_sdk";
-import type LLMService from "./llmservice.interface";
+import type LLMService from "./llmservice.interface.js";
 
 //TODO: Remove in production
 export default class CerebrasLLMService implements LLMService {

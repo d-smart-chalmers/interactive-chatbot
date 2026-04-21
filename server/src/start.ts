@@ -1,13 +1,16 @@
 import express from "express";
-import { initScenariosRouter, scenariosRouter } from "./router/scenarios";
+import { initScenariosRouter, scenariosRouter } from "./router/scenarios.js";
 import cors from "cors";
 import session from "express-session";
 import createMemoryStore from "memorystore";
-import { aScenarios, bScenarios } from "./lib/scenarios";
-import { ScenariosService } from "./service/scenarios";
+import { aScenarios, bScenarios } from "./lib/scenarios.js";
+import { ScenariosService } from "./service/scenarios.js";
 import { config as configDotEnv } from "dotenv";
-import { Scenario } from "./model/scenarios.interface";
-import { UserRole } from "@shared/scenarios/model";
+import { Scenario } from "./model/scenarios.interface.js";
+import { UserRole } from "@shared/scenarios/model.js";
+import path from 'path';
+// You'll need to install this: npm install @react-router/express
+import { createRequestHandler } from "@react-router/express";
 
 configDotEnv();
 
@@ -88,4 +91,13 @@ app.use(
 );
 initScenariosRouter(scenariosService);
 app.use("/scenarios", scenariosRouter);
-app.use(express.static('public'));
+app.use(express.static(path.join(process.cwd(), 'public')));
+
+const buildPath = "../build/server/index.js";
+app.all(
+  /(.*)/,
+  createRequestHandler({
+    // This points to the server build we copied in the Dockerfile
+    build: () => import(buildPath),
+  })
+);

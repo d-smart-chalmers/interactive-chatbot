@@ -4,9 +4,10 @@ import {
   TurnType,
   UserRole,
   UserTurn,
-} from "@shared/scenarios/model";
-import { Scenario } from "../model/scenarios.interface";
-import { TurnManager } from "./turnManager";
+} from "@shared/scenarios/model.js";
+
+import { Scenario } from "../model/scenarios.interface.js";
+import { TurnManager } from "./turnManager.js";
 
 export class ScenarioManager {
   private scenario: Scenario;
@@ -21,7 +22,7 @@ export class ScenarioManager {
     this.scenario = scenario;
     this.userRole = userRole;
     this.chatbotRole =
-      userRole === UserRole.VTS ? UserRole.Vessel : UserRole.VTS;
+      userRole === UserRole.Vessel ? UserRole.Vessel : UserRole.VTS;
     this.chatbotIsStarter =
       scenario.participants.starter.role === this.chatbotRole;
     this.history = {

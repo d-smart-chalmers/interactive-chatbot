@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from "express";
 import asyncHandler from "express-async-handler";
-import { ScenariosService } from "../service/scenarios";
+import { ScenariosService } from "../service/scenarios.js";
 import {
   DescriptionsResponse,
   GetFeedbackResponse,
@@ -10,12 +10,12 @@ import {
   StartScenarioResponse,
   SubmitAnswerRequest,
   SubmitAnswerResponse,
-} from "@shared/scenarios/api";
-import { requireUser } from "@src/middleware/requireUser";
-import CerebrasLLMService from "@src/service/cerebrasllmservice";
-import AnthropicLLMService from "@src/service/anthropicllmservice";
-import OpenAILLMService from "@src/service/openaillmservice";
-import LLMService from "@src/service/llmservice.interface";
+} from "@shared/scenarios/api.js";
+import { requireUser } from "@src/middleware/requireUser.js";
+import CerebrasLLMService from "@src/service/cerebrasllmservice.js";
+import AnthropicLLMService from "@src/service/anthropicllmservice.js";
+import OpenAILLMService from "@src/service/openaillmservice.js";
+import LLMService from "@src/service/llmservice.interface.js";
 
 let scenariosService: ScenariosService;
 let LLM_Service: LLMService;

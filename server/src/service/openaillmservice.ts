@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import LLMService from "./llmservice.interface";
+import LLMService from "./llmservice.interface.js";
 import { zodResponseFormat } from "openai/helpers/zod";
 import z from "zod";
 

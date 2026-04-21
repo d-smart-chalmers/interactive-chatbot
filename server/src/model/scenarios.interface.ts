@@ -1,4 +1,4 @@
-import { UserRole } from "@shared/scenarios/model";
+import { UserRole } from "@shared/scenarios/model.js";
 
 interface ScenarioTurn {
   vesselInstruction: string;

@@ -1,13 +1,13 @@
-import { UserRole, UserTurn } from "@shared/scenarios/model";
-import { Scenario } from "@src/model/scenarios.interface";
-import OpenAILLMService from "./openaillmservice";
-import LLMService from "./llmservice.interface";
+import { UserRole, UserTurn } from "@shared/scenarios/model.js";
+import { Scenario } from "@src/model/scenarios.interface.js";
+import OpenAILLMService from "./openaillmservice.js";
+import LLMService from "./llmservice.interface.js";
 import {
   AmbiguesWords,
   MessageMarkers,
   PhoneticAlphabet,
-} from "@src/model/turnMessages.interface";
-import CerebrasLLMService from "./cerebrasllmservice";
+} from "@src/model/turnMessages.interface.js";
+import CerebrasLLMService from "./cerebrasllmservice.js";
 
 export class TurnManager {
   private feedbackPromises: Map<number, Promise<UserTurn>>;

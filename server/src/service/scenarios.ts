@@ -1,7 +1,7 @@
-import { ScenarioDescription, UserRole } from "@shared/scenarios/model";
-import { Scenario } from "../model/scenarios.interface";
-import { HttpError } from "../router/httpError";
-import { ScenarioManager } from "./scenarioManager";
+import { ScenarioDescription, UserRole } from "@shared/scenarios/model.js";
+import { Scenario } from "../model/scenarios.interface.js";
+import { HttpError } from "../router/httpError.js";
+import { ScenarioManager } from "./scenarioManager.js";
 
 export class ScenariosService {
   private aScenarios: Scenario[];
