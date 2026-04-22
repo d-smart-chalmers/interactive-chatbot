@@ -91,13 +91,12 @@ app.use(
 );
 initScenariosRouter(scenariosService);
 app.use("/scenarios", scenariosRouter);
-app.use(express.static(path.join(process.cwd(), 'public')));
+app.use("/chat", express.static(path.join(process.cwd(), 'public')));
 
 const buildPath = "../build/server/index.js";
 app.all(
-  /(.*)/,
+  /\/chat(.*)/,
   createRequestHandler({
-    // This points to the server build we copied in the Dockerfile
     build: () => import(buildPath),
   })
 );

@@ -8,6 +8,7 @@ import svgr from 'vite-plugin-svgr';
 const ReactCompilerConfig = {};
 
 export default defineConfig({
+  base: "/chat/",
   plugins: [
     tailwindcss(),
     svgr(),
