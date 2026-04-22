@@ -100,3 +100,4 @@ app.all(
     build: () => import(buildPath),
   })
 );
+app.get("/", (req, res) => res.redirect("/chat/"));
