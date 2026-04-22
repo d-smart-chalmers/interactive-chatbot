@@ -91,9 +91,9 @@ app.use(
 );
 initScenariosRouter(scenariosService);
 app.use("/scenarios", scenariosRouter);
-app.use("/chat", express.static(path.join(process.cwd(), 'public'), { fallthrough: false }));
+app.use("/chat", express.static(path.join(process.cwd(), 'public'), { fallthrough: true }));
 app.use((req, res, next) => {
-  if (!req.url.startsWith("/chat")) {
+  if (!req.url.startsWith("/chat") && !req.url.startsWith(".")) {
     const separator = req.url.startsWith("/") ? "" : "/";
     const newPath = `/chat${separator}${req.url}`;
     
