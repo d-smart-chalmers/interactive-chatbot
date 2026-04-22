@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL,
+  baseURL: import.meta.env.VITE_SERVER_URL || process.env.VITE_SERVER_URL || '',
   withCredentials: true,
 });
 

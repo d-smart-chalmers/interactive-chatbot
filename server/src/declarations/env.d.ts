@@ -6,5 +6,6 @@ declare namespace NodeJS {
     ANTHROPIC_API_KEY: string; //TODO: Remove
     OPENAI_API_KEY: string;
     OPENAI_BASE_URL: string;
+    BASE_PATH: string;
   }
 }

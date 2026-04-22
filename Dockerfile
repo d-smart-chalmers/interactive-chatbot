@@ -22,7 +22,10 @@ FROM node:24-alpine AS client-builder
 
 # create & set app to working dir
 WORKDIR /app
-
+ARG BASE_PATH=/chat
+ENV BASE_PATH=$BASE_PATH
+ARG VITE_SERVER_URL
+ENV VITE_SERVER_URL=$VITE_SERVER_URL
 # copy package.json and package-lock.json from client
 COPY /client/package*.json ./client/
 

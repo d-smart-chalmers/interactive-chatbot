@@ -9,7 +9,6 @@ import { config as configDotEnv } from "dotenv";
 import { Scenario } from "./model/scenarios.interface.js";
 import { UserRole } from "@shared/scenarios/model.js";
 import path from 'path';
-// You'll need to install this: npm install @react-router/express
 import { createRequestHandler } from "@react-router/express";
 
 configDotEnv();
@@ -21,7 +20,13 @@ const TwoHours = 2 * 60 * 60 * 1000;
 if (!process.env.CLIENT_URL) {
   throw new Error("CLIENT_URL environment variable is not defined");
 }
-
+app.use((req, _res, next) => {
+  if (!req.path.startsWith("/chat")) {
+    req.url = "/chat" + req.url;
+    req.originalUrl = "/chat" + req.originalUrl;
+  }
+  next();
+});
 app.use(express.json());
 
 //TODO: This has to be changed when we fetch the scenarios from the database
@@ -76,13 +81,12 @@ const bScen: Scenario[] = bScenarios.map((s) => {
 });
 
 const scenariosService = new ScenariosService(aScen, bScen);
-
 const MemoryStore = createMemoryStore(session);
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 app.use(
   session({
-    cookie: { maxAge: TwoHours, httpOnly: true, sameSite: "lax" },
+    cookie: { maxAge: TwoHours, httpOnly: true, sameSite: "lax", path: process.env.BASE_PATH || "/" },
     store: new MemoryStore({ checkPeriod: TwoHours }),
     secret: process.env.SESSION_SECRET || "test-secret",
     resave: false,
@@ -90,13 +94,26 @@ app.use(
   }),
 );
 initScenariosRouter(scenariosService);
-app.use("/scenarios", scenariosRouter);
-app.use("/chat", express.static(path.join(process.cwd(), 'public')));
+const basePath = process.env.BASE_PATH || "";
+app.use(`${basePath}/scenarios`, scenariosRouter);
 
+// STATISKA FILER
+const publicPath = path.join(process.cwd(), 'public');
+// Serve resten av public (favicon etc)
+app.use(`${basePath}/assets`, express.static(path.join(publicPath, "assets")));
+app.use(basePath || "/", express.static(publicPath));
+
+// REACT ROUTER HANDLER
 const buildPath = "../build/server/index.js";
-app.all(
-  /\/chat(.*)/,
-  createRequestHandler({
-    build: () => import(buildPath),
-  })
-);
+
+let build;
+try {
+  build = await import(buildPath);
+} catch {
+  console.warn("No React Router build found, skipping SSR handler");
+  build = null;
+}
+
+if (build) {
+  app.use(new RegExp(`^${basePath}(\\/.*)?$`), createRequestHandler({ build }));
+}
