@@ -91,18 +91,36 @@ app.use(
 );
 initScenariosRouter(scenariosService);
 app.use("/scenarios", scenariosRouter);
-app.use("/chat", express.static(path.join(process.cwd(), 'public')));
 
+app.use((req, res, next) => {
+  if (!req.url.startsWith("/chat")) {
+    const separator = req.url.startsWith("/") ? "" : "/";
+    const newPath = `/chat${separator}${req.url}`;
+    
+    // Overwriting url
+    req.url = newPath;
+    req.originalUrl = newPath;
+    (req as any).baseUrl = "/chat";
+  }
+  next();
+});
+app.use("/chat", express.static(path.join(process.cwd(), 'public')));
 const buildPath = "../build/server/index.js";
 app.all(
-  /^\/(chat\/.*|.*)/,
-  (req, _res, next) => {
-    if (!req.url.startsWith('/chat')) {
-      req.url = '/chat' + (req.url.startsWith('/') ? '' : '/') + req.url;
+  /^\/.*/, 
+  async (req, res, next) => {
+    try {
+      const handler = createRequestHandler({
+        // @ts-ignore
+        build: () => import(buildPath),
+      });
+      const protocol = req.protocol;
+      const host = req.get("host");
+      const url = new URL(req.url, `${protocol}://${host}`);
+
+      return handler(req, res, next);
+    } catch (error) {
+      next(error);
     }
-    next();
-  },
-  createRequestHandler({
-    build: () => import(buildPath) as any,
-  })
+  }
 );
