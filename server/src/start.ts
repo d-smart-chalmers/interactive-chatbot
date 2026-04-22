@@ -91,35 +91,53 @@ app.use(
 );
 initScenariosRouter(scenariosService);
 app.use("/scenarios", scenariosRouter);
-app.use("/chat", express.static(path.join(process.cwd(), 'public'), { fallthrough: true }));
+
+// 1. STATISKA FILER - Måste ligga absolut först
+const publicPath = path.join(process.cwd(), 'public');
+
+// Denna rad sköter allt under /chat/assets/...
+// Vi mappar det direkt så att ingen annan kod hinner lägga sig i
+app.use("/chat/assets", express.static(path.join(publicPath, "assets"), {
+  immutable: true,
+  maxAge: "1y",
+  index: false
+}));
+
+// Denna sköter favicon och andra filer i roten av public
+app.use("/chat", express.static(publicPath, { index: false }));
+
+// 2. LOGGA FÖR ATT SE VAD SOM HÄNDER
 app.use((req, res, next) => {
-  if (!req.url.startsWith("/chat") && !req.url.startsWith(".")) {
-    const separator = req.url.startsWith("/") ? "" : "/";
-    const newPath = `/chat${separator}${req.url}`;
-    
-    // Overwriting url
-    req.url = newPath;
-    req.originalUrl = newPath;
-    (req as any).baseUrl = "/chat";
+  console.log(`Inkommande: ${req.method} ${req.url}`);
+  next();
+});
+
+// 3. FIXA URL FÖR REACT ROUTER
+app.use((req, res, next) => {
+  // Om det INTE är en fil (ingen punkt) och INTE börjar med /chat
+  if (!req.url.includes('.') && !req.url.startsWith("/chat")) {
+    const oldUrl = req.url;
+    req.url = "/chat" + (req.url.startsWith("/") ? "" : "/") + req.url;
+    req.originalUrl = req.url;
+    console.log(`Rewriting: ${oldUrl} -> ${req.url}`);
   }
   next();
 });
 
+// 4. REACT ROUTER HANDLER
 const buildPath = "../build/server/index.js";
 app.all(
-  /^\/.*/, 
+  /^\/chat.*/, 
   async (req, res, next) => {
     try {
+      const { createRequestHandler } = await import("@react-router/express");
       const handler = createRequestHandler({
         // @ts-ignore
         build: () => import(buildPath),
       });
-      const protocol = req.protocol;
-      const host = req.get("host");
-      const url = new URL(req.url, `${protocol}://${host}`);
-
       return handler(req, res, next);
     } catch (error) {
+      console.error("RR Handler Error:", error);
       next(error);
     }
   }
