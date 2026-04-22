@@ -12,8 +12,6 @@ import {
   SubmitAnswerResponse,
 } from "@shared/scenarios/api.js";
 import { requireUser } from "@src/middleware/requireUser.js";
-import CerebrasLLMService from "@src/service/cerebrasllmservice.js";
-import AnthropicLLMService from "@src/service/anthropicllmservice.js";
 import OpenAILLMService from "@src/service/openaillmservice.js";
 import LLMService from "@src/service/llmservice.interface.js";
 
@@ -118,7 +116,7 @@ scenariosRouter.post(
 );
 
 //TODO: REMOVE: Used for manual testing
-scenariosRouter.get(
+/* scenariosRouter.get(
   "/feedback",
   asyncHandler(async (_req: Request, res: Response) => {
     const llmservice = LLM_Service;
@@ -137,5 +135,6 @@ scenariosRouter.get(
       "we are soon entering hamburg",
     );
     res.status(200).send({ correct });
-  }),
-);
+  }), 
+  
+);*/

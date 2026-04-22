@@ -19,8 +19,7 @@ export class TurnManager {
     this.scenario = scenario;
     this.userRole = userRole;
     this.feedbackPromises = new Map();
-    // TODO swap back to openAI later
-    this.llmModel = new CerebrasLLMService();
+    this.llmModel = new OpenAILLMService();
   }
 
   async startGenerateFeedback(
