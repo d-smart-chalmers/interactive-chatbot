@@ -42,14 +42,14 @@ FROM node:24-alpine AS production
 ENV NODE_ENV=production
 WORKDIR /app
 
-# 1. Copy the Backend (Express)
+# Copy the Backend (Express)
 COPY --from=server-builder /app/server/dist ./dist
 COPY --from=server-builder /app/server/package*.json ./
 
-# 2. Copy the Frontend SSR Build (The "Brain")
+# Copy the Frontend SSR Build
 COPY --from=client-builder /app/client/build/server ./build/server
 
-# 3. Copy the Frontend Static Assets (CSS, JS, Images)
+# Copy the Frontend Static Assets (CSS, JS, Images)
 COPY --from=client-builder /app/client/build/client ./public
 
 # 4. Install production dependencies

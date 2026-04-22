@@ -46,6 +46,7 @@ export class TurnManager {
     scenarioIndex: number,
   ): Promise<UserTurn> {
     const userText = await this.llmModel.correctSpelling(userTurn.message);
+    console.log("Corrected user input: ", userText);
 
     let turnAnswer: string | undefined;
 

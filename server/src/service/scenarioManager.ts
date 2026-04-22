@@ -22,7 +22,7 @@ export class ScenarioManager {
     this.scenario = scenario;
     this.userRole = userRole;
     this.chatbotRole =
-      userRole === UserRole.Vessel ? UserRole.Vessel : UserRole.VTS;
+      userRole === UserRole.VTS ? UserRole.Vessel : UserRole.VTS;
     this.chatbotIsStarter =
       scenario.participants.starter.role === this.chatbotRole;
     this.history = {
