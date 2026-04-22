@@ -96,7 +96,13 @@ app.use("/chat", express.static(path.join(process.cwd(), 'public')));
 const buildPath = "../build/server/index.js";
 app.all(
   /^\/(chat\/.*|.*)/,
+  (req, _res, next) => {
+    if (!req.url.startsWith('/chat')) {
+      req.url = '/chat' + (req.url.startsWith('/') ? '' : '/') + req.url;
+    }
+    next();
+  },
   createRequestHandler({
-    build: () => import(buildPath),
+    build: () => import(buildPath) as any,
   })
 );
