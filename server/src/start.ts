@@ -95,9 +95,8 @@ app.use("/chat", express.static(path.join(process.cwd(), 'public')));
 
 const buildPath = "../build/server/index.js";
 app.all(
-  /\/chat(.*)/,
+  ["/chat/:unused*", "*"],
   createRequestHandler({
     build: () => import(buildPath),
   })
 );
-app.get("/", (req, res) => res.redirect("/chat/"));
