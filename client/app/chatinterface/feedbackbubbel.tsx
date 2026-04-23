@@ -1,5 +1,6 @@
 import { AnswerAccuracy } from '@shared/scenarios/model';
 import { CircleCheck, CircleCheckBig, CircleX } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface MessageBubbleProps {
   userMessage: string;
@@ -62,7 +63,7 @@ export default function FeedbackBubble({
         className={`w-full rounded-2xl border px-4 py-2 shadow-sm ${bubbleStyle}`}
       >
         <p className="text-sm leading-relaxed italic">"{userMessage}"</p>
-        <p className="text-sm leading-relaxed">{feedbackContent}</p>
+        <p className="text-sm leading-relaxed whitespace-pre-line">{feedbackContent}</p>
       </div>
 
       {/* Timestamp */}
