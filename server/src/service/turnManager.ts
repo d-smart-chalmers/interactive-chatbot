@@ -241,13 +241,13 @@ export class TurnManager {
     const includesSender = message.includes(sender);
 
     if (!includesReceiver && !includesSender) {
-      feedbackParts.push("Missing call signs in message.");
+      feedbackParts.push("Missing names in message.");
       errorCounter += 2;
     } else if (!includesReceiver) {
-      feedbackParts.push("Missing receiver call sign in message.");
+      feedbackParts.push("Missing receiver name in message.");
       errorCounter += 1;
     } else if (!includesSender) {
-      feedbackParts.push("Missing sender call sign in message.");
+      feedbackParts.push("Missing sender name in message.");
       errorCounter += 1;
     }
 
@@ -278,7 +278,7 @@ export class TurnManager {
     }
 
     if (senderIndex <= receiverIndex) {
-      feedbackParts.push("Call signs in wrong order.");
+      feedbackParts.push("Sender and Reciever are in wrong order.");
       errorCounter += 1;
     }
 
@@ -299,7 +299,7 @@ export class TurnManager {
       errorCounter += 1;
     }
 
-    if (!opening.includes("this is")) {
+    if (!opening.includes("this is") && includesSender) {
       feedbackParts.push("Opening should contain 'this is'.");
       errorCounter += 1;
     }

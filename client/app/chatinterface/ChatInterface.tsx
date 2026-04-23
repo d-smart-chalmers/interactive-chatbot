@@ -42,6 +42,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
   );
   const [mounted, setMounted] = useState(false);
   const hasFetched = useRef(false);
+  const [gettingFeedback, setGettingFeedback] = useState(false);
   useEffect(() => {
     if (hasFetched.current) {
       return;
@@ -93,6 +94,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
   }
   async function submitMessage(message: string, timestamp: number) {
     setDisableSubmit(true);
+
     const submitResponse = await api.post(`/scenarios/submit-answer/${id}`, {
       answer: message,
       timestamp,
@@ -104,6 +106,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       chatHistoryStore.addTurn(data.userTurn);
       setDisableRetry(false);
       setOpenFeedback(true);
+      setGettingFeedback(true);
       const feedbackResponse = await api.get(
         `/scenarios/get-feedback/${userTurnId}`,
       );
@@ -124,16 +127,20 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
               nextTurnData.chatbotTurn === undefined
             ) {
               chatHistoryStore.setScenarioEnded(true);
+              setGettingFeedback(false);
+              return;
             } else {
               chatHistoryStore.setInstruction(nextTurnData.instruction);
               chatHistoryStore.addTurn(nextTurnData.chatbotTurn);
               setDisableSubmit(false);
+              setGettingFeedback(false);
             }
           } else {
             console.log('Error getting next turn');
           }
         } else {
           setDisableSubmit(false);
+          setGettingFeedback(false);
         }
       } else {
         console.log('Error getting feedback');
@@ -191,7 +198,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
         )}
       </div>
       <AnimatePresence>
-        {disableSubmit && (
+        {gettingFeedback && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

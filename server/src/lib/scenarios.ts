@@ -3,7 +3,7 @@ export const aScenarios = [
     id: "1",
     name: "Providing information on a passage through a strait",
     participants: {
-      starter: { role: "vessel", name: "mv sunrise" },
+      starter: { role: "vessel", name: "sunrise" },
       responder: { role: "vts", name: "europe vts" },
     },
     turns: [
@@ -51,7 +51,7 @@ export const aScenarios = [
     name: "Providing and reading back anchoring position coordinates",
     participants: {
       starter: { role: "vts", name: "europe vts" },
-      responder: { role: "vessel", name: "mv sunrise" },
+      responder: { role: "vessel", name: "sunrise" },
     },
     turns: [
       {
@@ -87,7 +87,7 @@ export const aScenarios = [
     id: "3",
     name: "Vessel enters VTS area and must drop anchor to wait for pilot",
     participants: {
-      starter: { role: "vessel", name: "mv sunrise" },
+      starter: { role: "vessel", name: "sunrise" },
       responder: { role: "vts", name: "europe vts" },
     },
     turns: [
@@ -128,7 +128,7 @@ export const aScenarios = [
     id: "4",
     name: "Vessel ready to departure calls to ask clearance",
     participants: {
-      starter: { role: "vessel", name: "mv sunrise" },
+      starter: { role: "vessel", name: "sunrise" },
       responder: { role: "vts", name: "europe vts" },
     },
     turns: [
@@ -160,7 +160,7 @@ export const aScenarios = [
     id: "5",
     name: "Entering the reporting zone",
     participants: {
-      starter: { role: "vessel", name: "mv sunrise" },
+      starter: { role: "vessel", name: "sunrise" },
       responder: { role: "vts", name: "europe vts" },
     },
     turns: [
@@ -198,7 +198,7 @@ export const aScenarios = [
     id: "6",
     name: "Vessel in transit to pilot station",
     participants: {
-      starter: { role: "vessel", name: "mv sunrise" },
+      starter: { role: "vessel", name: "sunrise" },
       responder: { role: "vts", name: "europe vts" },
     },
     turns: [
