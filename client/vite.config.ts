@@ -8,7 +8,7 @@ import svgr from 'vite-plugin-svgr';
 const ReactCompilerConfig = {};
 
 export default defineConfig({
-  base: process.env.BASE_PATH ? `${process.env.BASE_PATH}/` : "/",
+  base: process.env.BASE_PATH ? `${process.env.BASE_PATH}/` : '/',
   plugins: [
     tailwindcss(),
     svgr(),

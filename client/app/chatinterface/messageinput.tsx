@@ -50,8 +50,13 @@ export default function MessageInputComponent({
     recognition.onresult = (event: any) => {
       const result: string = event.results[0][0].transcript;
       // Simple fix to avoid web speech recognition from hearing bts/mb instead of vts/mv
-      const correctedResult = result.replace('bts', 'VTS').replace('vts', 'VTS').replace('BTS', 'VTS').replace('mb', 'MV').replace('MB', 'MV');
-      
+      const correctedResult = result
+        .replace('bts', 'VTS')
+        .replace('vts', 'VTS')
+        .replace('BTS', 'VTS')
+        .replace('mb', 'MV')
+        .replace('MB', 'MV');
+
       setMessage(correctedResult);
     };
     recognition.onerror = (event: any) => {

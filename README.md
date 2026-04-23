@@ -98,6 +98,7 @@ The project is a monorepo with the following structure:
 -   `npm run dev`: Starts the development server with hot-reloading using `tsx`.
 -   `npm test`: (Not yet implemented).
 -   `npm run format`: Formats code with Prettier.
+-   `npm run build`: Builds the application for production.
 
 ### Client (`/client`)
 

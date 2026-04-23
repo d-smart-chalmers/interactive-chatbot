@@ -8,7 +8,7 @@ import { ScenariosService } from "./service/scenarios.js";
 import { config as configDotEnv } from "dotenv";
 import { Scenario } from "./model/scenarios.interface.js";
 import { UserRole } from "@shared/scenarios/model.js";
-import path from 'path';
+import path from "path";
 import { createRequestHandler } from "@react-router/express";
 
 configDotEnv();
@@ -86,7 +86,12 @@ app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 app.use(
   session({
-    cookie: { maxAge: TwoHours, httpOnly: true, sameSite: "lax", path: process.env.BASE_PATH || "/" },
+    cookie: {
+      maxAge: TwoHours,
+      httpOnly: true,
+      sameSite: "lax",
+      path: process.env.BASE_PATH || "/",
+    },
     store: new MemoryStore({ checkPeriod: TwoHours }),
     secret: process.env.SESSION_SECRET || "test-secret",
     resave: false,
@@ -98,7 +103,7 @@ const basePath = process.env.BASE_PATH || "";
 app.use(`${basePath}/scenarios`, scenariosRouter);
 
 // STATISKA FILER
-const publicPath = path.join(process.cwd(), 'public');
+const publicPath = path.join(process.cwd(), "public");
 // Serve resten av public (favicon etc)
 app.use(`${basePath}/assets`, express.static(path.join(publicPath, "assets")));
 app.use(basePath || "/", express.static(publicPath));
