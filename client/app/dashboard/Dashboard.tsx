@@ -34,7 +34,6 @@ export default function Dashboard() {
     }
     hasFetched.current = true;
     fetchData();
-    console.log('fetching data');
   }, []);
 
   const onClickScenario = (id: string) => {
