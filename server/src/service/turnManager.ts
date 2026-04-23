@@ -126,20 +126,24 @@ export class TurnManager {
     );
     if (!endingResult.correct) errorCounter += 2;
 
-    let feedback = [parsedOpening.openingFeedback, endingResult.feedback].join(
-      "\n",
-    );
+    const feedbackParts = [
+      parsedOpening.openingFeedback,
+      endingResult.feedback,
+    ];
 
     if (this.countWords(endingResult.remainingMessage) > 0) {
       const turnContent = this.getTurnAnswerContent(turnMessage);
-      const contentResult = await this.controlContent(
-        endingResult.remainingMessage,
-        turnContent,
-      );
-      feedback += "\n" + contentResult.feedback;
-      errorCounter += contentResult.errorCounter;
+      if (turnContent.trim()) {
+        const contentResult = await this.controlContent(
+          endingResult.remainingMessage,
+          turnContent,
+        );
+        feedbackParts.splice(1, 0, contentResult.feedback); 
+        errorCounter += contentResult.errorCounter;
+      }
     }
 
+    const feedback = feedbackParts.join("\n");
     const answerAccuracy =
       errorCounter >= 4
         ? AnswerAccuracy.Incorrect
