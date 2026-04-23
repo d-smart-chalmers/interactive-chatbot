@@ -46,7 +46,7 @@ export default function FeedbackWindow() {
                   userMessage={turn.message}
                   timestamp={turn.timestamp}
                   feedbackContent={(turn as UserTurn).feedback!}
-                  feedbackCorrect={(turn as UserTurn).correct!}
+                  feedbackAccuracy={(turn as UserTurn).answerAccuracy!}
                 />
               </motion.div>
             ) : null,

@@ -30,6 +30,7 @@ scenariosRouter.get(
     const descriptions = scenariosService.getDescriptions();
     //TODO: ful lösning, får ändra senare
     req.session.userId = req.sessionID;
+    console.log("User ID set to session ID:", req.session.userId);
     res.status(200).send({ descriptions });
   }),
 );

@@ -13,6 +13,12 @@ export enum TurnType {
   Chatbot = "chatbot",
 }
 
+export enum AnswerAccuracy {
+  Correct = "correct",
+  PartiallyCorrect = "partially_correct",
+  Incorrect = "incorrect",
+}
+
 export interface ScenarioChatHistory {
   turns: TurnHistory[];
   intruction: string;
@@ -28,7 +34,7 @@ export interface BaseTurn {
 
 export interface UserTurn extends BaseTurn {
   feedback?: string;
-  correct?: boolean;
+  answerAccuracy?: AnswerAccuracy;
 }
 
 export interface ChatbotTurn extends BaseTurn {}

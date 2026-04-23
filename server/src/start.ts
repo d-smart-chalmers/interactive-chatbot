@@ -21,7 +21,7 @@ if (!process.env.CLIENT_URL) {
   throw new Error("CLIENT_URL environment variable is not defined");
 }
 app.use((req, _res, next) => {
-  if (!req.path.startsWith("/chat")) {
+  if (!req.path.startsWith("/chat") && process.env.BASE_PATH === "/chat") {
     req.url = "/chat" + req.url;
     req.originalUrl = "/chat" + req.originalUrl;
   }
@@ -101,6 +101,7 @@ app.use(
 initScenariosRouter(scenariosService);
 const basePath = process.env.BASE_PATH || "";
 app.use(`${basePath}/scenarios`, scenariosRouter);
+console.log(`${basePath}/scenarios`)
 
 // STATISKA FILER
 const publicPath = path.join(process.cwd(), "public");

@@ -23,6 +23,7 @@ import {
   DrawerTitle,
 } from '~/components/ui/drawer';
 import { AnimatePresence, motion } from 'framer-motion';
+import { AnswerAccuracy } from '@shared/scenarios/model';
 
 interface ChatinterfaceProps {
   id: string;
@@ -109,7 +110,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       if (feedbackResponse.status === 200) {
         const feedbackData = feedbackResponse.data as GetFeedbackResponse;
         chatHistoryStore.updateTurn(feedbackData.turnWithFeedback);
-        if (feedbackData.turnWithFeedback.correct) {
+        if (!(feedbackData.turnWithFeedback.answerAccuracy === AnswerAccuracy.Incorrect)) {
           const nextTurnResponse = await api.get(`/scenarios/get-next-turn`);
           if (nextTurnResponse.status === 200) {
             const nextTurnData = nextTurnResponse.data as GetNextTurnResponse;

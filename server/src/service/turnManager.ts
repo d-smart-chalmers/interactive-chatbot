@@ -1,4 +1,4 @@
-import { UserRole, UserTurn } from "@shared/scenarios/model.js";
+import { AnswerAccuracy, UserRole, UserTurn } from "@shared/scenarios/model.js";
 import { Scenario } from "@src/model/scenarios.interface.js";
 import OpenAILLMService from "./openaillmservice.js";
 import LLMService from "./llmservice.interface.js";
@@ -71,7 +71,7 @@ export class TurnManager {
     const updatedTurn: UserTurn = {
       ...userTurn,
       feedback: testFeedback,
-      correct: messageFeedback.correct,
+      answerAccuracy: messageFeedback.answerAccuracy,
     };
 
     return updatedTurn;
@@ -87,7 +87,7 @@ export class TurnManager {
         id: userTurnId,
         message: "Please send again, error in backend",
         feedback: "Fallback feedback generated in waitForFeedback",
-        correct: false,
+        answerAccuracy: AnswerAccuracy.Incorrect,
         timestamp: Date.now(),
       } as UserTurn;
     }
@@ -104,7 +104,8 @@ export class TurnManager {
     correctedUserInput: string,
     turnAnswer: string,
     scenarioIndex: number,
-  ): Promise<{ feedback: string; correct: boolean }> {
+  ): Promise<{ feedback: string; answerAccuracy: AnswerAccuracy }> {
+    let errorCounter = 0;
     const userMessage = this.normalize(userInput);
     const correctedUserMessage = this.normalize(correctedUserInput);
     const turnMessage = this.normalize(turnAnswer);
@@ -121,16 +122,21 @@ export class TurnManager {
         ? parsedCorrected
         : parsedOriginal;
 
+    errorCounter = errorCounter + ((parsedOpening.errorCounter >= 2) ? 2 : parsedOpening.errorCounter)
     const { openingFeedback, messageWithoutOpening } = parsedOpening;
 
     const parseEndingMessage = this.controlEnding(
       messageWithoutOpening,
       turnMessage,
     );
+    if(!parseEndingMessage.correct){
+      errorCounter = errorCounter + 2;
+    }
 
-    let correct = true;
+  
+    let answerAccuracy = AnswerAccuracy.Correct;
 
-    let feedback = openingFeedback + parseEndingMessage.feedback;
+    let feedback = openingFeedback + '\n' + parseEndingMessage.feedback;
 
     if (this.countWords(parseEndingMessage.remainingMessage) !== 0) {
       const turnMessageContent = this.getTurnAnswerContent(turnMessage);
@@ -140,28 +146,36 @@ export class TurnManager {
         turnMessageContent,
       );
 
-      feedback = feedback + contentFeedback.feedback;
-      correct = contentFeedback.correct;
+      feedback = feedback + '\n' + contentFeedback.feedback;
+
+      errorCounter = errorCounter + contentFeedback.errorCounter;
     }
 
-    return { feedback: feedback, correct: correct };
+    if(errorCounter >= 4){
+      answerAccuracy = AnswerAccuracy.Incorrect;
+    } else if (errorCounter >= 2){
+      answerAccuracy = AnswerAccuracy.PartiallyCorrect;
+    }
+    return { feedback: feedback, answerAccuracy: answerAccuracy};
   }
 
   private async controlContent(
     userInput: string,
     turnAnswer: string,
-  ): Promise<{ feedback: string; correct: boolean }> {
+  ): Promise<{ feedback: string; errorCounter: number }> {
     const correctContent = await this.llmModel.compareMeaning(
       userInput,
       turnAnswer,
     );
 
     let feedback = "";
+    let errorCounter = 0;
 
     if (correctContent) {
       feedback = "Content is correct. ";
     } else {
       feedback = "Content is missing information. ";
+      errorCounter = errorCounter + 4;
     }
 
     const userWordCount = this.countWords(userInput);
@@ -170,6 +184,7 @@ export class TurnManager {
     // + 5 is just taken out of thin air
     if (userWordCount >= turnWordCount + 5) {
       feedback += "Content includes more words than needed. ";
+      //TODO: Should this render an errorcounter or not?
     }
 
     const turnWords = this.getWords(turnAnswer);
@@ -201,17 +216,26 @@ export class TurnManager {
       userPhoneticSet.has(w),
     );
 
-    if (userAmbiguousWords.length !== 0) feedback += "Ambiguous words used. ";
+    if (userAmbiguousWords.length !== 0){
+      feedback += "Ambiguous words used. ";
+      errorCounter = errorCounter + 1;
+    }
 
-    if (turnFirstWordMarker && !userHasAnyMarker)
+    if (turnFirstWordMarker && !userHasAnyMarker){
       feedback += "Missing message Marker. ";
-    if (turnFirstWordMarker && userHasAnyMarker && !userHasTurnMarker)
+      errorCounter = errorCounter + 1;
+    }
+    if (turnFirstWordMarker && userHasAnyMarker && !userHasTurnMarker){
       feedback += "Control that message marker is appropriate. ";
+      errorCounter = errorCounter + 1;
+    }
 
-    if (!userHasAllTurnPhonetics)
+    if (!userHasAllTurnPhonetics){
       feedback += "Missing phonetic alphabet words from expected response. ";
+      errorCounter = errorCounter + 4;
+    }
 
-    return { feedback: feedback, correct: correctContent };
+    return { feedback: feedback, errorCounter: errorCounter };
   }
 
   private controlOpening(
@@ -221,6 +245,7 @@ export class TurnManager {
     messageWithoutOpening: string;
     correct: boolean;
     openingFeedback: string;
+    errorCounter: number;
   } {
     const sender =
       this.userRole === this.scenario.participants.starter.role
@@ -237,13 +262,18 @@ export class TurnManager {
 
     let feedback = "";
     let correctOpening = false;
+    let errorCounter = 0;
+
 
     if (!includesReceiver && !includesSender) {
       feedback = feedback + "Missing call signs in message. ";
+      errorCounter = errorCounter + 2;
     } else if (!includesReceiver) {
       feedback = feedback + "Missing receiver call sign in message. ";
+      errorCounter = errorCounter + 1;
     } else if (!includesSender) {
       feedback = feedback + "Missing sender call sign in message. ";
+      errorCounter = errorCounter + 1;
     }
 
     const senderIndex = message.indexOf(sender);
@@ -271,11 +301,15 @@ export class TurnManager {
         messageWithoutOpening: remainingMessage,
         correct: correctOpening,
         openingFeedback: feedback,
+        errorCounter: errorCounter,
       };
 
     const correctOrder = senderIndex > receiverIndex;
 
-    if (!correctOrder) feedback = "Call signs in wrong order. ";
+    if (!correctOrder) {
+      feedback = "Call signs in wrong order. ";
+      errorCounter = errorCounter + 1;
+    }
 
     const isFirstMessage =
       scenarioIndex === 0 &&
@@ -288,12 +322,16 @@ export class TurnManager {
       feedback =
         feedback +
         "First message should contain the receiver two or three times. ";
+      errorCounter = errorCounter + 1;
     } else if (!isFirstMessage && matchReceiver.length !== 1) {
       feedback = feedback + "Message should contain the receiver once. ";
+      errorCounter = errorCounter + 1;
     }
 
-    if (!opening.includes("this is"))
+    if (!opening.includes("this is")){
       feedback = feedback + "Opening should contain this is. ";
+      errorCounter = errorCounter + 1;
+    }
 
     const wordsInOpening = this.countWords(opening);
     const shouldContainWords =
@@ -301,8 +339,10 @@ export class TurnManager {
       this.countWords(receiver) * matchReceiver.length +
       2; // +2 is for "this is"
 
-    if (wordsInOpening > shouldContainWords)
-      feedback = feedback + "Opening consists of more words than needed. ";
+    if (wordsInOpening > shouldContainWords){
+      feedback = feedback + "Opening contains more words than needed. ";
+      errorCounter = errorCounter + 1;
+    }
 
     if (feedback === "") {
       feedback = "Correct opening! ";
@@ -318,6 +358,7 @@ export class TurnManager {
       messageWithoutOpening: remainingMessage,
       correct: correctOpening,
       openingFeedback: feedback,
+      errorCounter: errorCounter,
     };
   }
 
