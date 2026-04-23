@@ -153,7 +153,7 @@ export class TurnManager {
 
     if(errorCounter >= 4){
       answerAccuracy = AnswerAccuracy.Incorrect;
-    } else if (errorCounter >= 2){
+    } else if (errorCounter > 0){
       answerAccuracy = AnswerAccuracy.PartiallyCorrect;
     }
     return { feedback: feedback, answerAccuracy: answerAccuracy};
