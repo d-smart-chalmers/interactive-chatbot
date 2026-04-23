@@ -62,7 +62,9 @@ export default function FeedbackBubble({
         className={`w-full rounded-2xl border px-4 py-2 shadow-sm ${bubbleStyle}`}
       >
         <p className="text-sm leading-relaxed italic">"{userMessage}"</p>
-        <p className="text-sm leading-relaxed whitespace-pre-line">{feedbackContent}</p>
+        <p className="text-sm leading-relaxed whitespace-pre-line">
+          {feedbackContent}
+        </p>
       </div>
 
       {/* Timestamp */}

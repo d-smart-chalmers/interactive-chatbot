@@ -138,7 +138,7 @@ export class TurnManager {
           endingResult.remainingMessage,
           turnContent,
         );
-        feedbackParts.splice(1, 0, contentResult.feedback); 
+        feedbackParts.splice(1, 0, contentResult.feedback);
         errorCounter += contentResult.errorCounter;
       }
     }

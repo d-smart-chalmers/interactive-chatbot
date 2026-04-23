@@ -13,22 +13,30 @@ interface MessageInputComponentProps {
   onSubmit: (message: string, timestamp: number) => void;
   disableSubmit: boolean;
 }
-/** 
+/**
  * Helper function used to correct common web speech recognition issues.
-*/
+ */
 function correctSpeechResult(text: string): string {
   const numberWords: Record<string, string> = {
-    "0": "zero", "1": "one", "2": "two", "3": "three", "4": "four",
-    "5": "five", "6": "six", "7": "seven", "8": "eight", "9": "nine",
+    '0': 'zero',
+    '1': 'one',
+    '2': 'two',
+    '3': 'three',
+    '4': 'four',
+    '5': 'five',
+    '6': 'six',
+    '7': 'seven',
+    '8': 'eight',
+    '9': 'nine',
   };
 
   return text
-    .replace(/\d/g, (digit) => numberWords[digit] + " ")
-    .replace(/ {2,}/g, " ") // collapse double spaces
+    .replace(/\d/g, (digit) => numberWords[digit] + ' ')
+    .replace(/ {2,}/g, ' ') // collapse double spaces
     .trim()
-    .replace(/\bbts\b/gi, "VTS")
-    .replace(/\bvts\b/gi, "VTS")
-    .replace(/\bmb\b/gi, "MV");
+    .replace(/\bbts\b/gi, 'VTS')
+    .replace(/\bvts\b/gi, 'VTS')
+    .replace(/\bmb\b/gi, 'MV');
 }
 
 export default function MessageInputComponent({
