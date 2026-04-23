@@ -13,6 +13,24 @@ interface MessageInputComponentProps {
   onSubmit: (message: string, timestamp: number) => void;
   disableSubmit: boolean;
 }
+/** 
+ * Helper function used to correct common web speech recognition issues.
+*/
+function correctSpeechResult(text: string): string {
+  const numberWords: Record<string, string> = {
+    "0": "zero", "1": "one", "2": "two", "3": "three", "4": "four",
+    "5": "five", "6": "six", "7": "seven", "8": "eight", "9": "nine",
+  };
+
+  return text
+    .replace(/\d/g, (digit) => numberWords[digit] + " ")
+    .replace(/ {2,}/g, " ") // collapse double spaces
+    .trim()
+    .replace(/\bbts\b/gi, "VTS")
+    .replace(/\bvts\b/gi, "VTS")
+    .replace(/\bmb\b/gi, "MV");
+}
+
 export default function MessageInputComponent({
   onSubmit,
   disableSubmit,
@@ -49,14 +67,8 @@ export default function MessageInputComponent({
 
     recognition.onresult = (event: any) => {
       const result: string = event.results[0][0].transcript;
-      // Simple fix to avoid web speech recognition from hearing bts/mb instead of vts/mv
-      const correctedResult = result
-        .replace('bts', 'VTS')
-        .replace('vts', 'VTS')
-        .replace('BTS', 'VTS')
-        .replace('mb', 'MV')
-        .replace('MB', 'MV');
-
+      // Simple fix to avoid web speech recognition from spelling numbers as numerics and misspelling certain words
+      const correctedResult = correctSpeechResult(result);
       setMessage(correctedResult);
     };
     recognition.onerror = (event: any) => {
