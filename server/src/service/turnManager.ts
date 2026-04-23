@@ -7,7 +7,8 @@ import {
   MessageMarkers,
   PhoneticAlphabet,
 } from "@src/model/turnMessages.interface.js";
-import CerebrasLLMService from "./cerebrasllmservice.js";
+
+const EXTRA_WORD_THRESHOLD = 5;
 
 export class TurnManager {
   private feedbackPromises: Map<number, Promise<UserTurn>>;
@@ -26,78 +27,73 @@ export class TurnManager {
     userTurn: UserTurn,
     scenarioIndex: number,
   ): Promise<void> {
-    // Supposed to avoid duplicate calls to llm.
-    if (this.feedbackPromises.has(userTurn.id)) {
-      return;
-    }
+    if (this.feedbackPromises.has(userTurn.id)) return;
 
     const promise = this.generateFeedback(userTurn, scenarioIndex);
-
-    promise.catch(() => {
-      this.feedbackPromises.delete(userTurn.id);
-    });
-
+    promise.catch(() => this.feedbackPromises.delete(userTurn.id));
     this.feedbackPromises.set(userTurn.id, promise);
-  }
-
-  private async generateFeedback(
-    userTurn: UserTurn,
-    scenarioIndex: number,
-  ): Promise<UserTurn> {
-    const userText = await this.llmModel.correctSpelling(userTurn.message);
-    console.log("Original user input: ", userTurn.message);
-    console.log("Corrected user input: ", userText);
-
-    let turnAnswer: string | undefined;
-
-    if (this.userRole === UserRole.VTS) {
-      turnAnswer = this.scenario.scenarioTurns[scenarioIndex]?.vtsMessage;
-    } else {
-      turnAnswer = this.scenario.scenarioTurns[scenarioIndex]?.vesselMessage;
-    }
-
-    if (turnAnswer === undefined) turnAnswer = "Failed to find turn message";
-
-    let messageFeedback = await this.controlUserMessage(
-      userTurn.message,
-      userText,
-      turnAnswer,
-      scenarioIndex,
-    );
-
-    // TODO: remove later, just used for testing
-    let testFeedback =
-      messageFeedback.feedback + " and turn answer: " + turnAnswer;
-
-    const updatedTurn: UserTurn = {
-      ...userTurn,
-      feedback: testFeedback,
-      answerAccuracy: messageFeedback.answerAccuracy,
-    };
-
-    return updatedTurn;
   }
 
   async waitForFeedback(userTurnId: number): Promise<UserTurn> {
     const feedbackPromise = this.feedbackPromises.get(userTurnId);
 
     if (!feedbackPromise) {
-      console.log("Feedback promise missing for turn:", userTurnId);
-
-      return {
-        id: userTurnId,
-        message: "Please send again, error in backend",
-        feedback: "Fallback feedback generated in waitForFeedback",
-        answerAccuracy: AnswerAccuracy.Incorrect,
-        timestamp: Date.now(),
-      } as UserTurn;
+      console.warn("Feedback promise missing for turn:", userTurnId);
+      return this.fallbackTurn(userTurnId);
     }
 
     const updatedTurn = await feedbackPromise;
-
     this.feedbackPromises.delete(userTurnId);
-
     return updatedTurn;
+  }
+
+  private async generateFeedback(
+    userTurn: UserTurn,
+    scenarioIndex: number,
+  ): Promise<UserTurn> {
+    const correctedMessage = await this.llmModel.correctSpelling(
+      userTurn.message,
+    );
+
+    const turnAnswer =
+      this.getTurnAnswer(scenarioIndex) ?? "Failed to find turn message";
+    const { feedback, answerAccuracy } = await this.controlUserMessage(
+      userTurn.message,
+      correctedMessage,
+      turnAnswer,
+      scenarioIndex,
+    );
+
+    return { ...userTurn, feedback, answerAccuracy };
+  }
+
+  private getTurnAnswer(scenarioIndex: number): string | undefined {
+    const turn = this.scenario.scenarioTurns[scenarioIndex];
+    return this.userRole === UserRole.VTS
+      ? turn?.vtsMessage
+      : turn?.vesselMessage;
+  }
+
+  private getSender(): string {
+    return this.userRole === this.scenario.participants.starter.role
+      ? this.scenario.participants.starter.name
+      : this.scenario.participants.responder.name;
+  }
+
+  private getReceiver(): string {
+    return this.userRole === this.scenario.participants.starter.role
+      ? this.scenario.participants.responder.name
+      : this.scenario.participants.starter.name;
+  }
+
+  private fallbackTurn(userTurnId: number): UserTurn {
+    return {
+      id: userTurnId,
+      message: "Please send again, error in backend",
+      feedback: "Fallback feedback generated in waitForFeedback",
+      answerAccuracy: AnswerAccuracy.Incorrect,
+      timestamp: Date.now(),
+    } as UserTurn;
   }
 
   private async controlUserMessage(
@@ -106,7 +102,6 @@ export class TurnManager {
     turnAnswer: string,
     scenarioIndex: number,
   ): Promise<{ feedback: string; answerAccuracy: AnswerAccuracy }> {
-    let errorCounter = 0;
     const userMessage = this.normalize(userInput);
     const correctedUserMessage = this.normalize(correctedUserInput);
     const turnMessage = this.normalize(turnAnswer);
@@ -115,129 +110,112 @@ export class TurnManager {
       correctedUserMessage,
       scenarioIndex,
     );
-    // Fallback in case spell check breaks call signs
     const parsedOriginal = this.controlOpening(userMessage, scenarioIndex);
 
+    // Prefer corrected unless original is better (spell check may break call signs)
     const parsedOpening =
       parsedCorrected.correct || !parsedOriginal.correct
         ? parsedCorrected
         : parsedOriginal;
 
-    errorCounter =
-      errorCounter +
-      (parsedOpening.errorCounter >= 2 ? 2 : parsedOpening.errorCounter);
-    const { openingFeedback, messageWithoutOpening } = parsedOpening;
+    let errorCounter = Math.min(parsedOpening.errorCounter, 2);
 
-    const parseEndingMessage = this.controlEnding(
-      messageWithoutOpening,
+    const endingResult = this.controlEnding(
+      parsedOpening.messageWithoutOpening,
       turnMessage,
     );
-    if (!parseEndingMessage.correct) {
-      errorCounter = errorCounter + 2;
-    }
+    if (!endingResult.correct) errorCounter += 2;
 
-    let answerAccuracy = AnswerAccuracy.Correct;
+    let feedback = [parsedOpening.openingFeedback, endingResult.feedback].join(
+      "\n",
+    );
 
-    let feedback = openingFeedback + "\n" + parseEndingMessage.feedback;
-
-    if (this.countWords(parseEndingMessage.remainingMessage) !== 0) {
-      const turnMessageContent = this.getTurnAnswerContent(turnMessage);
-
-      const contentFeedback = await this.controlContent(
-        parseEndingMessage.remainingMessage,
-        turnMessageContent,
+    if (this.countWords(endingResult.remainingMessage) > 0) {
+      const turnContent = this.getTurnAnswerContent(turnMessage);
+      const contentResult = await this.controlContent(
+        endingResult.remainingMessage,
+        turnContent,
       );
-
-      feedback = feedback + "\n" + contentFeedback.feedback;
-
-      errorCounter = errorCounter + contentFeedback.errorCounter;
+      feedback += "\n" + contentResult.feedback;
+      errorCounter += contentResult.errorCounter;
     }
 
-    if (errorCounter >= 4) {
-      answerAccuracy = AnswerAccuracy.Incorrect;
-    } else if (errorCounter > 0) {
-      answerAccuracy = AnswerAccuracy.PartiallyCorrect;
-    }
-    return { feedback: feedback, answerAccuracy: answerAccuracy };
+    const answerAccuracy =
+      errorCounter >= 4
+        ? AnswerAccuracy.Incorrect
+        : errorCounter > 0
+          ? AnswerAccuracy.PartiallyCorrect
+          : AnswerAccuracy.Correct;
+
+    return { feedback, answerAccuracy };
   }
 
   private async controlContent(
     userInput: string,
     turnAnswer: string,
   ): Promise<{ feedback: string; errorCounter: number }> {
+    const feedbackParts: string[] = [];
+    let errorCounter = 0;
+
     const correctContent = await this.llmModel.compareMeaning(
       userInput,
       turnAnswer,
     );
-
-    let feedback = "";
-    let errorCounter = 0;
-
     if (correctContent) {
-      feedback = "Content is correct. ";
+      feedbackParts.push("Content is correct.");
     } else {
-      feedback = "Content is missing information. ";
-      errorCounter = errorCounter + 4;
+      feedbackParts.push("Content is missing information.");
+      errorCounter += 4;
     }
 
     const userWordCount = this.countWords(userInput);
     const turnWordCount = this.countWords(turnAnswer);
-
-    // + 5 is just taken out of thin air
-    if (userWordCount >= turnWordCount + 5) {
-      feedback += "Content includes more words than needed. ";
-      //TODO: Should this render an errorcounter or not?
+    if (userWordCount >= turnWordCount + EXTRA_WORD_THRESHOLD) {
+      feedbackParts.push("Content includes more words than needed.");
     }
 
     const turnWords = this.getWords(turnAnswer);
     const userWords = this.getWords(userInput);
 
-    // Check if the first word is a message marker and then to see if that is included in the user message.
     const turnFirstWord = turnWords[0];
-    const turnFirstWordMarker = Object.values(MessageMarkers).includes(
+    const turnMarker = Object.values(MessageMarkers).includes(
       turnFirstWord as MessageMarkers,
     )
       ? (turnFirstWord as MessageMarkers)
       : null;
 
-    const userMessageMarkers = this.findMatches(userWords, MessageMarkers);
-
-    const userHasTurnMarker =
-      turnFirstWordMarker !== null &&
-      userMessageMarkers.includes(turnFirstWordMarker);
-
-    const userHasAnyMarker = userMessageMarkers.length > 0;
-
+    const userMarkers = this.findMatches(userWords, MessageMarkers);
     const userAmbiguousWords = this.findMatches(userWords, AmbiguesWords);
-
     const turnPhoneticWords = this.findMatches(turnWords, PhoneticAlphabet);
-    const userPhoneticWords = this.findMatches(userWords, PhoneticAlphabet);
-
-    const userPhoneticSet = new Set(userPhoneticWords);
-    const userHasAllTurnPhonetics = turnPhoneticWords.every((w) =>
-      userPhoneticSet.has(w),
+    const userPhoneticWords = new Set(
+      this.findMatches(userWords, PhoneticAlphabet),
     );
 
-    if (userAmbiguousWords.length !== 0) {
-      feedback += "Ambiguous words used. ";
-      errorCounter = errorCounter + 1;
+    if (userAmbiguousWords.length > 0) {
+      feedbackParts.push(
+        "Avoid using ambiguous words: " +
+          userAmbiguousWords.map((w) => `'${w}'`).join(", ") +
+          ".",
+      );
+      errorCounter += 1;
     }
 
-    if (turnFirstWordMarker && !userHasAnyMarker) {
-      feedback += "Missing message Marker. ";
-      errorCounter = errorCounter + 1;
-    }
-    if (turnFirstWordMarker && userHasAnyMarker && !userHasTurnMarker) {
-      feedback += "Control that message marker is appropriate. ";
-      errorCounter = errorCounter + 1;
-    }
-
-    if (!userHasAllTurnPhonetics) {
-      feedback += "Missing phonetic alphabet words from expected response. ";
-      errorCounter = errorCounter + 4;
+    if (turnMarker && userMarkers.length === 0) {
+      feedbackParts.push("Message marker is missing.");
+      errorCounter += 1;
+    } else if (turnMarker && !userMarkers.includes(turnMarker)) {
+      feedbackParts.push("Control that message marker is appropriate.");
+      errorCounter += 1;
     }
 
-    return { feedback: feedback, errorCounter: errorCounter };
+    if (!turnPhoneticWords.every((w) => userPhoneticWords.has(w))) {
+      feedbackParts.push(
+        "Missing phonetic alphabet words from expected response.",
+      );
+      errorCounter += 4;
+    }
+
+    return { feedback: feedbackParts.join(" "), errorCounter };
   }
 
   private controlOpening(
@@ -249,37 +227,28 @@ export class TurnManager {
     openingFeedback: string;
     errorCounter: number;
   } {
-    const sender =
-      this.userRole === this.scenario.participants.starter.role
-        ? this.scenario.participants.starter.name
-        : this.scenario.participants.responder.name;
+    const sender = this.getSender();
+    const receiver = this.getReceiver();
 
-    const receiver =
-      this.userRole === this.scenario.participants.starter.role
-        ? this.scenario.participants.responder.name
-        : this.scenario.participants.starter.name;
+    const feedbackParts: string[] = [];
+    let errorCounter = 0;
 
     const includesReceiver = message.includes(receiver);
     const includesSender = message.includes(sender);
 
-    let feedback = "";
-    let correctOpening = false;
-    let errorCounter = 0;
-
     if (!includesReceiver && !includesSender) {
-      feedback = feedback + "Missing call signs in message. ";
-      errorCounter = errorCounter + 2;
+      feedbackParts.push("Missing call signs in message.");
+      errorCounter += 2;
     } else if (!includesReceiver) {
-      feedback = feedback + "Missing receiver call sign in message. ";
-      errorCounter = errorCounter + 1;
+      feedbackParts.push("Missing receiver call sign in message.");
+      errorCounter += 1;
     } else if (!includesSender) {
-      feedback = feedback + "Missing sender call sign in message. ";
-      errorCounter = errorCounter + 1;
+      feedbackParts.push("Missing sender call sign in message.");
+      errorCounter += 1;
     }
 
     const senderIndex = message.indexOf(sender);
     const receiverIndex = message.indexOf(receiver);
-
     const endIndex =
       senderIndex === -1 && receiverIndex === -1
         ? 0
@@ -295,21 +264,18 @@ export class TurnManager {
       .trim();
 
     const matchReceiver = opening.match(new RegExp(receiver, "gi"));
-
-    // Checking matchReceiver instead of includesReceiver for null check
-    if (matchReceiver === null || !includesSender)
+    if (!matchReceiver || !includesSender) {
       return {
         messageWithoutOpening: remainingMessage,
-        correct: correctOpening,
-        openingFeedback: feedback,
-        errorCounter: errorCounter,
+        correct: false,
+        openingFeedback: feedbackParts.join(" "),
+        errorCounter,
       };
+    }
 
-    const correctOrder = senderIndex > receiverIndex;
-
-    if (!correctOrder) {
-      feedback = "Call signs in wrong order. ";
-      errorCounter = errorCounter + 1;
+    if (senderIndex <= receiverIndex) {
+      feedbackParts.push("Call signs in wrong order.");
+      errorCounter += 1;
     }
 
     const isFirstMessage =
@@ -320,46 +286,37 @@ export class TurnManager {
       isFirstMessage &&
       (matchReceiver.length < 2 || matchReceiver.length > 3)
     ) {
-      feedback =
-        feedback +
-        "First message should contain the receiver two or three times. ";
-      errorCounter = errorCounter + 1;
+      feedbackParts.push(
+        "First message should contain the receiver two or three times.",
+      );
+      errorCounter += 1;
     } else if (!isFirstMessage && matchReceiver.length !== 1) {
-      feedback = feedback + "Message should contain the receiver once. ";
-      errorCounter = errorCounter + 1;
+      feedbackParts.push("Message should contain the receiver once.");
+      errorCounter += 1;
     }
 
     if (!opening.includes("this is")) {
-      feedback = feedback + "Opening should contain this is. ";
-      errorCounter = errorCounter + 1;
+      feedbackParts.push("Opening should contain 'this is'.");
+      errorCounter += 1;
     }
 
-    const wordsInOpening = this.countWords(opening);
-    const shouldContainWords =
+    const expectedWordCount =
       this.countWords(sender) +
       this.countWords(receiver) * matchReceiver.length +
-      2; // +2 is for "this is"
-
-    if (wordsInOpening > shouldContainWords) {
-      feedback = feedback + "Opening contains more words than needed. ";
-      errorCounter = errorCounter + 1;
+      2;
+    if (this.countWords(opening) > expectedWordCount) {
+      feedbackParts.push("Opening contains more words than needed.");
+      errorCounter += 1;
     }
 
-    if (feedback === "") {
-      feedback = "Correct opening! ";
-      correctOpening = true;
-    }
-
-    //TODO remove, just for testing
-    console.log("Message: ", message);
-    console.log("Opening: ", opening);
-    console.log("Remaining message: ", remainingMessage);
+    const correct = feedbackParts.length === 0;
+    if (correct) feedbackParts.push("Correct opening!");
 
     return {
       messageWithoutOpening: remainingMessage,
-      correct: correctOpening,
-      openingFeedback: feedback,
-      errorCounter: errorCounter,
+      correct,
+      openingFeedback: feedbackParts.join(" "),
+      errorCounter,
     };
   }
 
@@ -374,60 +331,41 @@ export class TurnManager {
     const correctEnding = turnAnswer.match(/\b(over|out)\b\.?\s*$/i);
     const match = message.match(/\b(over and out|over|out)\b\.?\s*$/i);
 
-    let feedback = "";
-    let correct = false;
-
-    // correctEnding should never be null
-    if (match === null || correctEnding === null) {
+    if (!match || !correctEnding) {
       return {
         remainingMessage: message,
-        correct: correct,
-        feedback: "Message is missing ending. ",
+        correct: false,
+        feedback: "Message is missing ending.",
       };
     }
 
-    if (correctEnding[1] === match[1]) {
-      feedback = "Ending is correct. ";
-      correct = true;
-    } else {
-      feedback = "Incorrect ending of message. ";
-    }
-
-    const remaining = message.slice(0, match.index).trim();
-
+    const correct = correctEnding[1] === match[1];
     return {
-      remainingMessage: remaining,
-      correct: correct,
-      feedback: feedback,
+      remainingMessage: message.slice(0, match.index).trim(),
+      correct,
+      feedback: correct ? "Ending is correct." : "Incorrect ending of message.",
     };
   }
 
   private getTurnAnswerContent(message: string): string {
-    const sender =
-      this.userRole === this.scenario.participants.starter.role
-        ? this.scenario.participants.starter.name.toLowerCase()
-        : this.scenario.participants.responder.name.toLowerCase();
+    const sender = this.getSender().toLowerCase();
+    const senderIndex = message.indexOf(sender);
+    if (senderIndex === -1) return message;
 
-    const indexSender = message.indexOf(sender);
-
-    if (indexSender === -1) return message;
-
-    let remainingMessage = message.slice(indexSender + sender.length).trim();
-
-    remainingMessage = remainingMessage
+    return message
+      .slice(senderIndex + sender.length)
+      .trim()
       .replace(/\s*\b(over|out)\b\.?\s*$/i, "")
       .trim();
-
-    return remainingMessage;
   }
 
   private normalize(message: string): string {
     return message
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // strip diacritics
-      .replace(/[^\w\s]/g, "") // remove punctuation (including dots)
-      .replace(/\s+/g, " ") // collapse multiple spaces
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s]/g, "")
+      .replace(/\s+/g, " ")
       .trim();
   }
 

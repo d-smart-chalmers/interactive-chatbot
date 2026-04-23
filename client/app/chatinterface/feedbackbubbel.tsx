@@ -1,6 +1,5 @@
 import { AnswerAccuracy } from '@shared/scenarios/model';
 import { CircleCheck, CircleCheckBig, CircleX } from 'lucide-react';
-import { useEffect } from 'react';
 
 interface MessageBubbleProps {
   userMessage: string;
