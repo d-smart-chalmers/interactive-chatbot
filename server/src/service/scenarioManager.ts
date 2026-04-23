@@ -87,7 +87,10 @@ export class ScenarioManager {
     );
     this.history.turns[userTurnId - 1] = userTurnWithFeedback;
 
-    if (!(userTurnWithFeedback.answerAccuracy === AnswerAccuracy.Incorrect) && this.chatbotIsStarter) {
+    if (
+      !(userTurnWithFeedback.answerAccuracy === AnswerAccuracy.Incorrect) &&
+      this.chatbotIsStarter
+    ) {
       this.scenarioIndex++;
     }
 

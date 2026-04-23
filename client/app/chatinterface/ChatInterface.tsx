@@ -110,7 +110,12 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       if (feedbackResponse.status === 200) {
         const feedbackData = feedbackResponse.data as GetFeedbackResponse;
         chatHistoryStore.updateTurn(feedbackData.turnWithFeedback);
-        if (!(feedbackData.turnWithFeedback.answerAccuracy === AnswerAccuracy.Incorrect)) {
+        if (
+          !(
+            feedbackData.turnWithFeedback.answerAccuracy ===
+            AnswerAccuracy.Incorrect
+          )
+        ) {
           const nextTurnResponse = await api.get(`/scenarios/get-next-turn`);
           if (nextTurnResponse.status === 200) {
             const nextTurnData = nextTurnResponse.data as GetNextTurnResponse;

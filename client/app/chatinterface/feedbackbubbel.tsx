@@ -20,15 +20,18 @@ export default function FeedbackBubble({
     hour12: false,
   });
   const bubbleStyleMap = {
-    [AnswerAccuracy.Correct]: ' bg-green-50 text-green-900 border-green-200 dark:bg-green-950 dark:border-green-900 dark:text-green-300',
-    [AnswerAccuracy.Incorrect]: ' bg-red-100 text-red-900 border-red-200 dark:bg-red-950 dark:border-red-900 dark:text-red-300',
-    [AnswerAccuracy.PartiallyCorrect]: ' bg-yellow-100 text-yellow-900 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-900 dark:text-yellow-300',
-  }
+    [AnswerAccuracy.Correct]:
+      ' bg-green-50 text-green-900 border-green-200 dark:bg-green-950 dark:border-green-900 dark:text-green-300',
+    [AnswerAccuracy.Incorrect]:
+      ' bg-red-100 text-red-900 border-red-200 dark:bg-red-950 dark:border-red-900 dark:text-red-300',
+    [AnswerAccuracy.PartiallyCorrect]:
+      ' bg-yellow-100 text-yellow-900 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-900 dark:text-yellow-300',
+  };
   const textStyleMap = {
     [AnswerAccuracy.Correct]: 'text-green-500',
     [AnswerAccuracy.Incorrect]: 'text-red-500',
     [AnswerAccuracy.PartiallyCorrect]: 'text-yellow-500',
-  }
+  };
   const bubbleStyle = bubbleStyleMap[feedbackAccuracy];
   const textStyle = textStyleMap[feedbackAccuracy];
 

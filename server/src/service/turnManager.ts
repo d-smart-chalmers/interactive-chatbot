@@ -123,21 +123,22 @@ export class TurnManager {
         ? parsedCorrected
         : parsedOriginal;
 
-    errorCounter = errorCounter + ((parsedOpening.errorCounter >= 2) ? 2 : parsedOpening.errorCounter)
+    errorCounter =
+      errorCounter +
+      (parsedOpening.errorCounter >= 2 ? 2 : parsedOpening.errorCounter);
     const { openingFeedback, messageWithoutOpening } = parsedOpening;
 
     const parseEndingMessage = this.controlEnding(
       messageWithoutOpening,
       turnMessage,
     );
-    if(!parseEndingMessage.correct){
+    if (!parseEndingMessage.correct) {
       errorCounter = errorCounter + 2;
     }
 
-  
     let answerAccuracy = AnswerAccuracy.Correct;
 
-    let feedback = openingFeedback + '\n' + parseEndingMessage.feedback;
+    let feedback = openingFeedback + "\n" + parseEndingMessage.feedback;
 
     if (this.countWords(parseEndingMessage.remainingMessage) !== 0) {
       const turnMessageContent = this.getTurnAnswerContent(turnMessage);
@@ -147,17 +148,17 @@ export class TurnManager {
         turnMessageContent,
       );
 
-      feedback = feedback + '\n' + contentFeedback.feedback;
+      feedback = feedback + "\n" + contentFeedback.feedback;
 
       errorCounter = errorCounter + contentFeedback.errorCounter;
     }
 
-    if(errorCounter >= 4){
+    if (errorCounter >= 4) {
       answerAccuracy = AnswerAccuracy.Incorrect;
-    } else if (errorCounter > 0){
+    } else if (errorCounter > 0) {
       answerAccuracy = AnswerAccuracy.PartiallyCorrect;
     }
-    return { feedback: feedback, answerAccuracy: answerAccuracy};
+    return { feedback: feedback, answerAccuracy: answerAccuracy };
   }
 
   private async controlContent(
@@ -217,21 +218,21 @@ export class TurnManager {
       userPhoneticSet.has(w),
     );
 
-    if (userAmbiguousWords.length !== 0){
+    if (userAmbiguousWords.length !== 0) {
       feedback += "Ambiguous words used. ";
       errorCounter = errorCounter + 1;
     }
 
-    if (turnFirstWordMarker && !userHasAnyMarker){
+    if (turnFirstWordMarker && !userHasAnyMarker) {
       feedback += "Missing message Marker. ";
       errorCounter = errorCounter + 1;
     }
-    if (turnFirstWordMarker && userHasAnyMarker && !userHasTurnMarker){
+    if (turnFirstWordMarker && userHasAnyMarker && !userHasTurnMarker) {
       feedback += "Control that message marker is appropriate. ";
       errorCounter = errorCounter + 1;
     }
 
-    if (!userHasAllTurnPhonetics){
+    if (!userHasAllTurnPhonetics) {
       feedback += "Missing phonetic alphabet words from expected response. ";
       errorCounter = errorCounter + 4;
     }
@@ -264,7 +265,6 @@ export class TurnManager {
     let feedback = "";
     let correctOpening = false;
     let errorCounter = 0;
-
 
     if (!includesReceiver && !includesSender) {
       feedback = feedback + "Missing call signs in message. ";
@@ -329,7 +329,7 @@ export class TurnManager {
       errorCounter = errorCounter + 1;
     }
 
-    if (!opening.includes("this is")){
+    if (!opening.includes("this is")) {
       feedback = feedback + "Opening should contain this is. ";
       errorCounter = errorCounter + 1;
     }
@@ -340,7 +340,7 @@ export class TurnManager {
       this.countWords(receiver) * matchReceiver.length +
       2; // +2 is for "this is"
 
-    if (wordsInOpening > shouldContainWords){
+    if (wordsInOpening > shouldContainWords) {
       feedback = feedback + "Opening contains more words than needed. ";
       errorCounter = errorCounter + 1;
     }
