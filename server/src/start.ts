@@ -101,7 +101,6 @@ app.use(
 initScenariosRouter(scenariosService);
 const basePath = process.env.BASE_PATH || "";
 app.use(`${basePath}/scenarios`, scenariosRouter);
-console.log(`${basePath}/scenarios`)
 
 // STATISKA FILER
 const publicPath = path.join(process.cwd(), "public");
@@ -116,7 +115,7 @@ let build;
 try {
   build = await import(buildPath);
 } catch {
-  console.warn("No React Router build found, skipping SSR handler");
+  console.log("No React Router build found, skipping SSR handler");
   build = null;
 }
 
