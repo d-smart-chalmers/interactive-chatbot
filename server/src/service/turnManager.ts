@@ -314,7 +314,7 @@ export class TurnManager {
     }
 
     const correct = feedbackParts.length === 0;
-    if (correct) feedbackParts.push("Correct opening!");
+    if (correct) feedbackParts.push("Correct opening.");
 
     return {
       messageWithoutOpening: remainingMessage,
@@ -324,32 +324,29 @@ export class TurnManager {
     };
   }
 
-  private controlEnding(
-    message: string,
-    turnAnswer: string,
-  ): {
-    remainingMessage: string;
-    correct: boolean;
-    feedback: string;
-  } {
-    const correctEnding = turnAnswer.match(/\b(over|out)\b\.?\s*$/i);
-    const match = message.match(/\b(over and out|over|out)\b\.?\s*$/i);
+private controlEnding(message: string, turnAnswer: string): {
+  remainingMessage: string;
+  correct: boolean;
+  feedback: string;
+} {
+  const correctEnding = turnAnswer.match(/\b(over|out)\b\.?\s*$/i)!;
+  const match = message.match(/\b(over and out|over|out)\b\.?\s*$/i);
 
-    if (!match || !correctEnding) {
-      return {
-        remainingMessage: message,
-        correct: false,
-        feedback: "Message is missing ending.",
-      };
-    }
-
-    const correct = correctEnding[1] === match[1];
+  if (!match) {
     return {
-      remainingMessage: message.slice(0, match.index).trim(),
-      correct,
-      feedback: correct ? "Ending is correct." : "Incorrect ending of message.",
+      remainingMessage: message,
+      correct: false,
+      feedback: `Message should end with '${correctEnding[1]}'.`,
     };
   }
+
+  const correct = correctEnding[1] === match[1];
+  return {
+    remainingMessage: message.slice(0, match.index).trim(),
+    correct,
+    feedback: correct ? "Ending is correct." : `Message should end with '${correctEnding[1]}'.`,
+  };
+}
 
   private getTurnAnswerContent(message: string): string {
     const sender = this.getSender().toLowerCase();
