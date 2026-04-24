@@ -32,7 +32,7 @@ app.use(express.json());
 //TODO: This has to be changed when we fetch the scenarios from the database
 const importedScenarios: ScenarioList[] = scenarioLists.map((list) => ({
   headerText: list.headerText,
-  headerColor: list.headerColor as ScenarioHeaderColor || "blue",
+  headerColor: (list.headerColor as unknown as ScenarioHeaderColor),
   scenarios: list.scenarios.map((s) => {
     return {
       id: s.id,

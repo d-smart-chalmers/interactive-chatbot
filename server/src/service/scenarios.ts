@@ -11,7 +11,6 @@ export class ScenariosService {
   constructor(scenarioLists: ScenarioList[]) {
     this.scenarioLists = scenarioLists;
     this.allScenarios = scenarioLists.map((list) => list.scenarios).flat().map((scen) => (scen as Scenario));
-    console.log("Loaded scenarios:", this.allScenarios.map(s => s.id));
     this.activeScenarios = new Map();
   }
 
