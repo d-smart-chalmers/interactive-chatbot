@@ -108,9 +108,9 @@ export class TurnManager {
 
     const parsedCorrected = this.controlOpening(
       correctedUserMessage,
-      scenarioIndex,
+      turnAnswer,
     );
-    const parsedOriginal = this.controlOpening(userMessage, scenarioIndex);
+    const parsedOriginal = this.controlOpening(userMessage, turnAnswer);
 
     // Prefer corrected unless original is better (spell check may break call signs)
     const parsedOpening =
@@ -224,7 +224,7 @@ export class TurnManager {
 
   private controlOpening(
     message: string,
-    scenarioIndex: number,
+    turnAnswer: string
   ): {
     messageWithoutOpening: string;
     correct: boolean;
@@ -282,10 +282,8 @@ export class TurnManager {
       errorCounter += 1;
     }
 
-    const isFirstMessage =
-      scenarioIndex === 0 &&
-      this.userRole === this.scenario.participants.starter.role;
-
+    const receiverCountInAnswer = (turnAnswer.match(new RegExp(receiver, "gi")) ?? []).length;
+    const isFirstMessage = receiverCountInAnswer >= 2;
     if (
       isFirstMessage &&
       (matchReceiver.length < 2 || matchReceiver.length > 3)

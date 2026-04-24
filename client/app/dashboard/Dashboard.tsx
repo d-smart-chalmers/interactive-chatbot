@@ -42,12 +42,12 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-6 p-10">
-      <div className="flex w-4/6 flex-col items-center justify-center gap-4">
-        <h1 className="text-center text-5xl font-bold sm:text-7xl">
+    <div className="flex w-full flex-col items-center justify-center gap-6 pt-10 pl-5 pr-5">
+      <div className="flex w-5/6 flex-col items-center justify-center gap-4">
+        <h1 className="text-center text-4xl font-bold sm:text-6xl">
           Digital Standard Maritime Radio Communication Training
         </h1>
-        <h2 className="w-5/6 text-center text-[15px] font-light text-zinc-500 sm:text-[20px]">
+        <h2 className="sm:w-4/6 w-5/6 text-center text-[12px] font-light text-zinc-500 sm:text-[20px]">
           Practice and master standard maritime radio protocols including
           distress calls, position reports, and weather communications in
           realistic scenarios.

@@ -48,7 +48,7 @@ export default function MessageInputComponent({
 
   const handleSendMessage = () => {
     const trimmedMessage = message.trim();
-    if (trimmedMessage) {
+    if (trimmedMessage && !disableSubmit) {
       const timestamp = Date.now();
       onSubmit(trimmedMessage, timestamp);
       setMessage(''); // Clear the box after sending
