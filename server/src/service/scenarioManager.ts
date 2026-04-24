@@ -97,16 +97,16 @@ export class ScenarioManager {
     return userTurnWithFeedback;
   }
 
-  getNextTurn(): { chatbotTurn: ChatbotTurn; instruction: string } {
+  getNextTurn(): { chatbotTurns: ChatbotTurn[]; instruction: string } {
     if (this.scenarioIndex >= this.scenario.scenarioTurns.length) {
       return {
-        chatbotTurn: undefined as unknown as ChatbotTurn,
+        chatbotTurns: [undefined as unknown as ChatbotTurn],
         instruction: "",
       };
     }
-    const chatbotTurnObject = this.createChatbotTurn();
+    const chatbotTurnObjects = this.createChatbotTurn();
     const instruction = this.history.intruction;
-    return { chatbotTurn: chatbotTurnObject, instruction };
+    return { chatbotTurns: chatbotTurnObjects, instruction };
   }
 
   private createUserTurn(userTurn: string, timestamp: number) {
@@ -140,8 +140,9 @@ export class ScenarioManager {
     if (!this.chatbotIsStarter) {
       this.scenarioIndex++;
     }
-
+    let secondChatbotTurnObject: ChatbotTurn[] = [];
     if (this.userRole === UserRole.Vessel) {
+      if (this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction) {
       this.history = {
         turns: [...this.history.turns, chatbotTurnObject],
         intruction:
@@ -149,16 +150,35 @@ export class ScenarioManager {
             ? this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction
             : "",
       };
+      } else {
+        this.scenarioIndex++;
+        this.history = {
+          turns: [...this.history.turns, chatbotTurnObject],
+          intruction: this.history.intruction,
+        };
+        secondChatbotTurnObject = this.createChatbotTurn();
+      }
     } else {
-      this.history = {
-        turns: [...this.history.turns, chatbotTurnObject],
-        intruction:
-          this.scenarioIndex < this.scenario.scenarioTurns.length
-            ? this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction
-            : "",
-      };
+      if (this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction) {
+        this.history = {
+          turns: [...this.history.turns, chatbotTurnObject],
+          intruction:
+            this.scenarioIndex < this.scenario.scenarioTurns.length
+              ? this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction
+              : "",
+        };
+      } else {
+        this.scenarioIndex++;
+        this.history = {
+          turns: [...this.history.turns, chatbotTurnObject],
+          intruction: this.history.intruction,
+        }
+        secondChatbotTurnObject = this.createChatbotTurn();
+      }
     }
-    return chatbotTurnObject;
+    const chatbotTurnObjects: ChatbotTurn[] = [chatbotTurnObject, ...secondChatbotTurnObject];
+    console.log(chatbotTurnObjects);
+    return chatbotTurnObjects;
   }
 
   //private endScenario() {}

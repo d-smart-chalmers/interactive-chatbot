@@ -99,8 +99,8 @@ scenariosRouter.get(
   requireUser,
   asyncHandler((_req: Request, res: Response<GetNextTurnResponse>) => {
     const userId = _req.session.userId!;
-    const { chatbotTurn, instruction } = scenariosService.getNextTurn(userId);
-    res.status(200).send({ chatbotTurn, instruction });
+    const { chatbotTurns, instruction } = scenariosService.getNextTurn(userId);
+    res.status(200).send({ chatbotTurns, instruction });
   }),
 );
 

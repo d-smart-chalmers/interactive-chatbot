@@ -113,6 +113,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       if (feedbackResponse.status === 200) {
         const feedbackData = feedbackResponse.data as GetFeedbackResponse;
         chatHistoryStore.updateTurn(feedbackData.turnWithFeedback);
+        setGettingFeedback(false);
         if (
           !(
             feedbackData.turnWithFeedback.answerAccuracy ===
@@ -124,16 +125,19 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
             const nextTurnData = nextTurnResponse.data as GetNextTurnResponse;
             if (
               nextTurnData.instruction === '' ||
-              nextTurnData.chatbotTurn === undefined
+              nextTurnData.chatbotTurns[0] === undefined
             ) {
               chatHistoryStore.setScenarioEnded(true);
               setGettingFeedback(false);
               return;
             } else {
               chatHistoryStore.setInstruction(nextTurnData.instruction);
-              chatHistoryStore.addTurn(nextTurnData.chatbotTurn);
+              chatHistoryStore.addTurn(nextTurnData.chatbotTurns[0]);
+              if(nextTurnData.chatbotTurns.length === 2){
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                chatHistoryStore.addTurn(nextTurnData.chatbotTurns[1]);
+              }
               setDisableSubmit(false);
-              setGettingFeedback(false);
             }
           } else {
             console.log('Error getting next turn');

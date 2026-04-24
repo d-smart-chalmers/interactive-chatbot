@@ -61,7 +61,6 @@ export class TurnManager {
       userTurn.message,
       correctedMessage,
       turnAnswer,
-      scenarioIndex,
     );
 
     return { ...userTurn, feedback, answerAccuracy };
@@ -100,7 +99,6 @@ export class TurnManager {
     userInput: string,
     correctedUserInput: string,
     turnAnswer: string,
-    scenarioIndex: number,
   ): Promise<{ feedback: string; answerAccuracy: AnswerAccuracy }> {
     const userMessage = this.normalize(userInput);
     const correctedUserMessage = this.normalize(correctedUserInput);

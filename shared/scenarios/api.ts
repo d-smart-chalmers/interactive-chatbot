@@ -28,7 +28,7 @@ export interface GetFeedbackResponse {
 }
 
 export interface GetNextTurnResponse {
-  chatbotTurn: ChatbotTurn;
+  chatbotTurns: ChatbotTurn[];
   instruction: string;
 }
 

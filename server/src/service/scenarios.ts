@@ -77,8 +77,8 @@ export class ScenariosService {
 
   getNextTurn(userId: string) {
     const sManager = this.getScenarioManagerOrThrow(userId);
-    const { chatbotTurn, instruction } = sManager.getNextTurn();
-    return { chatbotTurn, instruction };
+    const { chatbotTurns, instruction } = sManager.getNextTurn();
+    return { chatbotTurns, instruction };
   }
 
   retryScenario(userId: string) {
