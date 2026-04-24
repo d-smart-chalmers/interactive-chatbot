@@ -10,19 +10,23 @@ export class ScenariosService {
 
   constructor(scenarioLists: ScenarioList[]) {
     this.scenarioLists = scenarioLists;
-    this.allScenarios = scenarioLists.map((list) => list.scenarios).flat().map((scen) => (scen as Scenario));
+    this.allScenarios = scenarioLists
+      .map((list) => list.scenarios)
+      .flat()
+      .map((scen) => scen as Scenario);
     this.activeScenarios = new Map();
   }
 
   getDescriptions(): ScenarioDescriptionList[] {
-    const scenarioDescriptionLists: ScenarioDescriptionList[] = this.scenarioLists.map((list) => ({
-      headerText: list.headerText,
-      headerColor: list.headerColor,
-      scenarios: list.scenarios.map((scen) => ({
-        id: scen.id,
-        description: scen.description,
-      })),
-    }));
+    const scenarioDescriptionLists: ScenarioDescriptionList[] =
+      this.scenarioLists.map((list) => ({
+        headerText: list.headerText,
+        headerColor: list.headerColor,
+        scenarios: list.scenarios.map((scen) => ({
+          id: scen.id,
+          description: scen.description,
+        })),
+      }));
     return scenarioDescriptionLists;
   }
 

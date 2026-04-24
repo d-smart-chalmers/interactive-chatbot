@@ -1,4 +1,7 @@
-import type { ScenarioDescription, ScenarioHeaderColor } from '../../../shared/scenarios/model';
+import type {
+  ScenarioDescription,
+  ScenarioHeaderColor,
+} from '../../../shared/scenarios/model';
 
 interface ScenarioListProps {
   scenarios: ScenarioDescription[];

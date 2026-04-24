@@ -28,7 +28,8 @@ export const scenariosRouter = express.Router();
 scenariosRouter.get(
   "/descriptions",
   asyncHandler((req: Request, res: Response<DescriptionsResponse>) => {
-    const scenarioDescriptionLists: ScenarioDescriptionList[] = scenariosService.getDescriptions();
+    const scenarioDescriptionLists: ScenarioDescriptionList[] =
+      scenariosService.getDescriptions();
     req.session.userId = req.sessionID;
     res.status(200).send({ scenarioDescriptionLists });
   }),

@@ -1,8 +1,7 @@
-
 export const scenarioLists = [
   {
     headerText: "Standard Scenarios",
-    headerColor: 'cyan',
+    headerColor: "cyan",
     scenarios: [
       {
         id: "1",
@@ -703,7 +702,6 @@ export const scenarioLists = [
    *    scenarios: {
    *     id: "unique_scenario_id",
    *    name: "Scenario name",
-   *   starter: "vessel" | "vts",
    *    participants: {
    *     starter: { role: "vessel" | "vts", name: "name of the vessel or vts" },
    *     responder: { role: "vessel" | "vts", name: "name of the vessel or vts" },
@@ -721,7 +719,7 @@ export const scenarioLists = [
    *    },
    *    ]
    *  }
-   * */ 
+   * */
 ];
 /*
   {

@@ -222,7 +222,7 @@ export class TurnManager {
 
   private controlOpening(
     message: string,
-    turnAnswer: string
+    turnAnswer: string,
   ): {
     messageWithoutOpening: string;
     correct: boolean;
@@ -280,7 +280,9 @@ export class TurnManager {
       errorCounter += 1;
     }
 
-    const receiverCountInAnswer = (turnAnswer.match(new RegExp(receiver, "gi")) ?? []).length;
+    const receiverCountInAnswer = (
+      turnAnswer.match(new RegExp(receiver, "gi")) ?? []
+    ).length;
     const isFirstMessage = receiverCountInAnswer >= 2;
     if (
       isFirstMessage &&
@@ -320,29 +322,34 @@ export class TurnManager {
     };
   }
 
-private controlEnding(message: string, turnAnswer: string): {
-  remainingMessage: string;
-  correct: boolean;
-  feedback: string;
-} {
-  const correctEnding = turnAnswer.match(/\b(over|out)\b\.?\s*$/i)!;
-  const match = message.match(/\b(over and out|over|out)\b\.?\s*$/i);
+  private controlEnding(
+    message: string,
+    turnAnswer: string,
+  ): {
+    remainingMessage: string;
+    correct: boolean;
+    feedback: string;
+  } {
+    const correctEnding = turnAnswer.match(/\b(over|out)\b\.?\s*$/i)!;
+    const match = message.match(/\b(over and out|over|out)\b\.?\s*$/i);
 
-  if (!match) {
+    if (!match) {
+      return {
+        remainingMessage: message,
+        correct: false,
+        feedback: `Message should end with '${correctEnding[1]}'.`,
+      };
+    }
+
+    const correct = correctEnding[1] === match[1];
     return {
-      remainingMessage: message,
-      correct: false,
-      feedback: `Message should end with '${correctEnding[1]}'.`,
+      remainingMessage: message.slice(0, match.index).trim(),
+      correct,
+      feedback: correct
+        ? "Ending is correct."
+        : `Message should end with '${correctEnding[1]}'.`,
     };
   }
-
-  const correct = correctEnding[1] === match[1];
-  return {
-    remainingMessage: message.slice(0, match.index).trim(),
-    correct,
-    feedback: correct ? "Ending is correct." : `Message should end with '${correctEnding[1]}'.`,
-  };
-}
 
   private getTurnAnswerContent(message: string): string {
     const sender = this.getSender().toLowerCase();

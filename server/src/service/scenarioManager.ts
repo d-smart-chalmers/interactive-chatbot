@@ -143,13 +143,14 @@ export class ScenarioManager {
     let secondChatbotTurnObject: ChatbotTurn[] = [];
     if (this.userRole === UserRole.Vessel) {
       if (this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction) {
-      this.history = {
-        turns: [...this.history.turns, chatbotTurnObject],
-        intruction:
-          this.scenarioIndex < this.scenario.scenarioTurns.length
-            ? this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction
-            : "",
-      };
+        this.history = {
+          turns: [...this.history.turns, chatbotTurnObject],
+          intruction:
+            this.scenarioIndex < this.scenario.scenarioTurns.length
+              ? this.scenario.scenarioTurns[this.scenarioIndex]!
+                  .vesselInstruction
+              : "",
+        };
       } else {
         this.scenarioIndex++;
         this.history = {
@@ -172,11 +173,14 @@ export class ScenarioManager {
         this.history = {
           turns: [...this.history.turns, chatbotTurnObject],
           intruction: this.history.intruction,
-        }
+        };
         secondChatbotTurnObject = this.createChatbotTurn();
       }
     }
-    const chatbotTurnObjects: ChatbotTurn[] = [chatbotTurnObject, ...secondChatbotTurnObject];
+    const chatbotTurnObjects: ChatbotTurn[] = [
+      chatbotTurnObject,
+      ...secondChatbotTurnObject,
+    ];
     console.log(chatbotTurnObjects);
     return chatbotTurnObjects;
   }

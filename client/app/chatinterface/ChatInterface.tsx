@@ -133,7 +133,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
             } else {
               chatHistoryStore.setInstruction(nextTurnData.instruction);
               chatHistoryStore.addTurn(nextTurnData.chatbotTurns[0]);
-              if(nextTurnData.chatbotTurns.length === 2){
+              if (nextTurnData.chatbotTurns.length === 2) {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 chatHistoryStore.addTurn(nextTurnData.chatbotTurns[1]);
               }
