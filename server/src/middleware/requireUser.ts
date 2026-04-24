@@ -8,7 +8,7 @@ import { NextFunction, type Request, type Response } from "express";
  */
 export function requireUser(req: Request, res: Response, next: NextFunction) {
   if (!req.session.userId) {
-    res.status(400).send({ error: "Not an active user" });
+    res.status(400).send({ error: "No active session" });
     return;
   }
   next();

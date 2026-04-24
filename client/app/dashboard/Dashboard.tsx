@@ -7,7 +7,7 @@ import { api } from '~/service/api';
 import type { DescriptionsResponse } from '../../../shared/scenarios/api';
 import {
   UserRole,
-  type ScenarioDescription,
+  type ScenarioDescriptionList,
 } from '../../../shared/scenarios/model';
 import { Spinner } from '~/components/ui/spinner';
 import { useNavigate } from 'react-router';
@@ -15,8 +15,9 @@ import { useUserRoleStore } from '~/store/state';
 
 export default function Dashboard() {
   const useUserRole = useUserRoleStore();
-  const [aScenarios, setAScenarios] = useState<ScenarioDescription[]>([]);
-  const [bScenarios, setBScenarios] = useState<ScenarioDescription[]>([]);
+  const [scenarioList, setScenarioList] = useState<ScenarioDescriptionList[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const hasFetched = useRef(false);
@@ -24,8 +25,7 @@ export default function Dashboard() {
   const fetchData = async () => {
     const response = await api.get('/scenarios/descriptions');
     const data = response.data as DescriptionsResponse;
-    setAScenarios(data.descriptions[0]);
-    setBScenarios(data.descriptions[1]);
+    setScenarioList(data.scenarioDescriptionLists)
     setLoading(false);
   };
   useEffect(() => {
@@ -84,19 +84,15 @@ export default function Dashboard() {
 
       {!loading && (
         <div className="m-5 flex flex-wrap justify-center gap-5">
-          <ScenarioList
-            scenarios={aScenarios}
-            headerText="Part A - Operational Aspects"
-            headerColor="cyan"
-            onClick={onClickScenario}
-          />
-
-          <ScenarioList
-            scenarios={bScenarios}
-            headerText="Part B - Safety Aspects"
-            headerColor="red"
-            onClick={onClickScenario}
-          />
+          {scenarioList.map((list, index) => (
+            <ScenarioList
+              key={index}
+              scenarios={list.scenarios}
+              headerText={list.headerText}
+              headerColor={list.headerColor}
+              onClick={onClickScenario}
+            />
+          ))}
         </div>
       )}
     </div>

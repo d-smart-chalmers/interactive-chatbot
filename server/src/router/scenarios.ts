@@ -14,6 +14,7 @@ import {
 import { requireUser } from "@src/middleware/requireUser.js";
 import OpenAILLMService from "@src/service/openaillmservice.js";
 import LLMService from "@src/service/llmservice.interface.js";
+import { ScenarioDescriptionList } from "@shared/scenarios/model.js";
 
 let scenariosService: ScenariosService;
 let LLM_Service: LLMService;
@@ -27,9 +28,9 @@ export const scenariosRouter = express.Router();
 scenariosRouter.get(
   "/descriptions",
   asyncHandler((req: Request, res: Response<DescriptionsResponse>) => {
-    const descriptions = scenariosService.getDescriptions();
+    const scenarioDescriptionLists: ScenarioDescriptionList[] = scenariosService.getDescriptions();
     req.session.userId = req.sessionID;
-    res.status(200).send({ descriptions });
+    res.status(200).send({ scenarioDescriptionLists });
   }),
 );
 

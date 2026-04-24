@@ -1,9 +1,9 @@
-import type { ScenarioDescription } from '../../../shared/scenarios/model';
+import type { ScenarioDescription, ScenarioHeaderColor } from '../../../shared/scenarios/model';
 
 interface ScenarioListProps {
   scenarios: ScenarioDescription[];
   headerText: string;
-  headerColor: 'blue' | 'red' | 'green' | 'orange' | 'zinc' | 'olive' | 'cyan';
+  headerColor?: ScenarioHeaderColor;
   onClick: (id: string) => void;
 }
 
@@ -36,8 +36,8 @@ export default function ScenarioList({
       'hover:outline-olive-400 hover:bg-olive-50 hover:text-olive-400 dark:hover:outline-olive-800 dark:hover:bg-olive-500 dark:hover:text-black',
     cyan: 'hover:outline-cyan-400 hover:bg-cyan-50 hover:text-cyan-400 dark:hover:outline-cyan-800 dark:hover:bg-cyan-500 dark:hover:text-black',
   };
-  const hoverClass = hoverMap[headerColor];
-  const gradientClass = gradientMap[headerColor];
+  const hoverClass = hoverMap[headerColor || 'blue'];
+  const gradientClass = gradientMap[headerColor || 'blue'];
 
   function handleScenario(
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,

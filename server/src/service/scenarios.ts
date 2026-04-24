@@ -1,38 +1,30 @@
-import { ScenarioDescription, UserRole } from "@shared/scenarios/model.js";
-import { Scenario } from "../model/scenarios.interface.js";
+import { ScenarioDescriptionList, UserRole } from "@shared/scenarios/model.js";
 import { HttpError } from "../router/httpError.js";
 import { ScenarioManager } from "./scenarioManager.js";
+import { Scenario, ScenarioList } from "@src/model/scenarios.interface.js";
 
 export class ScenariosService {
-  private aScenarios: Scenario[];
-  private bScenarios: Scenario[];
   private allScenarios: Scenario[];
+  private scenarioLists: ScenarioList[];
   private activeScenarios: Map<string, ScenarioManager>;
 
-  constructor(aScenarios: Scenario[], bScenarios: Scenario[]) {
-    this.aScenarios = aScenarios;
-    this.bScenarios = bScenarios;
-    this.allScenarios = [...aScenarios, ...bScenarios];
+  constructor(scenarioLists: ScenarioList[]) {
+    this.scenarioLists = scenarioLists;
+    this.allScenarios = scenarioLists.map((list) => list.scenarios).flat().map((scen) => (scen as Scenario));
+    console.log("Loaded scenarios:", this.allScenarios.map(s => s.id));
     this.activeScenarios = new Map();
   }
 
-  getDescriptions(): ScenarioDescription[][] {
-    const aDescriptions = this.aScenarios.map((s) => {
-      return {
-        id: s.id,
-        description: s.description,
-      };
-    });
-    const bDescriptions = this.bScenarios.map((s) => {
-      return {
-        id: s.id,
-        description: s.description,
-      };
-    });
-    if (!aDescriptions && !bDescriptions) {
-      throw new HttpError("No scenarios found", 404);
-    }
-    return [aDescriptions, bDescriptions];
+  getDescriptions(): ScenarioDescriptionList[] {
+    const scenarioDescriptionLists: ScenarioDescriptionList[] = this.scenarioLists.map((list) => ({
+      headerText: list.headerText,
+      headerColor: list.headerColor,
+      scenarios: list.scenarios.map((scen) => ({
+        id: scen.id,
+        description: scen.description,
+      })),
+    }));
+    return scenarioDescriptionLists;
   }
 
   startScenario(userId: string, scenarioId: string, userRole: UserRole) {

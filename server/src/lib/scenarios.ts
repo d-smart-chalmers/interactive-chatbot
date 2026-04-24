@@ -1,240 +1,728 @@
-export const aScenarios = [
+
+export const scenarioLists = [
   {
-    id: "1",
-    name: "Providing information on a passage through a strait",
-    participants: {
-      starter: { role: "vessel", name: "sunrise" },
-      responder: { role: "vts", name: "europe vts" },
-    },
-    turns: [
+    headerText: "Standard Scenarios",
+    headerColor: 'cyan',
+    scenarios: [
       {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
-        vts_message: "Sunrise, this is Europe VTS. Over.",
+        id: "1",
+        name: "Providing information on a passage through a strait",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Due to strong winds in Sandybay Strait, ask to increase speed from 10 knots.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Question. Do we have permission to increase speed from one zero knots due to strong winds in Sandybay Strait? Over.",
+            vts_instruction: "Ask about current wind speed and direction.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Question. What is the current wind speed and direction? Over.",
+          },
+          {
+            vessel_instruction: "Wind speed: 35 knots. Direction: North East.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. Wind speed is three five knots and north east direction. Over.",
+            vts_instruction: "Ask if there are any fishing vessels nearby.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Question. Are there any fishing vessels in your vicinity? Over.",
+          },
+          {
+            vessel_instruction: "There are no fishing vessels nearby.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. No fishing vessels in the vicinity. Over.",
+            vts_instruction: "Grant permission to increase speed.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Information. You have permission to increase speed. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge the permission and close the communication.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Permission to increase speed. Out.",
+          },
+        ],
       },
       {
-        vessel_instruction:
-          "Due to strong winds in Sandybay Strait, ask to increase speed from 10 knots.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Question. Do we have permission to increase speed from one zero knots due to strong winds in Sandybay Strait? Over.",
-        vts_instruction: "Ask about current wind speed and direction.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Question. What is the current wind speed and direction? Over.",
+        id: "2",
+        name: "Providing and reading back anchoring position coordinates",
+        participants: {
+          starter: { role: "vts", name: "europe vts" },
+          responder: { role: "vessel", name: "sunrise" },
+        },
+        turns: [
+          {
+            vts_instruction: "You are Europe VTS. Call MV Sunrise.",
+            vts_message: "Sunrise, Sunrise. This is Europe VTS. Over.",
+            vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
+            vessel_message: "Europe VTS, this is Sunrise. Over.",
+          },
+          {
+            vts_instruction: "Advise MV Sunrise to anchor at position B3.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Advice. Anchor at Bravo three. Over.",
+            vessel_instruction: "Ask for the specific coordinates of B3.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Question. What is the position of Bravo three? Over.",
+          },
+          {
+            vts_instruction:
+              "Provide the coordinates (45° 34.30' N, 013° 41.75' E) and ask for a readback.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Answer. The position of Bravo three is four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Read back. Over.",
+            vessel_instruction: "Read back the coordinates provided by VTS.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Bravo three is in position four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Over.",
+          },
+          {
+            vts_instruction: "Confirm the readback and close the call.",
+            vts_message: "Sunrise, this is Europe VTS. Correct. Out.",
+          },
+        ],
       },
       {
-        vessel_instruction: "Wind speed: 35 knots. Direction: North East.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Answer. Wind speed is three five knots and north east direction. Over.",
-        vts_instruction: "Ask if there are any fishing vessels nearby.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Question. Are there any fishing vessels in your vicinity? Over.",
+        id: "3",
+        name: "Vessel enters VTS area and must drop anchor to wait for pilot",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "State you are entering the area bound for Atlantis and request a pilot.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Entering VTS area, bound for Atlantis. Request pilot. Over.",
+            vts_instruction:
+              "Ask for the vessel's call sign, flag, draft, and destination berth.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Question. What is your call sign, flag, draft and destination berth? Over.",
+          },
+          {
+            vessel_instruction:
+              "Provide particulars: Call sign V7RU3, Greek flag, draft 8.5m, Atlantis Pier 3.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. Call sign is Victor seven Romeo Uniform three. Greek flag. Draft eight decimal five metres. Destination berth is Atlantis pier three. Over.",
+            vts_instruction:
+              "Advise the vessel to proceed to anchorage area A and wait for the pilot.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Advice. Proceed to anchorage area Alpha. Wait for pilot. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge the instruction and close the call.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Proceeding to anchorage area Alpha. Waiting for pilot. Out.",
+          },
+        ],
       },
       {
-        vessel_instruction: "There are no fishing vessels nearby.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Answer. No fishing vessels in the vicinity. Over.",
-        vts_instruction: "Grant permission to increase speed.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Information. You have permission to increase speed. Over.",
+        id: "4",
+        name: "Vessel ready to departure calls to ask clearance",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "State you are ready to depart and request clearance.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Ready to depart. Request clearance for departure. Over.",
+            vts_instruction:
+              "Grant permission to depart and tell them to watch VHF channels 16 and 14.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Information. You have permission to depart. Stand by on VHF channels one six and one four. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge the clearance and frequencies, then close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Permission to depart. Standing by on channels one six and one four. Out.",
+          },
+        ],
       },
       {
-        vessel_instruction:
-          "Acknowledge the permission and close the communication.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Received. Permission to increase speed. Out.",
+        id: "5",
+        name: "Entering the reporting zone",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report that you are entering the reporting zone.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. We are entering the reporting zone. Over.",
+            vts_instruction: "Acknowledge and ask for position.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Question. What is your present position? Over.",
+          },
+          {
+            vessel_instruction: "Provide position: 45° 30' N, 013° 35' E.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. Position four five degrees three zero minutes North, zero one three degrees three five minutes East. Over.",
+            vts_instruction: "Ask for course and speed.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Question. What is your course and speed? Over.",
+          },
+          {
+            vessel_instruction:
+              "Provide course (270°) and speed (12 knots), then close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. Course two seven zero degrees, speed one two knots. Out.",
+          },
+        ],
+      },
+      {
+        id: "6",
+        name: "Vessel in transit to pilot station",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report entering from the west, in transit to the pilot station for 13:00.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Entering VTS area from the west. Proceeding to pilot station. Pilot boarding time one three zero zero hours. Over.",
+            vts_instruction: "Acknowledge and inform them there is no traffic.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Information. No reported traffic. Over.",
+          },
+          {
+            vessel_instruction:
+              "Ask if the pilot will board from the shoreside.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Question. Will pilot board from shore side? Over.",
+            vts_instruction:
+              "Confirm shoreside boarding and instruct to call Ch 13 one hour before ETA.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Answer. Pilot will board from shoreside. Instruction. Call pilot station on channel one three one hour prior to ETA. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge instruction, confirm watch on Ch 14/16, and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. We will call pilot station on channel one three one hour prior to ETA. Standing by on channel one four and one six. Out.",
+          },
+        ],
+      },
+      {
+        id: "7",
+        name: "Entering the VTS area, underway to anchor for bunkering",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "State that you will enter VTS limits in one hour.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. In one hour we will enter VTS limits. Over.",
+            vts_instruction:
+              "Acknowledge and request them to call back when entering the VTS area.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Request. Call back when entering VTS limits. Over.",
+          },
+          {
+            vessel_instruction: "Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "State you are entering the area, bound for Anchorage X for bunkering.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Entering VTS area, bound for anchorage X-ray for bunkering. Over.",
+            vts_instruction: "Acknowledge the information.",
+            vts_message: "Sunrise, this is Europe VTS. Received. Over.",
+          },
+          {
+            vessel_instruction: "Ask at which number you should drop anchor.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Question. At which number should we drop anchor? Over.",
+            vts_instruction: "Ask for the vessel's draft.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Question. What is your draft? Over.",
+          },
+          {
+            vessel_instruction: "Provide your draft (7.5 meters).",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. Draft is seven decimal five metres. Over.",
+            vts_instruction:
+              "Advise to drop anchor at X 7 and ask for a readback.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Advice. Drop anchor at X-ray seven. Read back. Over.",
+          },
+          {
+            vessel_instruction: "Read back the instruction.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. We will drop anchor at X-ray seven. Over.",
+            vts_instruction:
+              "Confirm readback and request a callback before dropping anchor.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Correct. Request. Call back before you drop anchor. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge the request. Close call.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. We will call back before we drop anchor. Out.",
+          },
+          {
+            vessel_instruction: "Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report you are in position and ready to drop anchor.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. We are in position and ready to drop anchor. Over.",
+            vts_instruction:
+              "Warn about a vessel on the starboard side requiring a wide berth. Advise to proceed two cables North.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Warning. You are too close to vessel on your starboard side. Wide berth requested. Advice. Proceed two cables to the North. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge the warning and advice. Close call.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Proceeding two cables to the North. Out.",
+          },
+          {
+            vessel_instruction: "Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report position at X 7, two cables North, and ask for permission to drop anchor.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. In position at X-ray seven, two cables to the North. Question. Do we have permission to drop anchor? Over.",
+            vts_instruction:
+              "Confirm visual and grant permission to drop anchor.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Answer. Visual confirmed. Information. You have permission to drop anchor. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge and close the communication.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Dropping anchor. Out.",
+          },
+        ],
+      },
+      {
+        id: "8",
+        name: "Traffic information - tugboat outbound to escort incoming vessel to berth",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are tugboat Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer tugboat Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "State you are passing A, inbound for B, to meet vessel Escape.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Passing reporting point Alpha, inbound for reporting point Bravo to meet incoming vessel Escape. Over.",
+            vts_instruction:
+              "Provide traffic info: Diana outbound passing A soon, Tiger outbound passing A in 30 minutes, Voyager bunkering at X 3.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Information. Vessel Diana outbound passing Alpha in a few minutes. Vessel Tiger outbound passing Alpha in three zero minutes. Vessel Voyager bunkering at X-ray three, outside Bravo. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge traffic. State your intention to approach A slowly to wait for Escape.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Traffic information. Intention. Approaching Alpha slowly to wait for Escape. Over.",
+            vts_instruction: "Confirm and close the call.",
+            vts_message: "Sunrise, this is Europe VTS. Received. Out.",
+          },
+        ],
+      },
+      {
+        id: "9",
+        name: "Permission to heave anchor and get underway",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "State you are ready to depart reporting point 1 for reporting point 2. Request clearance.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Ready to depart reporting point one, bound for reporting point two. Request clearance to depart. Over.",
+            vts_instruction:
+              "Grant clearance. Traffic info: MV Aurora outbound ahead, Barge Stardust inbound for anchorage X 5. Advise to call Stardust.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Information. You have clearance to depart. Traffic information. Motor vessel Aurora outbound ahead of you. Barge Stardust inbound ahead of you for anchorage X-ray five. Advice. Call Stardust to arrange meeting. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge traffic, state you will call Stardust, and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Traffic information. We will call Stardust. Standing by on channel one six and one eight. Out.",
+            vts_instruction: "Acknowledge and close.",
+            vts_message: "Sunrise, this is Europe VTS. Correct. Out.",
+          },
+        ],
+      },
+      {
+        id: "10",
+        name: "Vessel in transit, to pilot station",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report entering from the west, in transit to the pilot station. Pilot boarding time is 11:00.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Entering VTS area from the west, in transit. Proceeding to pilot station. Pilot boarding time one one zero zero hours. Over.",
+            vts_instruction:
+              "Acknowledge and inform that there is no reported traffic.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Information. No reported traffic. Over.",
+          },
+          {
+            vessel_instruction:
+              "Ask if the pilot will board from the shoreside.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Question. Will pilot board from shore side? Over.",
+            vts_instruction:
+              "Confirm shoreside boarding. Instruct to call pilot station on channel 13 one hour before ETA.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Answer. Pilot will board from shoreside. Instruction. Call pilot station on channel one three one hour prior to ETA. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge instruction and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. We will call pilot station on channel one three one hour prior to ETA. Out.",
+          },
+        ],
+      },
+      {
+        id: "11",
+        name: "Vessel entering VTS area, in transit",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "State you are entering from the west and will be in transit.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Entering VTS area from the west, in transit. Over.",
+            vts_instruction: "Acknowledge and ask where they are bound.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Question. Where are you bound? Over.",
+          },
+          {
+            vessel_instruction: "Report you are southbound for Hamburg.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. Southbound for Hamburg. Over.",
+            vts_instruction:
+              "Provide traffic info: Tanker outbound under bridge, tugboat inbound to assist at X 7. Advise to call tugboat.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Information. Tanker vessel outbound under bridge. Tugboat inbound to assist at X-ray seven. Advice. Call tugboat to arrange meeting. Over.",
+          },
+          {
+            vessel_instruction:
+              "Acknowledge traffic information, state you will call the tugboat, and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Traffic information. We will call tugboat. Out.",
+            vts_instruction: "Confirm and close.",
+            vts_message: "Sunrise, this is Europe VTS. Correct. Out.",
+          },
+        ],
+      },
+      {
+        id: "12",
+        name: "Vessel underway with pilot onboard",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report anchor is aweigh from X 1, underway to pilot station.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Anchor is aweigh from X-ray one. Underway, proceeding to pilot station. Over.",
+            vts_instruction:
+              "Instruct the vessel not to get underway and to wait in position. Ask for a readback.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Instruction. Do not get underway. Wait in position until further instructions. Read back. Over.",
+          },
+          {
+            vessel_instruction:
+              "Read back instruction and ask how long you must wait.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. We will wait in position until further instructions. Question. How long will we wait? Over.",
+            vts_instruction:
+              "Inform that pilot boarding time is 11:00 and further information will follow.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Answer. Pilot boarding time is one one zero zero hours. Further information will follow. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Pilot boarding time one one zero zero hours. Waiting in position. Out.",
+            vts_instruction: "Confirm and close.",
+            vts_message: "Sunrise, this is Europe VTS. Correct. Out.",
+          },
+        ],
+      },
+      {
+        id: "13",
+        name: "Vessel entering VTS area bound for berth place and ask for information",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report entering South channel from South-West, bound for berth.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Entering South channel from South-West, bound for berth place. Over.",
+            vts_instruction:
+              "Provide traffic info: Tugboat Sunset bound for X 4, bunker boat Aurora outbound on South channel, Ro-Ro Triton is alongside.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Information. Tugboat Sunset bound for X-ray four for escort. Bunker boat Aurora outbound on South channel. Ro-Ro vessel Triton is alongside. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge traffic information.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Traffic information. Over.",
+            vts_instruction: "Ask for a readback of the information.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Request. Read back information. Over.",
+          },
+          {
+            vessel_instruction: "Read back the traffic information.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Tugboat Sunset bound for X-ray four. Bunker boat Aurora outbound South channel. Triton alongside. Over.",
+            vts_instruction:
+              "Confirm readback. Request a call back when alongside the berth.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Correct. Request. Call back when alongside at berth place. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge request and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. We will call back when alongside. Out.",
+          },
+        ],
+      },
+      {
+        id: "14",
+        name: "Vessel at anchor, preparing to get underway",
+        participants: {
+          starter: { role: "vessel", name: "sunrise" },
+          responder: { role: "vts", name: "europe vts" },
+        },
+        turns: [
+          {
+            vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report bunker operations completed. Request clearance to heave anchor at R 5 and proceed.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Bunker operations completed. Request clearance to heave anchor at Romeo five and proceed to next port of call. Over.",
+            vts_instruction:
+              "Grant clearance to heave anchor. Request a call back when anchor is aweigh.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Information. You have clearance to heave anchor. Request. Call back when anchor is aweigh. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. We will call back when anchor is aweigh. Out.",
+          },
+          {
+            vessel_instruction: "Call Europe VTS.",
+            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vts_instruction: "Answer MV Sunrise.",
+            vts_message: "Sunrise, this is Europe VTS. Over.",
+          },
+          {
+            vessel_instruction:
+              "Report anchor is aweigh. Request clearance to get underway.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Information. Anchor is aweigh. Request clearance to get underway. Over.",
+            vts_instruction:
+              "Grant clearance. Ask if they are northbound or southbound, and their next port of call.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Information. You have clearance to get underway. Question. Are you southbound or northbound, and what is your next port of call? Over.",
+          },
+          {
+            vessel_instruction:
+              "State you are southbound, next port of call Coorabong.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Answer. Southbound. Next port of call is Coorabong. Over.",
+            vts_instruction:
+              "Advise taking the South channel. Traffic info: Vessel Aurora is bunkering at X 3.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. Advice. Take the South channel. Information. Vessel Aurora is bunkering at X-ray three. Over.",
+          },
+          {
+            vessel_instruction: "Acknowledge route and close.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. Received. Taking South channel. Out.",
+          },
+        ],
+      },
+      {
+        id: "15",
+        name: "Checking a reported spillage",
+        starter: "vts",
+        participants: {
+          starter: { role: "vts", name: "europe vts" },
+          responder: { role: "vessel", name: "sunrise" },
+        },
+        turns: [
+          {
+            vts_instruction: "Call MV Sunrise.",
+            vts_message: "Sunrise, Sunrise. This is Europe VTS. Over.",
+            vessel_instruction: "Answer Europe VTS.",
+            vessel_message: "Europe VTS, this is Sunrise. Over.",
+          },
+          {
+            vts_instruction:
+              "Request MV Sunrise check for a spill alongside vessel.",
+            vts_message:
+              "Sunrise, this is Europe VTS. REQUEST. Check reported spillage alongside your vessel. Over.",
+            vessel_instruction: "Ask if spill is at bow.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. QUESTION. Is the reported spillage at the bow section? Over.",
+          },
+          {
+            vts_instruction: "Confirm spill is at bow.",
+            vts_message:
+              "Sunrise, this is Europe VTS. ANSWER. Yes, the reported spillage is at the bow section. Over.",
+            vessel_instruction: "Confirm check and standby.",
+            vessel_message:
+              "Europe VTS, this is Sunrise. INTENTION. I will check and report. Stand by. Out.",
+          },
+        ],
       },
     ],
   },
-  {
-    id: "2",
-    name: "Providing and reading back anchoring position coordinates",
-    participants: {
-      starter: { role: "vts", name: "europe vts" },
-      responder: { role: "vessel", name: "sunrise" },
-    },
-    turns: [
-      {
-        vts_instruction: "You are Europe VTS. Call MV Sunrise.",
-        vts_message: "Sunrise, Sunrise. This is Europe VTS. Over.",
-        vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
-        vessel_message: "Europe VTS, this is Sunrise. Over.",
-      },
-      {
-        vts_instruction: "Advise MV Sunrise to anchor at position B3.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Advice. Anchor at Bravo three. Over.",
-        vessel_instruction: "Ask for the specific coordinates of B3.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Question. What is the position of Bravo three? Over.",
-      },
-      {
-        vts_instruction:
-          "Provide the coordinates (45° 34.30' N, 013° 41.75' E) and ask for a readback.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Answer. The position of Bravo three is four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Read back. Over.",
-        vessel_instruction: "Read back the coordinates provided by VTS.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Bravo three is in position four five degrees three four decimal three zero minutes north, zero one three degrees four one decimal seven five minutes east. Over.",
-      },
-      {
-        vts_instruction: "Confirm the readback and close the call.",
-        vts_message: "Sunrise, this is Europe VTS. Correct. Out.",
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "Vessel enters VTS area and must drop anchor to wait for pilot",
-    participants: {
-      starter: { role: "vessel", name: "sunrise" },
-      responder: { role: "vts", name: "europe vts" },
-    },
-    turns: [
-      {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
-        vts_message: "Sunrise, this is Europe VTS. Over.",
-      },
-      {
-        vessel_instruction:
-          "State you are entering the area bound for Atlantis and request a pilot.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Information. Entering VTS area, bound for Atlantis. Request pilot. Over.",
-        vts_instruction:
-          "Ask for the vessel's call sign, flag, draft, and destination berth.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Question. What is your call sign, flag, draft and destination berth? Over.",
-      },
-      {
-        vessel_instruction:
-          "Provide particulars: Call sign V7RU3, Greek flag, draft 8.5m, Atlantis Pier 3.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Answer. Call sign is Victor seven Romeo Uniform three. Greek flag. Draft eight decimal five metres. Destination berth is Atlantis pier three. Over.",
-        vts_instruction:
-          "Advise the vessel to proceed to anchorage area A and wait for the pilot.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Advice. Proceed to anchorage area Alpha. Wait for pilot. Over.",
-      },
-      {
-        vessel_instruction: "Acknowledge the instruction and close the call.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Received. Proceeding to anchorage area Alpha. Waiting for pilot. Out.",
-      },
-    ],
-  },
-  {
-    id: "4",
-    name: "Vessel ready to departure calls to ask clearance",
-    participants: {
-      starter: { role: "vessel", name: "sunrise" },
-      responder: { role: "vts", name: "europe vts" },
-    },
-    turns: [
-      {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
-        vts_message: "Sunrise, this is Europe VTS. Over.",
-      },
-      {
-        vessel_instruction:
-          "State you are ready to depart and request clearance.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Information. Ready to depart. Request clearance for departure. Over.",
-        vts_instruction:
-          "Grant permission to depart and tell them to watch VHF channels 16 and 14.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Information. You have permission to depart. Stand by on VHF channels one six and one four. Over.",
-      },
-      {
-        vessel_instruction:
-          "Acknowledge the clearance and frequencies, then close.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Received. Permission to depart. Standing by on channels one six and one four. Out.",
-      },
-    ],
-  },
-  {
-    id: "5",
-    name: "Entering the reporting zone",
-    participants: {
-      starter: { role: "vessel", name: "sunrise" },
-      responder: { role: "vts", name: "europe vts" },
-    },
-    turns: [
-      {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
-        vts_message: "Sunrise, this is Europe VTS. Over.",
-      },
-      {
-        vessel_instruction: "Report that you are entering the reporting zone.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Information. We are entering the reporting zone. Over.",
-        vts_instruction: "Acknowledge and ask for position.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Received. Question. What is your present position? Over.",
-      },
-      {
-        vessel_instruction: "Provide position: 45° 30' N, 013° 35' E.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Answer. Position four five degrees three zero minutes North, zero one three degrees three five minutes East. Over.",
-        vts_instruction: "Ask for course and speed.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Question. What is your course and speed? Over.",
-      },
-      {
-        vessel_instruction:
-          "Provide course (270°) and speed (12 knots), then close.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Answer. Course two seven zero degrees, speed one two knots. Out.",
-      },
-    ],
-  },
-  {
-    id: "6",
-    name: "Vessel in transit to pilot station",
-    participants: {
-      starter: { role: "vessel", name: "sunrise" },
-      responder: { role: "vts", name: "europe vts" },
-    },
-    turns: [
-      {
-        vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-        vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
-        vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
-        vts_message: "Sunrise, this is Europe VTS. Over.",
-      },
-      {
-        vessel_instruction:
-          "Report entering from the west, in transit to the pilot station for 13:00.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Information. Entering VTS area from the west. Proceeding to pilot station. Pilot boarding time one three zero zero hours. Over.",
-        vts_instruction: "Acknowledge and inform them there is no traffic.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Received. Information. No reported traffic. Over.",
-      },
-      {
-        vessel_instruction: "Ask if the pilot will board from the shoreside.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Question. Will pilot board from shore side? Over.",
-        vts_instruction:
-          "Confirm shoreside boarding and instruct to call Ch 13 one hour before ETA.",
-        vts_message:
-          "Sunrise, this is Europe VTS. Answer. Pilot will board from shoreside. Instruction. Call pilot station on channel one three one hour prior to ETA. Over.",
-      },
-      {
-        vessel_instruction:
-          "Acknowledge instruction, confirm watch on Ch 14/16, and close.",
-        vessel_message:
-          "Europe VTS, this is Sunrise. Received. We will call pilot station on channel one three one hour prior to ETA. Standing by on channel one four and one six. Out.",
-      },
-    ],
-  },
-  ];
+  /** Additional scenarios can be added here
+   *  {
+   *    headerText: "Scenario header text",
+   *    headerColor: "color for the header text", (defaults to blue if not provided, choose between "blue", "green", "orange", "red", "cyan", "zinc", "olive")
+   *    scenarios: {
+   *     id: "unique_scenario_id",
+   *    name: "Scenario name",
+   *   starter: "vessel" | "vts",
+   *    participants: {
+   *     starter: { role: "vessel" | "vts", name: "name of the vessel or vts" },
+   *     responder: { role: "vessel" | "vts", name: "name of the vessel or vts" },
+   *    },
+   *  turns: [
+   *    {
+   *     vessel_instruction: "Instruction for the vessel role",
+   *    vessel_message: "Expected message from the vessel role",
+   *    vts_instruction: "Instruction for the VTS role",
+   *   vts_message: "Expected message from the VTS role",
+   *    },
+   *   {
+   *     vessel_instruction: "Instruction for the vessel role",
+   *     etc.....
+   *    },
+   *    ]
+   *  }
+   * */ 
+];
 /*
   {
     id: "7",

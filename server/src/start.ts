@@ -3,11 +3,11 @@ import { initScenariosRouter, scenariosRouter } from "./router/scenarios.js";
 import cors from "cors";
 import session from "express-session";
 import createMemoryStore from "memorystore";
-import { aScenarios, bScenarios } from "./lib/scenarios.js";
+import { scenarioLists } from "./lib/scenarios.js";
 import { ScenariosService } from "./service/scenarios.js";
 import { config as configDotEnv } from "dotenv";
-import { Scenario } from "./model/scenarios.interface.js";
-import { UserRole } from "@shared/scenarios/model.js";
+import { ScenarioList } from "./model/scenarios.interface.js";
+import { ScenarioHeaderColor, UserRole } from "@shared/scenarios/model.js";
 import path from "path";
 import { createRequestHandler } from "@react-router/express";
 
@@ -30,57 +30,36 @@ app.use((req, _res, next) => {
 app.use(express.json());
 
 //TODO: This has to be changed when we fetch the scenarios from the database
-const aScen: Scenario[] = aScenarios.map((s) => {
-  return {
-    id: s.id,
-    description: s.name,
-    participants: {
-      starter: {
-        role: s.participants.starter.role as UserRole,
-        name: s.participants.starter.name,
+const importedScenarios: ScenarioList[] = scenarioLists.map((list) => ({
+  headerText: list.headerText,
+  headerColor: list.headerColor as ScenarioHeaderColor || "blue",
+  scenarios: list.scenarios.map((s) => {
+    return {
+      id: s.id,
+      description: s.name,
+      participants: {
+        starter: {
+          role: s.participants.starter.role as UserRole,
+          name: s.participants.starter.name,
+        },
+        responder: {
+          role: s.participants.responder.role as UserRole,
+          name: s.participants.responder.name,
+        },
       },
-      responder: {
-        role: s.participants.responder.role as UserRole,
-        name: s.participants.responder.name,
-      },
-    },
-    scenarioTurns: s.turns.map((t) => {
-      return {
-        vesselInstruction: t.vessel_instruction ?? "",
-        vesselMessage: t.vessel_message ?? "",
-        vtsMessage: t.vts_message ?? "",
-        vtsInstruction: t.vts_instruction ?? "",
-      };
-    }),
-  };
-});
+      scenarioTurns: s.turns.map((t) => {
+        return {
+          vesselInstruction: t.vessel_instruction ?? "",
+          vesselMessage: t.vessel_message ?? "",
+          vtsMessage: t.vts_message ?? "",
+          vtsInstruction: t.vts_instruction ?? "",
+        };
+      }),
+    };
+  }),
+}));
 
-const bScen: Scenario[] = bScenarios.map((s) => {
-  return {
-    id: s.id,
-    description: s.name,
-    participants: {
-      starter: {
-        role: s.participants.starter.role as UserRole,
-        name: s.participants.starter.name,
-      },
-      responder: {
-        role: s.participants.responder.role as UserRole,
-        name: s.participants.responder.name,
-      },
-    },
-    scenarioTurns: s.turns.map((t) => {
-      return {
-        vesselInstruction: t.vessel_instruction ?? "",
-        vesselMessage: t.vessel_message ?? "",
-        vtsMessage: t.vts_message ?? "",
-        vtsInstruction: t.vts_instruction ?? "",
-      };
-    }),
-  };
-});
-
-const scenariosService = new ScenariosService(aScen, bScen);
+const scenariosService = new ScenariosService(importedScenarios);
 const MemoryStore = createMemoryStore(session);
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 

@@ -1,4 +1,4 @@
-import { UserRole } from "@shared/scenarios/model.js";
+import { ScenarioHeaderColor, UserRole } from "@shared/scenarios/model.js";
 
 interface ScenarioTurn {
   vesselInstruction: string;
@@ -17,4 +17,10 @@ export interface Scenario {
   description: string;
   participants: { starter: Participant; responder: Participant };
   scenarioTurns: ScenarioTurn[];
+}
+
+export interface ScenarioList {
+  headerText: string;
+  headerColor: ScenarioHeaderColor;
+  scenarios: Scenario[];
 }

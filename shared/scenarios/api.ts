@@ -1,7 +1,7 @@
-import type { ChatbotTurn, ScenarioChatHistory, ScenarioDescription, UserRole, UserTurn } from "./model";
+import type { ChatbotTurn, ScenarioChatHistory, ScenarioDescriptionList, UserRole, UserTurn } from "./model";
 
 export interface DescriptionsResponse {
-  descriptions: ScenarioDescription[][];
+  scenarioDescriptionLists: ScenarioDescriptionList[];
 }
 
 export interface StartScenarioRequest {

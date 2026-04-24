@@ -151,6 +151,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       }
     } else {
       console.log('Error submitting message');
+      setDisableSubmit(false);
     }
   }
   if (!mounted) {

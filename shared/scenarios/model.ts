@@ -3,6 +3,21 @@ export interface ScenarioDescription {
   description: string;
 }
 
+export interface ScenarioDescriptionList{
+  headerText: string;
+  headerColor?: ScenarioHeaderColor;
+  scenarios: ScenarioDescription[];
+}
+export enum ScenarioHeaderColor {
+  Red = "red",
+  Green = "green",
+  Blue = "blue",
+  Orange = "orange",
+  Zinc = "zinc",
+  Olive = "olive",
+  Cyan = "cyan",
+}
+
 export enum UserRole {
   Vessel = "vessel",
   VTS = "vts",
