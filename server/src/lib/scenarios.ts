@@ -679,9 +679,9 @@ export const scenarioLists = [
             vts_instruction: "Confirm spill is at bow.",
             vts_message:
               "Sunrise, this is Europe VTS. Answer. Yes, the reported spillage is at the bow section. Over.",
-            vessel_instruction: "Confirm check and standby.",
+            vessel_instruction: "Confirm check and close call.",
             vessel_message:
-              "Europe VTS, this is Sunrise. Intention. I will check and report. Stand by. Out.",
+              "Europe VTS, this is Sunrise. Intention. I will check and report. Out.",
           },
         ],
       },
@@ -1412,9 +1412,9 @@ export const bScenarios = [
         vts_instruction: "Confirm spill is at bow.",
         vts_message:
           "Sunrise, this is Europe VTS. ANSWER. Yes, the reported spillage is at the bow section. Over.",
-        vessel_instruction: "Confirm check and standby.",
+        vessel_instruction: "Confirm check and close call.",
         vessel_message:
-          "Europe VTS, this is Sunrise. INTENTION. I will check and report. Stand by. Out.",
+          "Europe VTS, this is Sunrise. INTENTION. I will check and report. Out.",
       },
     ],
   } /*

@@ -4,6 +4,8 @@ import OpenAILLMService from "./openaillmservice.js";
 import LLMService from "./llmservice.interface.js";
 import {
   AmbiguesWords,
+  MaritimeMessage,
+  MessageEnding,
   MessageMarkers,
   PhoneticAlphabet,
 } from "@src/model/turnMessages.interface.js";
@@ -94,62 +96,43 @@ export class TurnManager {
       timestamp: Date.now(),
     } as UserTurn;
   }
+  private parseMessage(message: string): {
+    opening?: string;
+    content?: string;
+    ending?: string;
+  } {
+    const sender = this.getSender();
+    const receiver = this.getReceiver();
+    const endings = Object.values(MessageEnding).join("|");
 
-  private async controlUserMessage(
-    userInput: string,
-    correctedUserInput: string,
-    turnAnswer: string,
-  ): Promise<{ feedback: string; answerAccuracy: AnswerAccuracy }> {
-    const userMessage = this.normalize(userInput);
-    const correctedUserMessage = this.normalize(correctedUserInput);
-    const turnMessage = this.normalize(turnAnswer);
+    // --- Opening ---
+    const senderLastIndex = message.lastIndexOf(sender);
+    const receiverLastIndex = message.lastIndexOf(receiver);
 
-    const parsedCorrected = this.controlOpening(
-      correctedUserMessage,
-      turnAnswer,
+    const endIndex =
+      senderLastIndex === -1 && receiverLastIndex === -1
+        ? 0
+        : Math.max(
+            senderLastIndex !== -1 ? senderLastIndex + sender.length : 0,
+            receiverLastIndex !== -1 ? receiverLastIndex + receiver.length : 0,
+          );
+
+    const opening = message.slice(0, endIndex).trim();
+    const afterOpening = message
+      .slice(endIndex)
+      .replace(/^[\s.]+/, "")
+      .trim();
+
+    // --- Ending ---
+    const endingMatch = afterOpening.match(
+      new RegExp(`\\b(over and out|${endings})\\b\\.?\\s*$`, "i"),
     );
-    const parsedOriginal = this.controlOpening(userMessage, turnAnswer);
+    const ending = endingMatch ? endingMatch[1] : "";
+    const content = endingMatch
+      ? afterOpening.slice(0, endingMatch.index).trim()
+      : afterOpening;
 
-    // Prefer corrected unless original is better (spell check may break call signs)
-    const parsedOpening =
-      parsedCorrected.correct || !parsedOriginal.correct
-        ? parsedCorrected
-        : parsedOriginal;
-
-    let errorCounter = Math.min(parsedOpening.errorCounter, 2);
-
-    const endingResult = this.controlEnding(
-      parsedOpening.messageWithoutOpening,
-      turnMessage,
-    );
-    if (!endingResult.correct) errorCounter += 2;
-
-    const feedbackParts = [
-      parsedOpening.openingFeedback,
-      endingResult.feedback,
-    ];
-
-    if (this.countWords(endingResult.remainingMessage) > 0) {
-      const turnContent = this.getTurnAnswerContent(turnMessage);
-      if (turnContent.trim()) {
-        const contentResult = await this.controlContent(
-          endingResult.remainingMessage,
-          turnContent,
-        );
-        feedbackParts.splice(1, 0, contentResult.feedback);
-        errorCounter += contentResult.errorCounter;
-      }
-    }
-
-    const feedback = feedbackParts.join("\n");
-    const answerAccuracy =
-      errorCounter >= 4
-        ? AnswerAccuracy.Incorrect
-        : errorCounter > 0
-          ? AnswerAccuracy.PartiallyCorrect
-          : AnswerAccuracy.Correct;
-
-    return { feedback, answerAccuracy };
+    return { opening, content, ending };
   }
 
   private async controlContent(
@@ -188,15 +171,20 @@ export class TurnManager {
 
     const userMarkers = this.findMatches(userWords, MessageMarkers);
     const userAmbiguousWords = this.findMatches(userWords, AmbiguesWords);
+    const turnAmbiguousWords = this.findMatches(turnWords, AmbiguesWords);
+    const notAcceptedUserAmbiguousWords = userAmbiguousWords.filter(
+      (word) => !turnAmbiguousWords.includes(word),
+    );
+
     const turnPhoneticWords = this.findMatches(turnWords, PhoneticAlphabet);
     const userPhoneticWords = new Set(
       this.findMatches(userWords, PhoneticAlphabet),
     );
 
-    if (userAmbiguousWords.length > 0) {
+    if (notAcceptedUserAmbiguousWords.length > 0) {
       feedbackParts.push(
         "Avoid using ambiguous words: " +
-          userAmbiguousWords.map((w) => `'${w}'`).join(", ") +
+          notAcceptedUserAmbiguousWords.map((w) => `'${w}'`).join(", ") +
           ".",
       );
       errorCounter += 1;
@@ -220,93 +208,161 @@ export class TurnManager {
     return { feedback: feedbackParts.join(" "), errorCounter };
   }
 
-  private controlOpening(
-    message: string,
+  private async controlUserMessage(
+    userInput: string,
+    correctedUserInput: string,
     turnAnswer: string,
+  ): Promise<{ feedback: string; answerAccuracy: AnswerAccuracy }> {
+    const userMessage = this.normalize(userInput);
+    const correctedUserMessage = this.normalize(correctedUserInput);
+    const turnMessage = this.normalize(turnAnswer);
+
+    const turnParsed: MaritimeMessage = this.parseMessage(turnMessage);
+    const userParsed: MaritimeMessage = this.parseMessage(userMessage);
+    const correctedParsed: MaritimeMessage = this.parseMessage(correctedUserMessage);
+
+    const originalOpening = this.controlOpening(
+      userParsed.opening ?? "",
+      turnParsed.opening ?? "",
+    );
+    const correctedOpening = this.controlOpening(
+      correctedParsed.opening ?? "",
+      turnParsed.opening ?? "",
+    );
+
+    // Prefer corrected unless original is better (spell check may break call signs)
+    const parsed =
+      correctedOpening.correct || !originalOpening.correct
+        ? correctedParsed
+        : userParsed;
+
+    let errorCounter = 0;
+    const feedbackParts: string[] = [];
+
+    const openingResult =
+      correctedOpening.correct || !originalOpening.correct
+        ? correctedOpening
+        : originalOpening;
+    errorCounter += Math.min(openingResult.errorCounter, 2);
+    feedbackParts.push(openingResult.feedback);
+
+    const endingResult = this.controlEnding(
+      parsed.ending ?? "",
+      turnParsed.ending ?? "",
+    );
+    if (!endingResult.correct) errorCounter += 2;
+    feedbackParts.push(endingResult.feedback);
+
+    if (
+      this.countWords(parsed.content ?? "") > 0 &&
+      turnParsed.content?.trim()
+    ) {
+      const contentResult = await this.controlContent(
+        parsed.content ?? "",
+        turnParsed.content,
+      );
+      feedbackParts.splice(1, 0, contentResult.feedback);
+      errorCounter += contentResult.errorCounter;
+    }
+
+    const feedback = feedbackParts.join("\n");
+    const answerAccuracy =
+      errorCounter >= 4
+        ? AnswerAccuracy.Incorrect
+        : errorCounter > 0
+          ? AnswerAccuracy.PartiallyCorrect
+          : AnswerAccuracy.Correct;
+
+    return { feedback, answerAccuracy };
+  }
+
+  private controlOpening(
+    opening: string,
+    turnOpening: string,
   ): {
-    messageWithoutOpening: string;
+    feedback: string;
     correct: boolean;
-    openingFeedback: string;
     errorCounter: number;
   } {
     const sender = this.getSender();
     const receiver = this.getReceiver();
-
     const feedbackParts: string[] = [];
     let errorCounter = 0;
 
-    const includesReceiver = message.includes(receiver);
-    const includesSender = message.includes(sender);
+    const includesReceiver = opening.includes(receiver);
+    const includesSender = opening.includes(sender);
 
     if (!includesReceiver && !includesSender) {
       feedbackParts.push("Missing names in message.");
       errorCounter += 2;
     } else if (!includesReceiver) {
-      feedbackParts.push("Missing receiver name in message.");
+      feedbackParts.push("Missing receiver name in opening.");
       errorCounter += 1;
     } else if (!includesSender) {
-      feedbackParts.push("Missing sender name in message.");
+      feedbackParts.push("Missing sender name in opening.");
       errorCounter += 1;
     }
 
-    const senderIndex = message.indexOf(sender);
-    const receiverIndex = message.indexOf(receiver);
-    const endIndex =
-      senderIndex === -1 && receiverIndex === -1
-        ? 0
-        : Math.max(
-            senderIndex + sender.length,
-            receiverIndex + receiver.length,
-          );
-
-    const opening = message.slice(0, endIndex).trim();
-    const remainingMessage = message
-      .slice(endIndex)
-      .replace(/^[\s.]+/, "")
-      .trim();
+    const senderIndex = opening.indexOf(sender);
+    const receiverIndex = opening.indexOf(receiver);
 
     const matchReceiver = opening.match(new RegExp(receiver, "gi"));
-    if (!matchReceiver || !includesSender) {
+    const matchSender = opening.match(new RegExp(sender, "gi"));
+
+    if (!matchReceiver || !matchSender) {
       return {
-        messageWithoutOpening: remainingMessage,
+        feedback: feedbackParts.join(" "),
         correct: false,
-        openingFeedback: feedbackParts.join(" "),
         errorCounter,
       };
     }
 
     if (senderIndex <= receiverIndex) {
-      feedbackParts.push("Sender and Reciever are in wrong order.");
+      feedbackParts.push("Sender and receiver are in wrong order.");
       errorCounter += 1;
     }
 
     const receiverCountInAnswer = (
-      turnAnswer.match(new RegExp(receiver, "gi")) ?? []
+      turnOpening.match(new RegExp(receiver, "gi")) ?? []
     ).length;
-    const isFirstMessage = receiverCountInAnswer >= 2;
+    const senderCountInAnswer = (
+      turnOpening.match(new RegExp(sender, "gi")) ?? []
+    ).length;
+    const shouldIncludeMulReceiver = receiverCountInAnswer >= 2;
+    const shouldIncludeMulSender = senderCountInAnswer >= 3;
+
     if (
-      isFirstMessage &&
+      shouldIncludeMulReceiver &&
       (matchReceiver.length < 2 || matchReceiver.length > 3)
     ) {
       feedbackParts.push(
         "First message should contain the receiver two or three times.",
       );
       errorCounter += 1;
-    } else if (!isFirstMessage && matchReceiver.length !== 1) {
+    } else if (!shouldIncludeMulReceiver && matchReceiver.length !== 1) {
       feedbackParts.push("Message should contain the receiver once.");
       errorCounter += 1;
     }
 
-    if (!opening.includes("this is") && includesSender) {
-      feedbackParts.push("Opening should contain 'this is'.");
+    if (shouldIncludeMulSender && matchSender.length !== 3) {
+      feedbackParts.push(
+        "First message should contain the sender three times.",
+      );
       errorCounter += 1;
+    } else if (!shouldIncludeMulSender && matchSender.length !== 1) {
+      feedbackParts.push("Message should contain the sender once.");
+      errorCounter += 1;
+    }
+
+    if (!opening.includes("this is") && includesSender) {
+      feedbackParts.push("It's recommended to use 'this is' in the opening.");
     }
 
     const expectedWordCount =
       this.countWords(sender) +
       this.countWords(receiver) * matchReceiver.length +
       2;
-    if (this.countWords(opening) > expectedWordCount) {
+    if (this.countWords(opening) > expectedWordCount + EXTRA_WORD_THRESHOLD) {
       feedbackParts.push("Opening contains more words than needed.");
       errorCounter += 1;
     }
@@ -314,53 +370,30 @@ export class TurnManager {
     const correct = feedbackParts.length === 0;
     if (correct) feedbackParts.push("Correct opening.");
 
-    return {
-      messageWithoutOpening: remainingMessage,
-      correct,
-      openingFeedback: feedbackParts.join(" "),
-      errorCounter,
-    };
+    return { feedback: feedbackParts.join(" "), correct, errorCounter };
   }
 
   private controlEnding(
-    message: string,
-    turnAnswer: string,
+    ending: string,
+    turnEnding: string,
   ): {
-    remainingMessage: string;
     correct: boolean;
     feedback: string;
   } {
-    const correctEnding = turnAnswer.match(/\b(over|out)\b\.?\s*$/i)!;
-    const match = message.match(/\b(over and out|over|out)\b\.?\s*$/i);
-
-    if (!match) {
+    if (!ending) {
       return {
-        remainingMessage: message,
         correct: false,
-        feedback: `Message should end with '${correctEnding[1]}'.`,
+        feedback: `Message should end with '${turnEnding}'.`,
       };
     }
 
-    const correct = correctEnding[1] === match[1];
+    const correct = ending === turnEnding;
     return {
-      remainingMessage: message.slice(0, match.index).trim(),
       correct,
       feedback: correct
         ? "Ending is correct."
-        : `Message should end with '${correctEnding[1]}'.`,
+        : `Message should end with '${turnEnding}'.`,
     };
-  }
-
-  private getTurnAnswerContent(message: string): string {
-    const sender = this.getSender().toLowerCase();
-    const senderIndex = message.indexOf(sender);
-    if (senderIndex === -1) return message;
-
-    return message
-      .slice(senderIndex + sender.length)
-      .trim()
-      .replace(/\s*\b(over|out)\b\.?\s*$/i, "")
-      .trim();
   }
 
   private normalize(message: string): string {
@@ -369,6 +402,9 @@ export class TurnManager {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^\w\s]/g, "")
+      .replace(/\badvise\b/g, "advice")
+      .replace(/\bstandby\b/g, "stand by")
+      .replace(/\balfa\b/g, "alpha")
       .replace(/\s+/g, " ")
       .trim();
   }
