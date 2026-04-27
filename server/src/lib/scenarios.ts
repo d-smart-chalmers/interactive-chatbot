@@ -13,7 +13,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -52,7 +53,8 @@ export const scenarioLists = [
         turns: [
           {
             vts_instruction: "You are Europe VTS. Call MV Sunrise.",
-            vts_message: "Sunrise, Sunrise. This is Europe VTS. Over.",
+            vts_message:
+              "Sunrise, Sunrise. This is Europe VTS, Europe VTS, Europe VTS. Over.",
             vessel_instruction: "You are MV Sunrise. Answer Europe VTS.",
             vessel_message: "Europe VTS, this is Sunrise. Over.",
           },
@@ -89,7 +91,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -131,7 +134,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -163,7 +167,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -202,7 +207,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -243,7 +249,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -259,7 +266,8 @@ export const scenarioLists = [
           },
           {
             vessel_instruction: "Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -304,7 +312,8 @@ export const scenarioLists = [
           },
           {
             vessel_instruction: "Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -326,7 +335,8 @@ export const scenarioLists = [
           },
           {
             vessel_instruction: "Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -357,7 +367,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are tugboat Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer tugboat Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -392,7 +403,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -426,7 +438,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -467,7 +480,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -509,7 +523,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -552,7 +567,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -599,7 +615,8 @@ export const scenarioLists = [
         turns: [
           {
             vessel_instruction: "You are MV Sunrise. Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "You are Europe VTS. Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -620,7 +637,8 @@ export const scenarioLists = [
           },
           {
             vessel_instruction: "Call Europe VTS.",
-            vessel_message: "Europe VTS, Europe VTS. This is Sunrise. Over.",
+            vessel_message:
+              "Europe VTS, Europe VTS. This is Sunrise, Sunrise, Sunrise. Over.",
             vts_instruction: "Answer MV Sunrise.",
             vts_message: "Sunrise, this is Europe VTS. Over.",
           },
@@ -654,7 +672,6 @@ export const scenarioLists = [
       {
         id: "15",
         name: "Checking a reported spillage",
-        starter: "vts",
         participants: {
           starter: { role: "vts", name: "europe vts" },
           responder: { role: "vessel", name: "sunrise" },
@@ -662,7 +679,8 @@ export const scenarioLists = [
         turns: [
           {
             vts_instruction: "Call MV Sunrise.",
-            vts_message: "Sunrise, Sunrise. This is Europe VTS. Over.",
+            vts_message:
+              "Sunrise, Sunrise. This is Europe VTS, Europe VTS, Europe VTS. Over.",
             vessel_instruction: "Answer Europe VTS.",
             vessel_message: "Europe VTS, this is Sunrise. Over.",
           },
