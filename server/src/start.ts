@@ -10,6 +10,7 @@ import { ScenarioList } from "./model/scenarios.interface.js";
 import { ScenarioHeaderColor, UserRole } from "@shared/scenarios/model.js";
 import path from "path";
 import { createRequestHandler } from "@react-router/express";
+import { ErrorHandler } from "./middleware/errorHandler.js";
 
 configDotEnv();
 
@@ -101,3 +102,5 @@ try {
 if (build) {
   app.use(new RegExp(`^${basePath}(\\/.*)?$`), createRequestHandler({ build }));
 }
+
+app.use(ErrorHandler);
