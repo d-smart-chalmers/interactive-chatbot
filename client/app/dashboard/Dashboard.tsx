@@ -30,7 +30,7 @@ export default function Dashboard() {
     setLoading(false);
   };
   useEffect(() => {
-    if(!hasHydrated) {
+    if (!hasHydrated) {
       return;
     }
     if (hasFetched.current) {
@@ -38,7 +38,6 @@ export default function Dashboard() {
     }
     hasFetched.current = true;
     fetchData();
-    console.log(useUserRole.userRole);
   }, [hasHydrated]);
 
   const onClickScenario = (id: string) => {

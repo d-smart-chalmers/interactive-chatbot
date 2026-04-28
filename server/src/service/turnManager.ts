@@ -219,7 +219,8 @@ export class TurnManager {
 
     const turnParsed: MaritimeMessage = this.parseMessage(turnMessage);
     const userParsed: MaritimeMessage = this.parseMessage(userMessage);
-    const correctedParsed: MaritimeMessage = this.parseMessage(correctedUserMessage);
+    const correctedParsed: MaritimeMessage =
+      this.parseMessage(correctedUserMessage);
 
     const originalOpening = this.controlOpening(
       userParsed.opening ?? "",

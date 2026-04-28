@@ -6,7 +6,7 @@ interface Content {
 export enum MessageEnding {
   OVER = "over",
   OUT = "out",
-  STANDBY = "stand by"
+  STANDBY = "stand by",
 }
 
 //Not used yet, but would probably like to use for a refactor later

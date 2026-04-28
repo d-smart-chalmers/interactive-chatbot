@@ -58,7 +58,6 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
     hasFetched.current = true;
     setMounted(true);
     async function fetchData() {
-      console.log(userRoleStore.userRole);
       const response = await api.post(`/scenarios/start-scenario/${id}`, {
         userRole: userRoleStore.userRole,
       } as StartScenarioRequest);
