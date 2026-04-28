@@ -55,6 +55,7 @@ export default class OpenAILLMService implements LLMService {
       const corrected_text = JSON.parse(json_schema).corrected_text as string;
       return corrected_text;
     } catch (error) {
+      console.log(error);
       const status =
         error instanceof Error && "status" in error
           ? (error as any).status
@@ -103,6 +104,7 @@ export default class OpenAILLMService implements LLMService {
       const same_meaning = JSON.parse(json_schema).same_meaning as boolean;
       return same_meaning;
     } catch (error) {
+      console.log(error);
       const status =
         error instanceof Error && "status" in error
           ? (error as any).status
