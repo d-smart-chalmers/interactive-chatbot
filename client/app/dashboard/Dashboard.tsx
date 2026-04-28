@@ -11,10 +11,11 @@ import {
 } from '../../../shared/scenarios/model';
 import { Spinner } from '~/components/ui/spinner';
 import { useNavigate } from 'react-router';
-import { useUserRoleStore } from '~/store/state';
+import { useHasHydrated, useUserRoleStore } from '~/store/state';
 
 export default function Dashboard() {
   const useUserRole = useUserRoleStore();
+  const hasHydrated = useHasHydrated();
   const [scenarioList, setScenarioList] = useState<ScenarioDescriptionList[]>(
     [],
   );
@@ -29,18 +30,24 @@ export default function Dashboard() {
     setLoading(false);
   };
   useEffect(() => {
+    if(!hasHydrated) {
+      return;
+    }
     if (hasFetched.current) {
       return;
     }
     hasFetched.current = true;
     fetchData();
-  }, []);
+    console.log(useUserRole.userRole);
+  }, [hasHydrated]);
 
   const onClickScenario = (id: string) => {
     const route = '/scenario/' + id;
     navigate(route);
   };
-
+  if (!hasHydrated) {
+    return null;
+  }
   return (
     <div className="flex w-full flex-col items-center justify-center gap-6 pt-10 pr-5 pl-5">
       <div className="flex w-5/6 flex-col items-center justify-center gap-4">

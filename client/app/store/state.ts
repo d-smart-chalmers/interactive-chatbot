@@ -3,6 +3,7 @@ import {
   type ScenarioChatHistory,
   type TurnHistory,
 } from '@shared/scenarios/model';
+import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -12,15 +13,42 @@ interface UserRoleState {
   switchUseRole: () => void;
 }
 
-export const useUserRoleStore = create<UserRoleState>((set) => ({
-  userRole: UserRole.Vessel,
-  setUserRole: (role) => set({ userRole: role }),
-  switchUseRole: () =>
-    set((state) => ({
-      userRole:
-        state.userRole === UserRole.Vessel ? UserRole.VTS : UserRole.Vessel,
-    })),
-}));
+export const useUserRoleStore = create<UserRoleState>()(
+  persist(
+    (set) => ({
+      userRole: UserRole.Vessel,
+      setUserRole: (role) => set({ userRole: role }),
+      switchUseRole: () =>
+        set((state) => ({
+          userRole:
+            state.userRole === UserRole.Vessel ? UserRole.VTS : UserRole.Vessel,
+        })),
+    }),
+    {
+      name: 'user-role-storage',
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({
+        userRole: state.userRole,
+      }),
+    },
+  ),
+);
+export const useHasHydrated = () => {
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    const unsub = useUserRoleStore.persist.onFinishHydration(() => {
+      setHasHydrated(true);
+    });
+
+    // In case hydration already finished before this effect runs
+    setHasHydrated(useUserRoleStore.persist.hasHydrated());
+
+    return unsub;
+  }, []);
+
+  return hasHydrated;
+};
 
 interface ScenarioChatHistoryState {
   turns: TurnHistory[];

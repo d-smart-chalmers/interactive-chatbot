@@ -9,7 +9,11 @@ import type {
   SubmitAnswerRequest,
   SubmitAnswerResponse,
 } from '@shared/scenarios/api';
-import { useChatHistoryStore, useUserRoleStore } from '~/store/state';
+import {
+  useChatHistoryStore,
+  useHasHydrated,
+  useUserRoleStore,
+} from '~/store/state';
 import ChatHeader from './header';
 import ChatWindowComponent from './chatwindow';
 import MessageInputComponent from './messageinput';
@@ -33,6 +37,7 @@ interface ChatinterfaceProps {
 function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
   const userRoleStore = useUserRoleStore();
   const chatHistoryStore = useChatHistoryStore();
+  const hasHydrated = useHasHydrated();
   const [description, setDescription] = useState('');
   const [disableRetry, setDisableRetry] = useState(true);
   const navigate = useNavigate();
@@ -44,12 +49,16 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
   const hasFetched = useRef(false);
   const [gettingFeedback, setGettingFeedback] = useState(false);
   useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
     if (hasFetched.current) {
       return;
     }
     hasFetched.current = true;
     setMounted(true);
     async function fetchData() {
+      console.log(userRoleStore.userRole);
       const response = await api.post(`/scenarios/start-scenario/${id}`, {
         userRole: userRoleStore.userRole,
       } as StartScenarioRequest);
@@ -69,7 +78,7 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
       }
     }
     fetchData();
-  }, [id]);
+  }, [id, hasHydrated]);
 
   useEffect(() => {
     if (chatHistoryStore.scenarioEnded) {
@@ -141,6 +150,8 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
             }
           } else {
             console.log('Error getting next turn');
+            setDisableSubmit(false);
+            setGettingFeedback(false);
           }
         } else {
           setDisableSubmit(false);
@@ -148,11 +159,16 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
         }
       } else {
         console.log('Error getting feedback');
+        setDisableSubmit(false);
+        setGettingFeedback(false);
       }
     } else {
       console.log('Error submitting message');
       setDisableSubmit(false);
     }
+  }
+  if (!hasHydrated) {
+    return null;
   }
   if (!mounted) {
     return <div className="flex h-screen items-center justify-center"></div>; //empty screen before mount to avoid hydration error
