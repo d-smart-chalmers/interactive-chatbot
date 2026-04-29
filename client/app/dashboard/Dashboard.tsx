@@ -108,11 +108,6 @@ export default function Dashboard() {
           ))}
         </div>
       )}
-      <img
-        src="digimar_eu_transparent.png"
-        alt="DigiMar and European Union logo"
-        className="w-60 self-baseline-last p-10"
-      />
     </div>
   );
 }
