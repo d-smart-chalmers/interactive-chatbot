@@ -51,8 +51,11 @@ export default function Dashboard() {
     <div className="flex w-full flex-col items-center justify-center gap-6 pt-10 pr-5 pl-5">
       <div className="flex w-5/6 flex-col items-center justify-center gap-4">
         <h1 className="text-center text-4xl font-bold sm:text-6xl">
-          Digital Standard Maritime Radio Communication Training
+          D-SMART
         </h1>
+        <h2 className="w-5/6 text-center text-xl sm:w-4/6 sm:text-2xl whitespace-pre-line">
+          {'Digital Standard Maritime Radio \n Communication Training'}
+        </h2>
         <h2 className="w-5/6 text-center text-[12px] font-light text-zinc-500 sm:w-4/6 sm:text-[20px]">
           Practice and master standard maritime radio protocols including
           distress calls, position reports, and weather communications in
