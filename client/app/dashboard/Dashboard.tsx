@@ -81,12 +81,16 @@ export default function Dashboard() {
             className={`flex flex-1 items-center justify-start gap-x-2 ${useUserRole.userRole === UserRole.VTS ? 'text-green-500' : 'text-zinc-500'}`}
           >
             <VtsIcon />
-            VTS operator
+            VTS Operator
           </span>
         </div>
       </div>
 
-      {loading && <Spinner />}
+      {loading && (
+        <div className="h-135">
+          <Spinner />
+        </div>
+      )}
 
       {!loading && (
         <div className="m-5 flex flex-wrap justify-center gap-5">
@@ -101,7 +105,11 @@ export default function Dashboard() {
           ))}
         </div>
       )}
-      <img src="digimar_eu_transparent.png" alt="DigiMar and European Union logo" className='self-baseline-last w-60 p-10'/>
+      <img
+        src="digimar_eu_transparent.png"
+        alt="DigiMar and European Union logo"
+        className="w-60 self-baseline-last p-10"
+      />
     </div>
   );
 }

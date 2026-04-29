@@ -230,7 +230,7 @@ export class TurnManager {
     const needsSpellCheck =
       !originalOpening.correct || !originalEnding.correct || hasContent;
 
-    // If no spell check needed, we use the raw input and return feedback 
+    // If no spell check needed, we use the raw input and return feedback
     // (this avoids using the llm service when not needed to save costs and time).
     const correctedUserInput = needsSpellCheck
       ? await this.llmModel.correctSpelling(userInput)
