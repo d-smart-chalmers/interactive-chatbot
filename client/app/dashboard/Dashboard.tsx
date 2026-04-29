@@ -101,7 +101,7 @@ export default function Dashboard() {
           ))}
         </div>
       )}
-      <img src="digimar_eu_transparent.png" alt="DigiMar and European Union logo" className='self-baseline w-60 p-10'/>
+      <img src="digimar_eu_transparent.png" alt="DigiMar and European Union logo" className='self-baseline-last w-60 p-10'/>
     </div>
   );
 }

@@ -53,15 +53,11 @@ export class TurnManager {
     userTurn: UserTurn,
     scenarioIndex: number,
   ): Promise<UserTurn> {
-    const correctedMessage = await this.llmModel.correctSpelling(
-      userTurn.message,
-    );
-
     const turnAnswer =
       this.getTurnAnswer(scenarioIndex) ?? "Failed to find turn message";
+
     const { feedback, answerAccuracy } = await this.controlUserMessage(
       userTurn.message,
-      correctedMessage,
       turnAnswer,
     );
 
@@ -210,57 +206,69 @@ export class TurnManager {
 
   private async controlUserMessage(
     userInput: string,
-    correctedUserInput: string,
     turnAnswer: string,
   ): Promise<{ feedback: string; answerAccuracy: AnswerAccuracy }> {
     const userMessage = this.normalize(userInput);
-    const correctedUserMessage = this.normalize(correctedUserInput);
     const turnMessage = this.normalize(turnAnswer);
 
     const turnParsed: MaritimeMessage = this.parseMessage(turnMessage);
     const userParsed: MaritimeMessage = this.parseMessage(userMessage);
-    const correctedParsed: MaritimeMessage =
-      this.parseMessage(correctedUserMessage);
 
     const originalOpening = this.controlOpening(
       userParsed.opening ?? "",
       turnParsed.opening ?? "",
     );
-    const correctedOpening = this.controlOpening(
-      correctedParsed.opening ?? "",
-      turnParsed.opening ?? "",
+
+    const originalEnding = this.controlEnding(
+      userParsed.ending ?? "",
+      turnParsed.ending ?? "",
     );
 
-    // Prefer corrected unless original is better (spell check may break call signs)
-    const parsed =
-      correctedOpening.correct || !originalOpening.correct
-        ? correctedParsed
-        : userParsed;
+    const hasContent =
+      this.countWords(userParsed.content ?? "") > 0 &&
+      turnParsed.content?.trim();
+    const needsSpellCheck =
+      !originalOpening.correct || !originalEnding.correct || hasContent;
+
+    // If no spell check needed, we use the raw input and return feedback 
+    // (this avoids using the llm service when not needed to save costs and time).
+    const correctedUserInput = needsSpellCheck
+      ? await this.llmModel.correctSpelling(userInput)
+      : userInput;
+
+    const correctedUserMessage = this.normalize(correctedUserInput);
+    const correctedParsed: MaritimeMessage =
+      this.parseMessage(correctedUserMessage);
+
+    // If original opening is determined correct, we use it. Otherwise we comntrol the corrected opening.
+    const correctedOpening = !originalOpening.correct
+      ? this.controlOpening(
+          correctedParsed.opening ?? "",
+          turnParsed.opening ?? "",
+        )
+      : originalOpening;
+
+    // If original ending is determined correct, we use it. Otherwise we control the corrected ending.
+    const correctedEnding = !originalEnding.correct
+      ? this.controlEnding(
+          correctedParsed.ending ?? "",
+          turnParsed.ending ?? "",
+        )
+      : originalEnding;
 
     let errorCounter = 0;
     const feedbackParts: string[] = [];
 
-    const openingResult =
-      correctedOpening.correct || !originalOpening.correct
-        ? correctedOpening
-        : originalOpening;
-    errorCounter += Math.min(openingResult.errorCounter, 2);
-    feedbackParts.push(openingResult.feedback);
+    errorCounter += Math.min(correctedOpening.errorCounter, 2);
+    feedbackParts.push(correctedOpening.feedback);
 
-    const endingResult = this.controlEnding(
-      parsed.ending ?? "",
-      turnParsed.ending ?? "",
-    );
-    if (!endingResult.correct) errorCounter += 2;
-    feedbackParts.push(endingResult.feedback);
+    feedbackParts.push(correctedEnding.feedback);
+    if (!correctedEnding.correct) errorCounter += 2;
 
-    if (
-      this.countWords(parsed.content ?? "") > 0 &&
-      turnParsed.content?.trim()
-    ) {
+    if (hasContent) {
       const contentResult = await this.controlContent(
-        parsed.content ?? "",
-        turnParsed.content,
+        correctedParsed.content ?? "",
+        turnParsed.content!,
       );
       feedbackParts.splice(1, 0, contentResult.feedback);
       errorCounter += contentResult.errorCounter;
@@ -392,7 +400,7 @@ export class TurnManager {
     return {
       correct,
       feedback: correct
-        ? "Ending is correct."
+        ? "Correct ending."
         : `Message should end with '${turnEnding}'.`,
     };
   }
