@@ -148,12 +148,16 @@ export class TurnManager {
       correctedEnding.feedback,
     ];
 
-    if (turnHasContent) {
+    if (userHasContent || turnHasContent) {
       const contentResult = await this.controlContent(
         correctedParsed.content,
         turnParsed.content,
       );
-      feedbackLines.splice(1, 0, ...contentResult.feedbackLines);
+      feedbackLines.splice(
+        correctedOpening.feedbackLines.length,
+        0,
+        ...contentResult.feedbackLines,
+      );
       errorCounter += contentResult.errorCounter;
     }
 
@@ -322,22 +326,28 @@ export class TurnManager {
     const userWordCount = this.countWords(userInput);
     const turnWordCount = this.countWords(turnAnswer);
 
-    const correctContent =
-      userWordCount > 0
-        ? await this.compareMeaningWithFallback(userInput, turnAnswer)
-        : false;
+    if (turnWordCount > 0) {
+      const correctContent =
+        userWordCount > 0
+          ? await this.compareMeaningWithFallback(userInput, turnAnswer)
+          : false;
 
-    if (correctContent === null) {
-      feedbackLines.push("Content could not be verified.");
-    } else if (correctContent) {
-      feedbackLines.push("Content is correct.");
+      if (correctContent === null) {
+        feedbackLines.push("Content could not be verified.");
+      } else if (correctContent) {
+        feedbackLines.push("Content is correct.");
+      } else {
+        feedbackLines.push("Content is missing information.");
+        errorCounter += 4;
+      }
+
+      if (userWordCount >= turnWordCount + EXTRA_WORD_THRESHOLD) {
+        feedbackLines.push("Content includes more words than necessary.");
+      }
     } else {
-      feedbackLines.push("Content is missing information.");
-      errorCounter += 4;
-    }
-
-    if (userWordCount >= turnWordCount + EXTRA_WORD_THRESHOLD) {
-      feedbackLines.push("Content includes more words than needed.");
+      //In case turnContent has 0 words but userContent has
+      feedbackLines.push("Message includes more words than necessary.");
+      errorCounter += 1;
     }
 
     const userWords = this.getWords(userInput);
