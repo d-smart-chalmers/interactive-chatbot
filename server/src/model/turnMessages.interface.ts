@@ -1,7 +1,7 @@
 export interface MaritimeMessage {
-  opening?: string;
-  content?: string;
-  ending?: string;
+  opening: string;
+  content: string;
+  ending: string;
 }
 
 export enum MessageMarkers {

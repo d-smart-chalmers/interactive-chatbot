@@ -11,6 +11,7 @@ import {
 } from "@src/model/turnMessages.interface.js";
 
 const EXTRA_WORD_THRESHOLD = 5;
+const INCORRECT_ERRORS_THRESHOLD = 4;
 
 export class TurnManager {
   private feedbackPromises: Map<number, Promise<UserTurn>>;
@@ -53,8 +54,11 @@ export class TurnManager {
     userTurn: UserTurn,
     scenarioIndex: number,
   ): Promise<UserTurn> {
-    const turnAnswer =
-      this.getTurnAnswer(scenarioIndex) ?? "Failed to find turn message";
+    const turnAnswer = this.getTurnAnswer(scenarioIndex);
+
+    if (!turnAnswer) {
+      return this.fallbackTurn(userTurn.id);
+    }
 
     const { feedback, answerAccuracy } = await this.controlUserMessage(
       userTurn.message,
@@ -75,7 +79,7 @@ export class TurnManager {
     return {
       id: userTurnId,
       message: "Please send again, error in backend",
-      feedback: "Fallback feedback generated in waitForFeedback",
+      feedback: "Generated fallback feedback",
       answerAccuracy: AnswerAccuracy.Incorrect,
       timestamp: Date.now(),
     } as UserTurn;
@@ -88,72 +92,74 @@ export class TurnManager {
     const userMessage = this.normalize(userInput);
     const turnMessage = this.normalize(turnAnswer);
 
-    const turnParsed: MaritimeMessage = this.parseMessage(turnMessage);
-    const userParsed: MaritimeMessage = this.parseMessage(userMessage);
+    const initiateContact = this.checkInitiateContact(turnMessage);
+
+    const turnParsed = this.parseMessage(turnMessage, initiateContact);
+    const userParsed = this.parseMessage(userMessage, initiateContact);
 
     const originalOpening = this.controlOpening(
-      userParsed.opening ?? "",
-      turnParsed.opening ?? "",
+      userParsed.opening,
+      turnParsed.opening,
     );
 
     const originalEnding = this.controlEnding(
-      userParsed.ending ?? "",
-      turnParsed.ending ?? "",
+      userParsed.ending,
+      turnParsed.ending,
     );
 
-    const hasContent =
-      this.countWords(userParsed.content ?? "") > 0 &&
-      turnParsed.content?.trim();
-    const needsSpellCheck =
-      !originalOpening.correct || !originalEnding.correct || hasContent;
+    const userHasContent = this.countWords(userParsed.content) > 0;
+    const turnHasContent = this.countWords(turnParsed.content) > 0;
+
+    const needSpellCheck =
+      !originalOpening.correct ||
+      !originalEnding.correct ||
+      (userHasContent && turnHasContent);
 
     // If no spell check needed, we use the raw input and return feedback
     // (this avoids using the llm service when not needed to save costs and time).
-    const correctedUserInput = needsSpellCheck
-      ? await this.llmModel.correctSpelling(userInput)
+    const correctedUserInput = needSpellCheck
+      ? await this.correctSpellingWithFallback(userInput)
       : userInput;
 
     const correctedUserMessage = this.normalize(correctedUserInput);
-    const correctedParsed: MaritimeMessage =
-      this.parseMessage(correctedUserMessage);
+    const correctedParsed = this.parseMessage(
+      correctedUserMessage,
+      initiateContact,
+    );
 
-    // If original opening is determined correct, we use it. Otherwise we comntrol the corrected opening.
+    // If original opening is determined correct, we use it. Otherwise we control the corrected opening.
     const correctedOpening = !originalOpening.correct
-      ? this.controlOpening(
-          correctedParsed.opening ?? "",
-          turnParsed.opening ?? "",
-        )
+      ? this.controlOpening(correctedParsed.opening, turnParsed.opening)
       : originalOpening;
 
     // If original ending is determined correct, we use it. Otherwise we control the corrected ending.
     const correctedEnding = !originalEnding.correct
-      ? this.controlEnding(
-          correctedParsed.ending ?? "",
-          turnParsed.ending ?? "",
-        )
+      ? this.controlEnding(correctedParsed.ending, turnParsed.ending)
       : originalEnding;
 
     let errorCounter = 0;
-    const feedbackParts: string[] = [];
 
     errorCounter += Math.min(correctedOpening.errorCounter, 2);
-    feedbackParts.push(correctedOpening.feedback);
 
-    feedbackParts.push(correctedEnding.feedback);
     if (!correctedEnding.correct) errorCounter += 2;
 
-    if (hasContent) {
+    const feedbackLines = [
+      ...correctedOpening.feedbackLines,
+      correctedEnding.feedback,
+    ];
+
+    if (turnHasContent) {
       const contentResult = await this.controlContent(
-        correctedParsed.content ?? "",
-        turnParsed.content!,
+        correctedParsed.content,
+        turnParsed.content,
       );
-      feedbackParts.splice(1, 0, contentResult.feedback);
+      feedbackLines.splice(1, 0, ...contentResult.feedbackLines);
       errorCounter += contentResult.errorCounter;
     }
 
-    const feedback = feedbackParts.join("\n");
+    const feedback = feedbackLines.join("\n");
     const answerAccuracy =
-      errorCounter >= 4
+      errorCounter >= INCORRECT_ERRORS_THRESHOLD
         ? AnswerAccuracy.Incorrect
         : errorCounter > 0
           ? AnswerAccuracy.PartiallyCorrect
@@ -162,97 +168,104 @@ export class TurnManager {
     return { feedback, answerAccuracy };
   }
 
-  private parseMessage(message: string): {
-    opening?: string;
-    content?: string;
-    ending?: string;
-  } {
+  private parseMessage(
+    message: string,
+    initiateContact: boolean,
+  ): MaritimeMessage {
     const sender = this.getSender();
     const receiver = this.getReceiver();
     const endings = Object.values(MessageEnding).join("|");
 
-    // --- Opening ---
-    const senderLastIndex = message.lastIndexOf(sender);
-    const receiverLastIndex = message.lastIndexOf(receiver);
+    const senderIndex = initiateContact
+      ? message.lastIndexOf(sender)
+      : message.indexOf(sender);
 
-    const endIndex =
-      senderLastIndex === -1 && receiverLastIndex === -1
-        ? 0
-        : Math.max(
-            senderLastIndex !== -1 ? senderLastIndex + sender.length : 0,
-            receiverLastIndex !== -1 ? receiverLastIndex + receiver.length : 0,
-          );
+    const receiverIndex = initiateContact
+      ? message.lastIndexOf(receiver)
+      : message.indexOf(receiver);
+
+    const senderEnd = senderIndex !== -1 ? senderIndex + sender.length : 0;
+    const receiverEnd =
+      receiverIndex !== -1 ? receiverIndex + receiver.length : 0;
+
+    const endIndex = Math.max(senderEnd, receiverEnd);
 
     const opening = message.slice(0, endIndex).trim();
-    const afterOpening = message
-      .slice(endIndex)
-      .replace(/^[\s.]+/, "")
-      .trim();
 
-    // --- Ending ---
+    const afterOpening = message.slice(endIndex).trim();
+
     const endingMatch = afterOpening.match(
-      new RegExp(`\\b(over and out|${endings})\\b\\.?\\s*$`, "i"),
+      new RegExp(`(over and out|${endings})\\s*$`),
     );
-    const ending = endingMatch ? endingMatch[1] : "";
-    const content = endingMatch
-      ? afterOpening.slice(0, endingMatch.index).trim()
-      : afterOpening;
 
-    return { opening, content, ending };
+    let content: string;
+    let ending: string | undefined;
+
+    if (endingMatch) {
+      ending = endingMatch[1];
+      content = afterOpening.slice(0, endingMatch.index).trim();
+    } else {
+      content = afterOpening;
+    }
+
+    return { opening, content, ending: ending ?? "" };
   }
 
   private controlOpening(
     opening: string,
     turnOpening: string,
   ): {
-    feedback: string;
+    feedbackLines: string[];
     correct: boolean;
     errorCounter: number;
   } {
     const sender = this.getSender();
     const receiver = this.getReceiver();
-    const feedbackParts: string[] = [];
+    const feedbackLines: string[] = [];
     let errorCounter = 0;
 
     const includesReceiver = opening.includes(receiver);
     const includesSender = opening.includes(sender);
 
     if (!includesReceiver && !includesSender) {
-      feedbackParts.push("Missing names in message.");
+      feedbackLines.push("Missing names in message.");
       errorCounter += 2;
     } else if (!includesReceiver) {
-      feedbackParts.push("Missing receiver name in opening.");
+      feedbackLines.push("Missing receiver name in opening.");
       errorCounter += 1;
     } else if (!includesSender) {
-      feedbackParts.push("Missing sender name in opening.");
+      feedbackLines.push("Missing sender name in opening.");
       errorCounter += 1;
     }
 
-    const senderIndex = opening.indexOf(sender);
-    const receiverIndex = opening.indexOf(receiver);
+    const matchReceiver = opening.match(new RegExp(receiver, "g"));
+    const matchSender = opening.match(new RegExp(sender, "g"));
 
-    const matchReceiver = opening.match(new RegExp(receiver, "gi"));
-    const matchSender = opening.match(new RegExp(sender, "gi"));
-
+    // Enables a null check here for matches
     if (!matchReceiver || !matchSender) {
       return {
-        feedback: feedbackParts.join(" "),
+        feedbackLines: feedbackLines,
         correct: false,
         errorCounter,
       };
     }
 
-    if (senderIndex <= receiverIndex) {
-      feedbackParts.push("Sender and receiver are in wrong order.");
+    const senderIndex = opening.indexOf(sender);
+    const receiverIndex = opening.indexOf(receiver);
+
+    if (senderIndex < receiverIndex) {
+      feedbackLines.push("Sender and receiver are in wrong order.");
       errorCounter += 1;
     }
 
     const receiverCountInAnswer = (
-      turnOpening.match(new RegExp(receiver, "gi")) ?? []
+      turnOpening.match(new RegExp(receiver, "g")) ?? []
     ).length;
+
     const senderCountInAnswer = (
-      turnOpening.match(new RegExp(sender, "gi")) ?? []
+      turnOpening.match(new RegExp(sender, "g")) ?? []
     ).length;
+
     const shouldIncludeMulReceiver = receiverCountInAnswer >= 2;
     const shouldIncludeMulSender = senderCountInAnswer >= 3;
 
@@ -260,92 +273,103 @@ export class TurnManager {
       shouldIncludeMulReceiver &&
       (matchReceiver.length < 2 || matchReceiver.length > 3)
     ) {
-      feedbackParts.push(
+      feedbackLines.push(
         "First message should contain the receiver two or three times.",
       );
       errorCounter += 1;
     } else if (!shouldIncludeMulReceiver && matchReceiver.length !== 1) {
-      feedbackParts.push("Message should contain the receiver once.");
+      feedbackLines.push("Message should contain the receiver once.");
       errorCounter += 1;
     }
 
     if (shouldIncludeMulSender && matchSender.length !== 3) {
-      feedbackParts.push(
+      feedbackLines.push(
         "First message should contain the sender three times.",
       );
       errorCounter += 1;
     } else if (!shouldIncludeMulSender && matchSender.length !== 1) {
-      feedbackParts.push("Message should contain the sender once.");
+      feedbackLines.push("Message should contain the sender once.");
       errorCounter += 1;
     }
 
     if (!opening.includes("this is") && includesSender) {
-      feedbackParts.push("It's recommended to use 'this is' in the opening.");
+      feedbackLines.push("It's recommended to use 'this is' in the opening.");
     }
 
     const expectedWordCount =
       this.countWords(sender) +
       this.countWords(receiver) * matchReceiver.length +
       2;
+
     if (this.countWords(opening) > expectedWordCount + EXTRA_WORD_THRESHOLD) {
-      feedbackParts.push("Opening contains more words than needed.");
+      feedbackLines.push("Opening contains more words than needed.");
       errorCounter += 1;
     }
 
-    const correct = feedbackParts.length === 0;
-    if (correct) feedbackParts.push("Correct opening.");
+    const correct = feedbackLines.length === 0;
 
-    return { feedback: feedbackParts.join(" "), correct, errorCounter };
+    if (correct) feedbackLines.push("Correct opening.");
+
+    return { feedbackLines: feedbackLines, correct, errorCounter };
   }
 
   private async controlContent(
     userInput: string,
     turnAnswer: string,
-  ): Promise<{ feedback: string; errorCounter: number }> {
-    const feedbackParts: string[] = [];
+  ): Promise<{ feedbackLines: string[]; errorCounter: number }> {
+    const feedbackLines: string[] = [];
     let errorCounter = 0;
-
-    const correctContent = await this.llmModel.compareMeaning(
-      userInput,
-      turnAnswer,
-    );
-    if (correctContent) {
-      feedbackParts.push("Content is correct.");
-    } else {
-      feedbackParts.push("Content is missing information.");
-      errorCounter += 4;
-    }
 
     const userWordCount = this.countWords(userInput);
     const turnWordCount = this.countWords(turnAnswer);
-    if (userWordCount >= turnWordCount + EXTRA_WORD_THRESHOLD) {
-      feedbackParts.push("Content includes more words than needed.");
+
+    const correctContent =
+      userWordCount > 0
+        ? await this.compareMeaningWithFallback(userInput, turnAnswer)
+        : false;
+
+    if (correctContent === null) {
+      feedbackLines.push("Content could not be verified.");
+    } else if (correctContent) {
+      feedbackLines.push("Content is correct.");
+    } else {
+      feedbackLines.push("Content is missing information.");
+      errorCounter += 4;
     }
 
-    const turnWords = this.getWords(turnAnswer);
+    if (userWordCount >= turnWordCount + EXTRA_WORD_THRESHOLD) {
+      feedbackLines.push("Content includes more words than needed.");
+    }
+
     const userWords = this.getWords(userInput);
+    const turnWords = this.getWords(turnAnswer);
 
     const turnFirstWord = turnWords[0];
+
+    const userMarkers = this.findMatches(userWords, MessageMarkers);
     const turnMarker = Object.values(MessageMarkers).includes(
       turnFirstWord as MessageMarkers,
     )
       ? (turnFirstWord as MessageMarkers)
       : null;
 
-    const userMarkers = this.findMatches(userWords, MessageMarkers);
+    if (turnMarker && userMarkers.length === 0) {
+      feedbackLines.push("Message marker is missing.");
+      errorCounter += 1;
+    } else if (turnMarker && !userMarkers.includes(turnMarker)) {
+      feedbackLines.push("Control that message marker is appropriate.");
+      errorCounter += 1;
+    }
+
     const userAmbiguousWords = this.findMatches(userWords, AmbiguesWords);
     const turnAmbiguousWords = this.findMatches(turnWords, AmbiguesWords);
+
     const notAcceptedUserAmbiguousWords = userAmbiguousWords.filter(
       (word) => !turnAmbiguousWords.includes(word),
     );
 
-    const turnPhoneticWords = this.findMatches(turnWords, PhoneticAlphabet);
-    const userPhoneticWords = new Set(
-      this.findMatches(userWords, PhoneticAlphabet),
-    );
-
     if (notAcceptedUserAmbiguousWords.length > 0) {
-      feedbackParts.push(
+      feedbackLines.push(
         "Avoid using ambiguous words: " +
           notAcceptedUserAmbiguousWords.map((w) => `'${w}'`).join(", ") +
           ".",
@@ -353,22 +377,19 @@ export class TurnManager {
       errorCounter += 1;
     }
 
-    if (turnMarker && userMarkers.length === 0) {
-      feedbackParts.push("Message marker is missing.");
-      errorCounter += 1;
-    } else if (turnMarker && !userMarkers.includes(turnMarker)) {
-      feedbackParts.push("Control that message marker is appropriate.");
-      errorCounter += 1;
-    }
+    const turnPhoneticWords = this.findMatches(turnWords, PhoneticAlphabet);
+    const userPhoneticWords = new Set(
+      this.findMatches(userWords, PhoneticAlphabet),
+    );
 
     if (!turnPhoneticWords.every((w) => userPhoneticWords.has(w))) {
-      feedbackParts.push(
+      feedbackLines.push(
         "Missing phonetic alphabet words from expected response.",
       );
       errorCounter += 4;
     }
 
-    return { feedback: feedbackParts.join(" "), errorCounter };
+    return { feedbackLines: feedbackLines, errorCounter };
   }
 
   private controlEnding(
@@ -378,20 +399,43 @@ export class TurnManager {
     correct: boolean;
     feedback: string;
   } {
-    if (!ending) {
-      return {
-        correct: false,
-        feedback: `Message should end with '${turnEnding}'.`,
-      };
-    }
-
     const correct = ending === turnEnding;
+
     return {
       correct,
       feedback: correct
         ? "Correct ending."
         : `Message should end with '${turnEnding}'.`,
     };
+  }
+
+  private async correctSpellingWithFallback(input: string): Promise<string> {
+    try {
+      return await this.llmModel.correctSpelling(input);
+    } catch {
+      console.warn("Spell check unavailable, using raw input.");
+      return input;
+    }
+  }
+
+  private async compareMeaningWithFallback(
+    userInput: string,
+    turnAnswer: string,
+  ): Promise<boolean | null> {
+    try {
+      return await this.llmModel.compareMeaning(userInput, turnAnswer);
+    } catch {
+      console.warn("Meaning comparison unavailable.");
+      return null;
+    }
+  }
+
+  private checkInitiateContact(message: string): boolean {
+    const sender = this.getSender();
+    const senderCount = (message.match(new RegExp(sender, "g")) ?? []).length;
+
+    // Supposed to contain the sender three times
+    return senderCount === 3;
   }
 
   private normalize(message: string): string {
@@ -407,16 +451,32 @@ export class TurnManager {
       .trim();
   }
 
+  private normalizeName(name: string): string {
+    return name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   private getSender(): string {
-    return this.userRole === this.scenario.participants.starter.role
-      ? this.scenario.participants.starter.name
-      : this.scenario.participants.responder.name;
+    const sender =
+      this.userRole === this.scenario.participants.starter.role
+        ? this.scenario.participants.starter.name
+        : this.scenario.participants.responder.name;
+
+    return this.normalizeName(sender);
   }
 
   private getReceiver(): string {
-    return this.userRole === this.scenario.participants.starter.role
-      ? this.scenario.participants.responder.name
-      : this.scenario.participants.starter.name;
+    const receiver =
+      this.userRole === this.scenario.participants.starter.role
+        ? this.scenario.participants.responder.name
+        : this.scenario.participants.starter.name;
+
+    return this.normalizeName(receiver);
   }
 
   private getWords(text: string): string[] {
