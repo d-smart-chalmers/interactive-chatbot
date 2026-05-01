@@ -99,7 +99,7 @@ export class TurnManager {
 
     const originalOpening = this.controlOpening(
       userParsed.opening,
-      turnParsed.opening,
+      initiateContact,
     );
 
     const originalEnding = this.controlEnding(
@@ -129,7 +129,7 @@ export class TurnManager {
 
     // If original opening is determined correct, we use it. Otherwise we control the corrected opening.
     const correctedOpening = !originalOpening.correct
-      ? this.controlOpening(correctedParsed.opening, turnParsed.opening)
+      ? this.controlOpening(correctedParsed.opening, initiateContact)
       : originalOpening;
 
     // If original ending is determined correct, we use it. Otherwise we control the corrected ending.
@@ -188,7 +188,14 @@ export class TurnManager {
     const receiverEnd =
       receiverIndex !== -1 ? receiverIndex + receiver.length : 0;
 
-    const endIndex = Math.max(senderEnd, receiverEnd);
+    //Finds the index of the first message marker in the message, otherwise infinity
+    const markerPattern = Object.values(MessageMarkers).join("|");
+    const markerMatch = message.match(new RegExp(`\\b(${markerPattern})\\b`));
+    const markerIndex = markerMatch?.index ?? Infinity;
+
+    //Limits the opening to not include any message markers
+    //i.e. guards against missing sender in opening but uses it later in message
+    const endIndex = Math.min(Math.max(senderEnd, receiverEnd), markerIndex);
 
     const opening = message.slice(0, endIndex).trim();
 
@@ -213,7 +220,7 @@ export class TurnManager {
 
   private controlOpening(
     opening: string,
-    turnOpening: string,
+    initiateContact: boolean,
   ): {
     feedbackLines: string[];
     correct: boolean;
@@ -258,38 +265,30 @@ export class TurnManager {
       errorCounter += 1;
     }
 
-    const receiverCountInAnswer = (
-      turnOpening.match(new RegExp(receiver, "g")) ?? []
-    ).length;
+    if (initiateContact) {
+      if (matchReceiver.length < 2 || matchReceiver.length > 3) {
+        feedbackLines.push(
+          "First message should contain the receiver two or three times.",
+        );
+        errorCounter += 1;
+      }
 
-    const senderCountInAnswer = (
-      turnOpening.match(new RegExp(sender, "g")) ?? []
-    ).length;
+      if (matchSender.length !== 3) {
+        feedbackLines.push(
+          "First message should contain the sender three times.",
+        );
+        errorCounter += 1;
+      }
+    } else {
+      if (matchReceiver.length !== 1) {
+        feedbackLines.push("Message should contain the receiver once.");
+        errorCounter += 1;
+      }
 
-    const shouldIncludeMulReceiver = receiverCountInAnswer >= 2;
-    const shouldIncludeMulSender = senderCountInAnswer >= 3;
-
-    if (
-      shouldIncludeMulReceiver &&
-      (matchReceiver.length < 2 || matchReceiver.length > 3)
-    ) {
-      feedbackLines.push(
-        "First message should contain the receiver two or three times.",
-      );
-      errorCounter += 1;
-    } else if (!shouldIncludeMulReceiver && matchReceiver.length !== 1) {
-      feedbackLines.push("Message should contain the receiver once.");
-      errorCounter += 1;
-    }
-
-    if (shouldIncludeMulSender && matchSender.length !== 3) {
-      feedbackLines.push(
-        "First message should contain the sender three times.",
-      );
-      errorCounter += 1;
-    } else if (!shouldIncludeMulSender && matchSender.length !== 1) {
-      feedbackLines.push("Message should contain the sender once.");
-      errorCounter += 1;
+      if (matchSender.length !== 1) {
+        feedbackLines.push("Message should contain the sender once.");
+        errorCounter += 1;
+      }
     }
 
     if (!opening.includes("this is") && includesSender) {
