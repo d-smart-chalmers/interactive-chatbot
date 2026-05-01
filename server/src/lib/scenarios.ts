@@ -179,7 +179,7 @@ export const scenarioLists = [
               "Europe VTS, this is Sunrise. Information. We are entering the reporting zone. Over.",
             vts_instruction: "Acknowledge and ask for position.",
             vts_message:
-              "Sunrise, this is Europe VTS. Received. Question. What is your present position? Over.",
+              "Sunrise, this is Europe VTS. Received. You are entering reporting zone. Question. What is your present position? Over.",
           },
           {
             vessel_instruction: "Provide position: 45° 30' N, 013° 35' E.",
@@ -219,7 +219,7 @@ export const scenarioLists = [
               "Europe VTS, this is Sunrise. Information. Entering VTS area from the west. Proceeding to pilot station. Pilot boarding time one three zero zero hours. Over.",
             vts_instruction: "Acknowledge and inform them there is no traffic.",
             vts_message:
-              "Sunrise, this is Europe VTS. Received. Information. No reported traffic. Over.",
+              "Sunrise, this is Europe VTS. Received. You are entering VTS area from the west. Proceeding to pilot station and boarding time one three zero zero hours. Information. No reported traffic. Over.",
           },
           {
             vessel_instruction:
@@ -262,7 +262,7 @@ export const scenarioLists = [
             vts_instruction:
               "Acknowledge and request them to call back when entering the VTS area.",
             vts_message:
-              "Sunrise, this is Europe VTS. Received. Request. Call back when entering VTS limits. Over.",
+              "Sunrise, this is Europe VTS. Received. You will enter VTS limits in one hour. Request. Call back when entering VTS limits. Over.",
           },
           {
             vessel_instruction: "Call Europe VTS.",
@@ -277,7 +277,8 @@ export const scenarioLists = [
             vessel_message:
               "Europe VTS, this is Sunrise. Information. Entering VTS area, bound for anchorage X-ray for bunkering. Over.",
             vts_instruction: "Acknowledge the information.",
-            vts_message: "Sunrise, this is Europe VTS. Received. Over.",
+            vts_message:
+              "Sunrise, this is Europe VTS. Received. You are entering VTS area bound for X-ray for bunkering. Over.",
           },
           {
             vessel_instruction: "Ask at which number you should drop anchor.",
