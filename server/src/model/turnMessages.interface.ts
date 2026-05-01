@@ -1,15 +1,3 @@
-interface Content {
-  marker?: MessageMarkers;
-  message: string;
-}
-
-export enum MessageEnding {
-  OVER = "over",
-  OUT = "out",
-  STANDBY = "stand by",
-}
-
-//Not used yet, but would probably like to use for a refactor later
 export interface MaritimeMessage {
   opening?: string;
   content?: string;
@@ -26,6 +14,12 @@ export enum MessageMarkers {
   ANSWER = "answer",
   REQUEST = "request",
   INTENTION = "intention",
+}
+
+export enum MessageEnding {
+  OVER = "over",
+  OUT = "out",
+  STANDBY = "stand by",
 }
 
 export enum PhoneticAlphabet {

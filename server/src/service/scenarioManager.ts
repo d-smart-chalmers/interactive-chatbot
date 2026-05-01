@@ -80,11 +80,6 @@ export class ScenarioManager {
     const userTurnWithFeedback =
       await this.turnManager.waitForFeedback(userTurnId);
 
-    console.log(
-      "Get feedback scenario manager userTurnId and scenario index: ",
-      userTurnId,
-      this.scenarioIndex,
-    );
     this.history.turns[userTurnId - 1] = userTurnWithFeedback;
 
     if (
@@ -181,7 +176,6 @@ export class ScenarioManager {
       chatbotTurnObject,
       ...secondChatbotTurnObject,
     ];
-    console.log(chatbotTurnObjects);
     return chatbotTurnObjects;
   }
 

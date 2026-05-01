@@ -71,18 +71,6 @@ export class TurnManager {
       : turn?.vesselMessage;
   }
 
-  private getSender(): string {
-    return this.userRole === this.scenario.participants.starter.role
-      ? this.scenario.participants.starter.name
-      : this.scenario.participants.responder.name;
-  }
-
-  private getReceiver(): string {
-    return this.userRole === this.scenario.participants.starter.role
-      ? this.scenario.participants.responder.name
-      : this.scenario.participants.starter.name;
-  }
-
   private fallbackTurn(userTurnId: number): UserTurn {
     return {
       id: userTurnId,
@@ -91,117 +79,6 @@ export class TurnManager {
       answerAccuracy: AnswerAccuracy.Incorrect,
       timestamp: Date.now(),
     } as UserTurn;
-  }
-  private parseMessage(message: string): {
-    opening?: string;
-    content?: string;
-    ending?: string;
-  } {
-    const sender = this.getSender();
-    const receiver = this.getReceiver();
-    const endings = Object.values(MessageEnding).join("|");
-
-    // --- Opening ---
-    const senderLastIndex = message.lastIndexOf(sender);
-    const receiverLastIndex = message.lastIndexOf(receiver);
-
-    const endIndex =
-      senderLastIndex === -1 && receiverLastIndex === -1
-        ? 0
-        : Math.max(
-            senderLastIndex !== -1 ? senderLastIndex + sender.length : 0,
-            receiverLastIndex !== -1 ? receiverLastIndex + receiver.length : 0,
-          );
-
-    const opening = message.slice(0, endIndex).trim();
-    const afterOpening = message
-      .slice(endIndex)
-      .replace(/^[\s.]+/, "")
-      .trim();
-
-    // --- Ending ---
-    const endingMatch = afterOpening.match(
-      new RegExp(`\\b(over and out|${endings})\\b\\.?\\s*$`, "i"),
-    );
-    const ending = endingMatch ? endingMatch[1] : "";
-    const content = endingMatch
-      ? afterOpening.slice(0, endingMatch.index).trim()
-      : afterOpening;
-
-    return { opening, content, ending };
-  }
-
-  private async controlContent(
-    userInput: string,
-    turnAnswer: string,
-  ): Promise<{ feedback: string; errorCounter: number }> {
-    const feedbackParts: string[] = [];
-    let errorCounter = 0;
-
-    const correctContent = await this.llmModel.compareMeaning(
-      userInput,
-      turnAnswer,
-    );
-    if (correctContent) {
-      feedbackParts.push("Content is correct.");
-    } else {
-      feedbackParts.push("Content is missing information.");
-      errorCounter += 4;
-    }
-
-    const userWordCount = this.countWords(userInput);
-    const turnWordCount = this.countWords(turnAnswer);
-    if (userWordCount >= turnWordCount + EXTRA_WORD_THRESHOLD) {
-      feedbackParts.push("Content includes more words than needed.");
-    }
-
-    const turnWords = this.getWords(turnAnswer);
-    const userWords = this.getWords(userInput);
-
-    const turnFirstWord = turnWords[0];
-    const turnMarker = Object.values(MessageMarkers).includes(
-      turnFirstWord as MessageMarkers,
-    )
-      ? (turnFirstWord as MessageMarkers)
-      : null;
-
-    const userMarkers = this.findMatches(userWords, MessageMarkers);
-    const userAmbiguousWords = this.findMatches(userWords, AmbiguesWords);
-    const turnAmbiguousWords = this.findMatches(turnWords, AmbiguesWords);
-    const notAcceptedUserAmbiguousWords = userAmbiguousWords.filter(
-      (word) => !turnAmbiguousWords.includes(word),
-    );
-
-    const turnPhoneticWords = this.findMatches(turnWords, PhoneticAlphabet);
-    const userPhoneticWords = new Set(
-      this.findMatches(userWords, PhoneticAlphabet),
-    );
-
-    if (notAcceptedUserAmbiguousWords.length > 0) {
-      feedbackParts.push(
-        "Avoid using ambiguous words: " +
-          notAcceptedUserAmbiguousWords.map((w) => `'${w}'`).join(", ") +
-          ".",
-      );
-      errorCounter += 1;
-    }
-
-    if (turnMarker && userMarkers.length === 0) {
-      feedbackParts.push("Message marker is missing.");
-      errorCounter += 1;
-    } else if (turnMarker && !userMarkers.includes(turnMarker)) {
-      feedbackParts.push("Control that message marker is appropriate.");
-      errorCounter += 1;
-    }
-
-    if (!turnPhoneticWords.every((w) => userPhoneticWords.has(w))) {
-      feedbackParts.push(
-        "Missing phonetic alphabet words from expected response.",
-      );
-      errorCounter += 4;
-    }
-
-    return { feedback: feedbackParts.join(" "), errorCounter };
   }
 
   private async controlUserMessage(
@@ -283,6 +160,45 @@ export class TurnManager {
           : AnswerAccuracy.Correct;
 
     return { feedback, answerAccuracy };
+  }
+
+  private parseMessage(message: string): {
+    opening?: string;
+    content?: string;
+    ending?: string;
+  } {
+    const sender = this.getSender();
+    const receiver = this.getReceiver();
+    const endings = Object.values(MessageEnding).join("|");
+
+    // --- Opening ---
+    const senderLastIndex = message.lastIndexOf(sender);
+    const receiverLastIndex = message.lastIndexOf(receiver);
+
+    const endIndex =
+      senderLastIndex === -1 && receiverLastIndex === -1
+        ? 0
+        : Math.max(
+            senderLastIndex !== -1 ? senderLastIndex + sender.length : 0,
+            receiverLastIndex !== -1 ? receiverLastIndex + receiver.length : 0,
+          );
+
+    const opening = message.slice(0, endIndex).trim();
+    const afterOpening = message
+      .slice(endIndex)
+      .replace(/^[\s.]+/, "")
+      .trim();
+
+    // --- Ending ---
+    const endingMatch = afterOpening.match(
+      new RegExp(`\\b(over and out|${endings})\\b\\.?\\s*$`, "i"),
+    );
+    const ending = endingMatch ? endingMatch[1] : "";
+    const content = endingMatch
+      ? afterOpening.slice(0, endingMatch.index).trim()
+      : afterOpening;
+
+    return { opening, content, ending };
   }
 
   private controlOpening(
@@ -382,6 +298,79 @@ export class TurnManager {
     return { feedback: feedbackParts.join(" "), correct, errorCounter };
   }
 
+  private async controlContent(
+    userInput: string,
+    turnAnswer: string,
+  ): Promise<{ feedback: string; errorCounter: number }> {
+    const feedbackParts: string[] = [];
+    let errorCounter = 0;
+
+    const correctContent = await this.llmModel.compareMeaning(
+      userInput,
+      turnAnswer,
+    );
+    if (correctContent) {
+      feedbackParts.push("Content is correct.");
+    } else {
+      feedbackParts.push("Content is missing information.");
+      errorCounter += 4;
+    }
+
+    const userWordCount = this.countWords(userInput);
+    const turnWordCount = this.countWords(turnAnswer);
+    if (userWordCount >= turnWordCount + EXTRA_WORD_THRESHOLD) {
+      feedbackParts.push("Content includes more words than needed.");
+    }
+
+    const turnWords = this.getWords(turnAnswer);
+    const userWords = this.getWords(userInput);
+
+    const turnFirstWord = turnWords[0];
+    const turnMarker = Object.values(MessageMarkers).includes(
+      turnFirstWord as MessageMarkers,
+    )
+      ? (turnFirstWord as MessageMarkers)
+      : null;
+
+    const userMarkers = this.findMatches(userWords, MessageMarkers);
+    const userAmbiguousWords = this.findMatches(userWords, AmbiguesWords);
+    const turnAmbiguousWords = this.findMatches(turnWords, AmbiguesWords);
+    const notAcceptedUserAmbiguousWords = userAmbiguousWords.filter(
+      (word) => !turnAmbiguousWords.includes(word),
+    );
+
+    const turnPhoneticWords = this.findMatches(turnWords, PhoneticAlphabet);
+    const userPhoneticWords = new Set(
+      this.findMatches(userWords, PhoneticAlphabet),
+    );
+
+    if (notAcceptedUserAmbiguousWords.length > 0) {
+      feedbackParts.push(
+        "Avoid using ambiguous words: " +
+          notAcceptedUserAmbiguousWords.map((w) => `'${w}'`).join(", ") +
+          ".",
+      );
+      errorCounter += 1;
+    }
+
+    if (turnMarker && userMarkers.length === 0) {
+      feedbackParts.push("Message marker is missing.");
+      errorCounter += 1;
+    } else if (turnMarker && !userMarkers.includes(turnMarker)) {
+      feedbackParts.push("Control that message marker is appropriate.");
+      errorCounter += 1;
+    }
+
+    if (!turnPhoneticWords.every((w) => userPhoneticWords.has(w))) {
+      feedbackParts.push(
+        "Missing phonetic alphabet words from expected response.",
+      );
+      errorCounter += 4;
+    }
+
+    return { feedback: feedbackParts.join(" "), errorCounter };
+  }
+
   private controlEnding(
     ending: string,
     turnEnding: string,
@@ -416,6 +405,18 @@ export class TurnManager {
       .replace(/\balfa\b/g, "alpha")
       .replace(/\s+/g, " ")
       .trim();
+  }
+
+  private getSender(): string {
+    return this.userRole === this.scenario.participants.starter.role
+      ? this.scenario.participants.starter.name
+      : this.scenario.participants.responder.name;
+  }
+
+  private getReceiver(): string {
+    return this.userRole === this.scenario.participants.starter.role
+      ? this.scenario.participants.responder.name
+      : this.scenario.participants.starter.name;
   }
 
   private getWords(text: string): string[] {
