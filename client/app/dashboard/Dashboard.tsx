@@ -50,16 +50,15 @@ export default function Dashboard() {
   return (
     <div className="flex w-full flex-col items-center justify-center gap-6 pt-10 pr-5 pl-5">
       <div className="flex w-5/6 flex-col items-center justify-center gap-4">
-        <h1 className="text-center text-4xl font-bold sm:text-6xl">
-          D-SMART
-        </h1>
-        <h2 className="w-5/6 text-center text-xl sm:w-4/6 sm:text-2xl whitespace-pre-line">
-          {'Digital Standard Maritime Radio \n Communication Training'}
+        <h1 className="text-center text-4xl font-bold sm:text-6xl">D-SMART</h1>
+        <h2 className="w-5/6 text-center text-xl whitespace-pre-line sm:w-4/6 sm:text-2xl">
+          Digital Standard Maritime Radio Communication Training
         </h2>
         <h2 className="w-5/6 text-center text-[12px] font-light text-zinc-500 sm:w-4/6 sm:text-[20px]">
-          Practice and master standard maritime radio protocols including
-          distress calls, position reports, and weather communications in
-          realistic scenarios.
+          Practice and improve your maritime radio communication skills through
+          realistic VTS interaction scenarios, covering vessel reporting,
+          traffic information, anchorage procedures, and pilot boarding
+          arrangements.
         </h2>
       </div>
       <div className="flex flex-col items-center justify-center gap-2">
