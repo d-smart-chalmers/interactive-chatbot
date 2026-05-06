@@ -60,6 +60,7 @@ export default function Dashboard() {
           traffic information, anchorage procedures, and pilot boarding
           arrangements.
         </h2>
+        <h3 className="w-5/6 text-center text-[8px] text-zinc-500 sm:w-4/6 sm:text-[15px]">Powered by AI</h3>
       </div>
       <div className="flex flex-col items-center justify-center gap-2">
         <span className="text-center font-light">
@@ -107,6 +108,9 @@ export default function Dashboard() {
           ))}
         </div>
       )}
+      <div className='self-baseline'>
+        <span className='italic text-sm font-light'>Created by Jesper Nyberg & Fred Egger</span>
+      </div>
     </div>
   );
 }

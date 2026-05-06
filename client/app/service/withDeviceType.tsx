@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Define your breakpoint
 const MOBILE_BREAKPOINT = 768;
 
 export const withDeviceType = (WrappedComponent: React.FC) => {
