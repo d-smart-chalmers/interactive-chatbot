@@ -61,13 +61,14 @@ export default function ScenarioList({
         </span>
       </div>
       <div className="z-1 flex-1 overflow-scroll">
-        {scenarios.map((s) => (
+        {scenarios.map((s, index) => (
           <div
             onClick={handleScenario}
             key={s.id}
             id={s.id.toString()}
             className={`m-2 flex rounded-xl p-5 outline ${hoverClass} bg-card transition delay-50 duration-200 ease-in-out hover:-translate-0.5 hover:cursor-pointer hover:shadow-2xl hover:outline-2`}
           >
+            <span className="mr-3 font-semibold text-muted-foreground">{index + 1}</span>
             <span>{s.description}</span>
           </div>
         ))}

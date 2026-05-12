@@ -70,11 +70,11 @@ classDiagram
     %% ==========================================
     
     %% Flöde från Router -> Service -> Managers -> AI
-    ScenariosRouter --> ScenariosService : Uses
-    ScenariosService "1" *-- "0..*" ScenarioManager : activeScenarios
-    ScenarioManager "1" *-- "1" TurnManager : Instantiates
-    TurnManager "1" *-- "1" LLMService : Uses
-    OpenAILLMService ..|> LLMService : Implements
-    OpenAILLMService "1" *-- "1" OpenAI : SDK wrapper
+    ScenariosRouter --> ScenariosService
+    ScenariosService "1" *-- "0..*" ScenarioManager
+    ScenarioManager "1" *-- "1" TurnManager
+    TurnManager "1" *-- "1" LLMService
+    OpenAILLMService ..|> LLMService
+    OpenAILLMService "1" *-- "1" OpenAI
     
 ```
