@@ -135,6 +135,9 @@ function Chatinterface({ id, isMobile }: ChatinterfaceProps) {
               nextTurnData.instruction === '' ||
               nextTurnData.chatbotTurns[0] === undefined
             ) {
+              if(nextTurnData.chatbotTurns[0]) {
+                chatHistoryStore.addTurn(nextTurnData.chatbotTurns[0]);
+              }
               chatHistoryStore.setScenarioEnded(true);
               setGettingFeedback(false);
               return;

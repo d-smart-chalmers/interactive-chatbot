@@ -93,6 +93,8 @@ export class ScenarioManager {
   }
 
   getNextTurn(): { chatbotTurns: ChatbotTurn[]; instruction: string } {
+    console.log("scenarioindex", this.scenarioIndex);
+    console.log("scenario turns length", this.scenario.scenarioTurns.length);
     if (this.scenarioIndex >= this.scenario.scenarioTurns.length) {
       return {
         chatbotTurns: [undefined as unknown as ChatbotTurn],
@@ -100,6 +102,7 @@ export class ScenarioManager {
       };
     }
     const chatbotTurnObjects = this.createChatbotTurn();
+    console.log("chatbot turn objects", chatbotTurnObjects);
     const instruction = this.history.intruction;
     return { chatbotTurns: chatbotTurnObjects, instruction };
   }
@@ -120,64 +123,68 @@ export class ScenarioManager {
     return userTurnObject;
   }
 
-  private createChatbotTurn() {
+private createChatbotTurn(): ChatbotTurn[] {
+    // Guard: scenario is over
+    if (this.scenarioIndex >= this.scenario.scenarioTurns.length) {
+        this.history = { ...this.history, intruction: "" };
+        return [];
+    }
+
+    const currentTurn = this.scenario.scenarioTurns[this.scenarioIndex]!;
+
     const chatbotTurnObject: ChatbotTurn = {
-      id: this.history.turns.length + 1,
-      message:
-        this.chatbotRole === UserRole.Vessel
-          ? this.scenario.scenarioTurns[this.scenarioIndex]!.vesselMessage
-          : this.scenario.scenarioTurns[this.scenarioIndex]!.vtsMessage,
-      timestamp: Date.now(),
-      type: TurnType.Chatbot,
-      role: this.chatbotRole,
+        id: this.history.turns.length + 1,
+        message:
+            this.chatbotRole === UserRole.Vessel
+                ? currentTurn.vesselMessage
+                : currentTurn.vtsMessage,
+        timestamp: Date.now(),
+        type: TurnType.Chatbot,
+        role: this.chatbotRole,
     };
 
-    if (!this.chatbotIsStarter) {
-      this.scenarioIndex++;
+    // Always increment after reading chatbot message
+    this.scenarioIndex++;
+
+    // Guard after increment
+    if (this.scenarioIndex >= this.scenario.scenarioTurns.length) {
+        this.history = {
+            turns: [...this.history.turns, chatbotTurnObject],
+            intruction: "",
+        };
+        return [chatbotTurnObject];
     }
-    let secondChatbotTurnObject: ChatbotTurn[] = [];
-    if (this.userRole === UserRole.Vessel) {
-      if (this.scenario.scenarioTurns[this.scenarioIndex]!.vesselInstruction) {
+
+    const nextTurn = this.scenario.scenarioTurns[this.scenarioIndex]!;
+    const instruction =
+        this.userRole === UserRole.Vessel
+            ? nextTurn.vesselInstruction
+            : nextTurn.vtsInstruction;
+
+    if (instruction) {
         this.history = {
-          turns: [...this.history.turns, chatbotTurnObject],
-          intruction:
-            this.scenarioIndex < this.scenario.scenarioTurns.length
-              ? this.scenario.scenarioTurns[this.scenarioIndex]!
-                  .vesselInstruction
-              : "",
+            turns: [...this.history.turns, chatbotTurnObject],
+            intruction: instruction,
         };
-      } else {
-        this.scenarioIndex++;
-        this.history = {
-          turns: [...this.history.turns, chatbotTurnObject],
-          intruction: this.history.intruction,
-        };
-        secondChatbotTurnObject = this.createChatbotTurn();
-      }
+        return [chatbotTurnObject];
     } else {
-      if (this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction) {
-        this.history = {
-          turns: [...this.history.turns, chatbotTurnObject],
-          intruction:
-            this.scenarioIndex < this.scenario.scenarioTurns.length
-              ? this.scenario.scenarioTurns[this.scenarioIndex]!.vtsInstruction
-              : "",
-        };
-      } else {
-        this.scenarioIndex++;
-        this.history = {
-          turns: [...this.history.turns, chatbotTurnObject],
-          intruction: this.history.intruction,
-        };
-        secondChatbotTurnObject = this.createChatbotTurn();
-      }
+        if (this.scenarioIndex < this.scenario.scenarioTurns.length - 1) {
+            this.history = {
+                turns: [...this.history.turns, chatbotTurnObject],
+                intruction: this.history.intruction,
+            };
+            this.scenarioIndex++;
+            const secondChatbotTurnObjects = this.createChatbotTurn();
+            return [chatbotTurnObject, ...secondChatbotTurnObjects];
+        } else {
+            this.history = {
+                turns: [...this.history.turns, chatbotTurnObject],
+                intruction: "",
+            };
+            return [chatbotTurnObject];
+        }
     }
-    const chatbotTurnObjects: ChatbotTurn[] = [
-      chatbotTurnObject,
-      ...secondChatbotTurnObject,
-    ];
-    return chatbotTurnObjects;
-  }
+}
 
   //private endScenario() {}
   retryScenario(): ScenarioChatHistory {
