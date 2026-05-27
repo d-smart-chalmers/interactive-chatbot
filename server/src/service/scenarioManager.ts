@@ -144,7 +144,9 @@ private createChatbotTurn(): ChatbotTurn[] {
     };
 
     // Always increment after reading chatbot message
-    this.scenarioIndex++;
+    if(!this.chatbotIsStarter) {
+        this.scenarioIndex++;
+    }
 
     // Guard after increment
     if (this.scenarioIndex >= this.scenario.scenarioTurns.length) {
